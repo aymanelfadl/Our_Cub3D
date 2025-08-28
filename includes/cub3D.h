@@ -9,10 +9,9 @@
 #define TEXTURE_COUNT 4
 #define FOV_PLANE 0.66
 
-
 typedef enum e_direction
 {
-    NO = 0,
+    NO,
     SO,
     WE,
     EA
@@ -67,25 +66,6 @@ typedef struct s_config {
     int       have_ceiling;
     int       player_set;
 } t_config;
-
-typedef struct s_ray {
-    double ray_dir_x;
-    double ray_dir_y;
-    int    map_x;
-    int    map_y;
-    double side_dist_x;
-    double side_dist_y;
-    double delta_dist_x;
-    double delta_dist_y;
-    double perp_dist;
-    int    step_x;
-    int    step_y;
-    int    side;
-    int    hit;
-    t_direction tex_id;
-    double wall_x;
-    int    tex_x;
-} t_ray;
 
 typedef struct s_game {
     void     *mlx;
