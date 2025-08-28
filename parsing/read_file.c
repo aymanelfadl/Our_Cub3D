@@ -31,8 +31,13 @@ t_game *game_info(int fd)
     {
         char **map = ft_split(line, " \t\n\v\f\r");
         if (!map)
+        {
+            free(line);
+            line = get_next_line(fd);
             continue;
-        
+        }
+        // game_config(game, line);
+        free_splite(map);
         free(line);
         line = get_next_line(fd);
     }
