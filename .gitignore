@@ -1,5 +1,5 @@
 context/*
 cub3D
 
-*/*.obj
-*/*/*.obj
+*/*.o
+*/*/*.o
