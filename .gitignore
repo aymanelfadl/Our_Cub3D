@@ -2,3 +2,4 @@ context/*
 cub3D
 
 */*.obj
+*/*/*.obj
