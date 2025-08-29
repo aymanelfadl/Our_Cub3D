@@ -10,7 +10,7 @@ maps/*
 context/*
 !context/.gitkeep
 
-.vscode/
+.vscode
 .idea/
 *.swp
 *.swo
