@@ -12,7 +12,7 @@ int ft_strcmp(const char *s1, const char *s2)
 
 void print_err(const char *msg)
 {
-    fprintf(stderr, "Error\n%s\n", msg);
+    printf("Error\n%s\n", msg);
     exit(EXIT_FAILURE);
 }
 
@@ -53,18 +53,12 @@ int ft_split_size(char **arr)
     return (i);
 }
 
-int is_texture(char *identifier, int index)
+int is_texture(char *identifier)
 {
-    if (!ft_strcmp(identifier, "NO") && index == 0)
-        return (1);
-    else if (!ft_strcmp(identifier, "SO") && index == 1)
-        return (1);
-    else if (!ft_strcmp(identifier, "WE") && index == 2)
-        return (1);
-    else if (!ft_strcmp(identifier, "EA") && index == 3)
-        return (1);
-    else
-        return (0);
+    return (!ft_strcmp(identifier, "NO") ||
+            !ft_strcmp(identifier, "SO") ||
+            !ft_strcmp(identifier, "WE") ||
+            !ft_strcmp(identifier, "EA"));
 }
 
 void which_identifier(t_texture *texture, char *key)
@@ -100,13 +94,13 @@ int parse_color_value(char *str, t_color *color)
 
     split = ft_split(str, ",");
     if (!split)
-        return (-1);
+        return (0);
 
     size = ft_split_size(split);
     if (size != 3)
     {
         ft_free_split(split);
-        return (-1);
+        return (0);
     }
 
     color->red   = ft_atoi(split[0]);
@@ -118,54 +112,66 @@ int parse_color_value(char *str, t_color *color)
     if (!in_range(color->red, 0, 255) ||
         !in_range(color->green, 0, 255) ||
         !in_range(color->blue, 0, 255))
-        return (-1);
+        return (0);
 
-    return (0);
+    return (1);
 }
 
 int game_config(t_game *game, char **map)
 {
-    static int index = 0;
+    static int index;
 
     if (ft_split_size(map) != 2)
-        return 0;
+        return (0);
+    if (!ft_strcmp(map[0], "F"))
+    {
+        if (game->cfg.have_floor == 0)
+        {
+            if (!parse_color_value(map[1], &game->cfg.floor_color))
+                return (0);
+            game->cfg.have_floor = 1;
+            return (1);
+        }
+        else
+            return (print_err("Duplicate Floor"), 0);
+    }
+    else if (!ft_strcmp(map[0], "C"))
+    {
+        if (game->cfg.have_ceiling == 0)
+        {
+            if (!parse_color_value(map[1], &game->cfg.ceiling_color))
+                return (0);
+            game->cfg.have_ceiling = 1;
+            return (1);
+        }
+        else
+            return (print_err("Duplicate Ceiling"), 0);
+    }
+    else if (is_texture(map[0]))
+    {
+        t_texture tex = get_texture(map);
 
-    if (index >= 6)
-        return 0;
-
-    if (index < 4)
-    {
-        if (!is_texture(map[0], index))
-            return 0;
-        game->cfg.textures[index] = get_texture(map);
+        if (!ft_strcmp(map[0], "NO")) 
+            game->cfg.textures[0] = tex;
+        else if (!ft_strcmp(map[0], "SO"))
+            game->cfg.textures[1] = tex;
+        else if (!ft_strcmp(map[0], "WE")) 
+            game->cfg.textures[2] = tex;
+        else if (!ft_strcmp(map[0], "EA"))
+            game->cfg.textures[3] = tex;
+        else 
+        return 1;
     }
-    else if (index == 4)
-    {
-        if (ft_strcmp(map[0], "F") != 0)
-            return 0;
-        if (parse_color_value(map[1], &game->cfg.floor_color) < 0)
-            return 0;
-        game->cfg.have_floor = 1;
-    }
-    else if (index == 5)
-    {
-        if (ft_strcmp(map[0], "C") != 0)
-            return 0;
-        if (parse_color_value(map[1], &game->cfg.ceiling_color) < 0)
-            return 0;
-        game->cfg.have_ceiling = 1;
-    }
-    index++;
-    return 1;
+    else
+        return (print_err("wrong identifier"), 0);
 }
-
-
 
 t_game *game_info(int fd)
 {
     char *line;
     t_game *game;
-    
+    int element_index = 0;
+
     game = ft_calloc(1, sizeof(t_game));
     if (!game)
         return (print_err("Calloc"), NULL);
@@ -178,8 +184,7 @@ t_game *game_info(int fd)
             free(line);
             line = get_next_line(fd);
             continue;
-        }
-        
+        }        
         char **map = ft_split(line, " \t\n\v\f\r");
         if (!map)
         {
@@ -187,13 +192,15 @@ t_game *game_info(int fd)
             line = get_next_line(fd);
             continue;
         }
-        if (!game_config(game, map))
-            print_err("Invalid file: wrong identifier, order, or color value");
+        if (game_config(game, map))
+            element_index++;
         ft_free_split(map);
         free(line);
         line = get_next_line(fd);
     }
-    return game;
+    if (element_index != 6)
+        return (print_err("Invalide number of cfg element"), NULL);
+    return (game);
 }
 
 t_game *init_game(const char *file)
@@ -244,7 +251,6 @@ int main(int ac, char *av[])
                game->cfg.ceiling_color.green,
                game->cfg.ceiling_color.blue);
 
-    // Cleanup
     for (int i = 0; i < TEXTURE_COUNT; i++)
         if (game->cfg.textures[i].path)
             free(game->cfg.textures[i].path);
