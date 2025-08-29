@@ -151,15 +151,16 @@ int game_config(t_game *game, char **map)
     {
         t_texture tex = get_texture(map);
 
-        if (!ft_strcmp(map[0], "NO")) 
+        if (!ft_strcmp(map[0], "NO") && !game->cfg.textures[0].path) 
             game->cfg.textures[0] = tex;
-        else if (!ft_strcmp(map[0], "SO"))
+        else if (!ft_strcmp(map[0], "SO") && !game->cfg.textures[1].path)
             game->cfg.textures[1] = tex;
-        else if (!ft_strcmp(map[0], "WE")) 
+        else if (!ft_strcmp(map[0], "WE") && !game->cfg.textures[2].path) 
             game->cfg.textures[2] = tex;
-        else if (!ft_strcmp(map[0], "EA"))
+        else if (!ft_strcmp(map[0], "EA") && !game->cfg.textures[3].path)
             game->cfg.textures[3] = tex;
-        else 
+        else
+            return (print_err("Duplicate direction"), 0);
         return 1;
     }
     else

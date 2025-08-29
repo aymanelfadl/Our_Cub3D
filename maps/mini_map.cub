@@ -1,6 +1,9 @@
 NO ./textures/north.xpm
 C 225,30,0
-NO ./textures/north.xpm
+
+
+SOclear                    ./textures/west.xpm
+
 
 
 WE ./textures/west.xpm
