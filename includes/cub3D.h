@@ -11,7 +11,7 @@
 
 typedef enum e_direction
 {
-    NO,
+    NO = 0,
     SO,
     WE,
     EA
@@ -38,7 +38,6 @@ typedef struct s_img
 typedef struct s_texture {
     t_direction id;      
     char        *path;
-    t_img       image;
 } t_texture;
 
 typedef struct s_map {
