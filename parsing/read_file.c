@@ -1,6 +1,5 @@
 #include "cub3D.h"
 
-
 int ft_strcmp(const char *s1, const char *s2)
 {
     size_t i = 0;
@@ -90,7 +89,7 @@ int in_range(int n, int min, int max)
 int parse_color_value(char *str, t_color *color)
 {
     char **split;
-    int   size;
+    int size;
 
     split = ft_split(str, ",");
     if (!split)
@@ -103,9 +102,9 @@ int parse_color_value(char *str, t_color *color)
         return (0);
     }
 
-    color->red   = ft_atoi(split[0]);
+    color->red = ft_atoi(split[0]);
     color->green = ft_atoi(split[1]);
-    color->blue  = ft_atoi(split[2]);
+    color->blue = ft_atoi(split[2]);
 
     ft_free_split(split);
 
@@ -119,8 +118,6 @@ int parse_color_value(char *str, t_color *color)
 
 int game_config(t_game *game, char **map)
 {
-    static int index;
-
     if (ft_split_size(map) != 2)
         return (0);
     if (!ft_strcmp(map[0], "F"))
@@ -151,11 +148,11 @@ int game_config(t_game *game, char **map)
     {
         t_texture tex = get_texture(map);
 
-        if (!ft_strcmp(map[0], "NO") && !game->cfg.textures[0].path) 
+        if (!ft_strcmp(map[0], "NO") && !game->cfg.textures[0].path)
             game->cfg.textures[0] = tex;
         else if (!ft_strcmp(map[0], "SO") && !game->cfg.textures[1].path)
             game->cfg.textures[1] = tex;
-        else if (!ft_strcmp(map[0], "WE") && !game->cfg.textures[2].path) 
+        else if (!ft_strcmp(map[0], "WE") && !game->cfg.textures[2].path)
             game->cfg.textures[2] = tex;
         else if (!ft_strcmp(map[0], "EA") && !game->cfg.textures[3].path)
             game->cfg.textures[3] = tex;
@@ -167,16 +164,98 @@ int game_config(t_game *game, char **map)
         return (print_err("wrong identifier"), 0);
 }
 
-t_game *game_info(int fd)
+int *get_map_dimension(const char *file)
+{
+    int fd;
+    char *line;
+    int *dimension = malloc(sizeof(int) * 2);
+    if (!dimension)
+        return NULL;
+
+    dimension[0] = 0;
+    dimension[1] = 0;
+
+    fd = open(file, O_RDONLY);
+    if (fd < 0)
+        return (perror("Error\n"), free(dimension), NULL);
+
+    line = get_next_line(fd);
+    while (line)
+    {
+        if (line[0] == '1' || line[0] == '0' || line[0] == ' ')
+        {
+            int len = (int)ft_strlen(line);
+            if (dimension[0] < len)
+                dimension[0] = len;
+            dimension[1]++;
+        }
+        free(line);
+        line = get_next_line(fd);
+    }
+    close(fd);
+    return dimension;
+}
+
+char **create_map(int height, int width)
+{
+    char **map_grid;
+    int i;
+
+    map_grid = ft_calloc(height, sizeof(char *));
+    if (!map_grid)
+        return NULL;
+    i = 0;
+    while (i < height)
+    {
+        map_grid[i] = ft_calloc(width, sizeof(char));
+        if (!map_grid[i])
+        {
+            while (--i >= 0)
+                free(map_grid[i]);
+            free(map_grid);
+            return NULL;
+        }
+        i++;
+    }
+    return map_grid;
+}
+
+int map_info(int fd, t_game *game)
 {
     char *line;
-    t_game *game;
-    int element_index = 0;
+    int i = 0;
 
-    game = ft_calloc(1, sizeof(t_game));
-    if (!game)
-        return (print_err("Calloc"), NULL);
-    
+    game->cfg.map.grid = create_map(game->cfg.map.height, game->cfg.map.width);
+    if (!game->cfg.map.grid)
+        return (print_err("Map Calloc"), 0);
+
+    line = get_next_line(fd);
+    while (line && i < game->cfg.map.height)
+    {
+        int j = 0;
+        int len = ft_strlen(line);
+
+        while (j < game->cfg.map.width)
+        {
+            if (j < len && line[j] != '\0' && line[j] != '\n' && line[j] != ' ')
+                game->cfg.map.grid[i][j] = line[j];
+            else
+                game->cfg.map.grid[i][j] = 'X';
+            j++;
+        }
+        free(line);
+        line = get_next_line(fd);
+        i++;
+    }
+    return (1);
+}
+
+t_game *game_info(int fd, t_game *game)
+{
+    char *line;
+    int element_index;
+
+    element_index = 0;
     line = get_next_line(fd);
     while (line)
     {
@@ -185,7 +264,7 @@ t_game *game_info(int fd)
             free(line);
             line = get_next_line(fd);
             continue;
-        }        
+        }
         char **map = ft_split(line, " \t\n\v\f\r");
         if (!map)
         {
@@ -195,6 +274,14 @@ t_game *game_info(int fd)
         }
         if (game_config(game, map))
             element_index++;
+        if (element_index == 6)
+        {
+            ft_free_split(map);
+            free(line);
+            if (!map_info(fd, game))
+                return (print_err("Map"), NULL);
+            return (game);
+        }
         ft_free_split(map);
         free(line);
         line = get_next_line(fd);
@@ -208,16 +295,33 @@ t_game *init_game(const char *file)
 {
     t_game *game;
     int fd;
+    int *dimension;
 
     if (!check_extension(file))
         return (print_err("Not a valid extension"), NULL);
+
+    game = ft_calloc(1, sizeof(t_game));
+    if (!game)
+        return (print_err("Calloc"), NULL);
+
     fd = open(file, O_RDONLY);
     if (fd < 0)
         return (perror("Error\n"), NULL);
-    game = game_info(fd);
+
+    dimension = get_map_dimension(file);
+    if (dimension)
+    {
+        game->cfg.map.width = dimension[0];
+        game->cfg.map.height = dimension[1];
+        free(dimension);
+    }
+
+    game_info(fd, game);
     close(fd);
+
     if (!game)
         return (NULL);
+
     return game;
 }
 
@@ -235,29 +339,37 @@ int main(int ac, char *av[])
         fprintf(stderr, "Failed to parse config.\n");
         return 1;
     }
-    
+
     printf("Textures:\n");
     for (int i = 0; i < TEXTURE_COUNT; i++)
-        printf("  %d: id=%d path=%s\n", i, game->cfg.textures[i].id, game->cfg.textures[i].path);
-
+        printf(" %d: id=%d path=%s\n", i, game->cfg.textures[i].id, game->cfg.textures[i].path);
     if (game->cfg.have_floor)
-        printf("Floor color: R=%d G=%d B=%d\n",
-               game->cfg.floor_color.red,
-               game->cfg.floor_color.green,
-               game->cfg.floor_color.blue);
-
+        printf("Floor color: R=%d G=%d B=%d\n", game->cfg.floor_color.red, game->cfg.floor_color.green, game->cfg.floor_color.blue);
     if (game->cfg.have_ceiling)
-        printf("Ceiling color: R=%d G=%d B=%d\n",
-               game->cfg.ceiling_color.red,
-               game->cfg.ceiling_color.green,
-               game->cfg.ceiling_color.blue);
+        printf("Ceiling color: R=%d G=%d B=%d\n", game->cfg.ceiling_color.red, game->cfg.ceiling_color.green, game->cfg.ceiling_color.blue);
+    
+    printf("MAP:\n");
+    if (game->cfg.map.grid)
+    {
+        for (int i = 0; i < game->cfg.map.height; i++)
+        {
+            for (int j = 0; j < game->cfg.map.width; j++)
+                printf("%c", game->cfg.map.grid[i][j]);
+            printf("\n");
+        }
+    }
 
     for (int i = 0; i < TEXTURE_COUNT; i++)
         if (game->cfg.textures[i].path)
             free(game->cfg.textures[i].path);
-    
-    free(game);
 
+    if (game->cfg.map.grid)
+    {
+        for (int i = 0; i < game->cfg.map.height; i++)
+            free(game->cfg.map.grid[i]);
+        free(game->cfg.map.grid);
+    }
+
+    free(game);
     return 0;
 }
-

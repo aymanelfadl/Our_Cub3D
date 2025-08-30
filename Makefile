@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Iincludes/  #-Wall -Wextra -Werror 
+CFLAGS = -Iincludes/  -Wall -Wextra -Werror 
 
 # MLX_FLAGS = -lmlx -lXext -lX11 -lm -lbsd
 # LDFLAGS = -pie
