@@ -170,42 +170,47 @@ int *get_map_dimension(const char *file)
     char *line;
     int *dimension = malloc(sizeof(int) * 2);
     if (!dimension)
-        return NULL;
-
-    dimension[0] = 0;
-    dimension[1] = 0;
-
+    return NULL;
+    
+    dimension[0] = 0; // width
+    dimension[1] = 0; // height
+    
     fd = open(file, O_RDONLY);
     if (fd < 0)
         return (perror("Error\n"), free(dimension), NULL);
+    
+    int map_started = 0;
 
     line = get_next_line(fd);
     while (line)
     {
-        if (line[0] == '1' || line[0] == '0' || line[0] == ' ')
+        if (!map_started && (line[0] == '1' || line[0] == '0' || line[0] == ' '))
+            map_started = 1;
+
+        if (map_started)
         {
             int len = (int)ft_strlen(line);
             if (dimension[0] < len)
                 dimension[0] = len;
             dimension[1]++;
         }
+
         free(line);
         line = get_next_line(fd);
     }
+
     close(fd);
+    printf("H= %d\n W=%d\n", dimension[1], dimension[0]);
     return dimension;
 }
 
 char **create_map(int height, int width)
 {
-    char **map_grid;
-    int i;
-
-    map_grid = ft_calloc(height, sizeof(char *));
+    char **map_grid = ft_calloc(height, sizeof(char *));
     if (!map_grid)
         return NULL;
-    i = 0;
-    while (i < height)
+    int i = 0;
+    while(i < height)
     {
         map_grid[i] = ft_calloc(width, sizeof(char));
         if (!map_grid[i])
@@ -224,6 +229,7 @@ int map_info(int fd, t_game *game)
 {
     char *line;
     int i = 0;
+    int map_started = 0;
 
     game->cfg.map.grid = create_map(game->cfg.map.height, game->cfg.map.width);
     if (!game->cfg.map.grid)
@@ -232,22 +238,26 @@ int map_info(int fd, t_game *game)
     line = get_next_line(fd);
     while (line && i < game->cfg.map.height)
     {
-        int j = 0;
-        int len = ft_strlen(line);
-
-        while (j < game->cfg.map.width)
+        if (!map_started && (line[0] == '1' || line[0] == '0' || line[0] == ' '))
+            map_started = 1;
+        
+        if (map_started)
         {
-            if (j < len && line[j] != '\0' && line[j] != '\n' && line[j] != ' ')
-                game->cfg.map.grid[i][j] = line[j];
-            else
-                game->cfg.map.grid[i][j] = 'X';
-            j++;
+            int len = (int)ft_strlen(line);
+            for (int j = 0; j < game->cfg.map.width; j++)
+            {
+                if (j < len && line[j] != '\0' && line[j] != '\n')
+                    game->cfg.map.grid[i][j] = line[j];
+                else
+                    game->cfg.map.grid[i][j] = ' ';
+            }
+            i++;
         }
         free(line);
         line = get_next_line(fd);
-        i++;
     }
-    return (1);
+
+    return 1;
 }
 
 t_game *game_info(int fd, t_game *game)
