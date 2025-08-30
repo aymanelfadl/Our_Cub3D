@@ -170,10 +170,10 @@ int *get_map_dimension(const char *file)
     char *line;
     int *dimension = malloc(sizeof(int) * 2);
     if (!dimension)
-    return NULL;
+        return NULL;
     
-    dimension[0] = 0; // width
-    dimension[1] = 0; // height
+    dimension[0] = 0; // w
+    dimension[1] = 0; // h
     
     fd = open(file, O_RDONLY);
     if (fd < 0)
@@ -184,7 +184,7 @@ int *get_map_dimension(const char *file)
     line = get_next_line(fd);
     while (line)
     {
-        if (!map_started && (line[0] == '1' || line[0] == '0' || line[0] == ' '))
+        if (!map_started && (line[0] == '1' || line[0] == ' '))
             map_started = 1;
 
         if (map_started)
@@ -238,7 +238,7 @@ int map_info(int fd, t_game *game)
     line = get_next_line(fd);
     while (line && i < game->cfg.map.height)
     {
-        if (!map_started && (line[0] == '1' || line[0] == '0' || line[0] == ' '))
+        if (!map_started && (line[0] == '1' || line[0] == ' '))
             map_started = 1;
         
         if (map_started)
