@@ -1,5 +1,33 @@
 #include "cub3D.h"
 
+
+int ft_split_size(char **arr)
+{
+    int i = 0;
+    if (!arr)
+        return 0;
+    while (arr[i])
+        i++;
+    return i;
+}
+
+
+void debug_print_split(char **split, const char *original_line)
+{
+    printf("Original line: '%s'\n", original_line);
+    printf("Split size: %d\n", ft_split_size(split));
+    
+    if (!split) {
+        printf("Split is NULL\n");
+        return;
+    }
+    
+    for (int i = 0; split[i]; i++) {
+        printf("split[%d]: '%s' (length: %zu)\n", i, split[i], strlen(split[i]));
+    }
+    printf("===================\n\n");
+}
+
 int ft_strcmp(const char *s1, const char *s2)
 {
     size_t i = 0;
@@ -21,16 +49,6 @@ void ft_free_split(char **arr)
     for (int i = 0; arr[i]; i++)
         free(arr[i]);
     free(arr);
-}
-
-int ft_split_size(char **arr)
-{
-    int i = 0;
-    if (!arr)
-        return 0;
-    while (arr[i])
-        i++;
-    return i;
 }
 
 int check_extension(const char *file, const char *suffix)
@@ -80,11 +98,6 @@ int parse_color_value(char *str, t_color *color)
     char **split = ft_split(str, ",");
     if (!split)
         return 0;
-    if (ft_split_size(split) != 3)
-    {
-        ft_free_split(split);
-        return 0;
-    }
 
     color->red = ft_atoi(split[0]);
     color->green = ft_atoi(split[1]);
@@ -98,10 +111,7 @@ int parse_color_value(char *str, t_color *color)
 
 int game_config(t_game *game, char **map)
 {
-    if (ft_split_size(map) != 2)
-        return (print_err("Invalid cfg element format"), 0);
-
-    if (!ft_strcmp(map[0], "F"))
+    if (!ft_strcmp(map[0], "F") && ft_split_size(map) >= 2)
     {
         if (!game->cfg.have_floor)
         {
@@ -113,7 +123,7 @@ int game_config(t_game *game, char **map)
         else
             return print_err("Duplicate Floor"), 0;
     }
-    else if (!ft_strcmp(map[0], "C"))
+    else if (!ft_strcmp(map[0], "C") && ft_split_size(map) >= 2)
     {
         if (!game->cfg.have_ceiling)
         {
@@ -125,7 +135,7 @@ int game_config(t_game *game, char **map)
         else
             return print_err("Duplicate Ceiling"), 0;
     }
-    else if (is_texture(map[0]))
+    else if (is_texture(map[0]) && ft_split_size(map) == 2)
     {
         t_texture tex = get_texture(map);
         if (!ft_strcmp(map[0], "NO") && !game->cfg.textures[0].path)
@@ -173,13 +183,6 @@ int *get_map_dimension(const char *file)
                 dim[0] = len;
             dim[1]++;
         }
-        if (map_started && (!ft_strchr(line, '1') || !ft_strchr(line, '0')))
-        {
-            free(line);
-            close(fd);
-            print_err("no new lines in map");
-            return NULL;
-        }
         free(line);
         line = get_next_line(fd);
     }
@@ -207,6 +210,7 @@ char **allocate_map_grid(int width, int height)
             free(grid);
             return NULL;
         }
+        i++;
     }
     return grid;
 }
@@ -221,7 +225,6 @@ int game_map(t_game *game, int fd)
     char *line;
     int row = 0;
     int player_found = 0;
-    int i = 0;
     
     game->cfg.map.grid = allocate_map_grid(game->cfg.map.width, game->cfg.map.height);
     if (!game->cfg.map.grid)
@@ -230,6 +233,7 @@ int game_map(t_game *game, int fd)
     line = get_next_line(fd);
     while (line && row < game->cfg.map.height)
     {
+        int i = 0;
         int len = ft_strlen(line);
 
         if (line[len - 1] == '\n')
@@ -254,9 +258,12 @@ int game_map(t_game *game, int fd)
             game->cfg.map.grid[row][i] = c;
             i++;
         }
-        i = len;
+        
         while (i < game->cfg.map.width)
+        {
             game->cfg.map.grid[row][i] = 'X';
+            i++;
+        }
 
         free(line);
         row++;
@@ -266,7 +273,7 @@ int game_map(t_game *game, int fd)
     if (!player_found)
         print_err("No player found in map");
 
-    return 1;
+    return player_found;
 }
 
 t_game *game_info(int fd, t_game *game)
@@ -281,8 +288,9 @@ t_game *game_info(int fd, t_game *game)
             free(line);
             continue;
         }
-
+        
         char **split = ft_split(line, " \t\n\v\f\r");
+        debug_print_split(split, line);
         if (!split || ft_split_size(split) == 0)
         {
             ft_free_split(split);
