@@ -47,12 +47,9 @@ typedef struct s_map {
 } t_map;
 
 typedef struct s_player {
-    double x;
-    double y;
-    double dir_x;
-    double dir_y;
-    double plane_x;
-    double plane_y;
+    double pos_x;
+    double pos_y;
+    t_direction direction;
 } t_player;
 
 typedef struct s_config {
