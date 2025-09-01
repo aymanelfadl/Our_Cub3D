@@ -46,24 +46,23 @@ typedef struct s_map {
     char **grid;
 } t_map;
 
-// typedef struct s_player {
-//     double x;
-//     double y;
-//     double dir_x;
-//     double dir_y;
-//     double plane_x;
-//     double plane_y;
-// } t_player;
+typedef struct s_player {
+    double x;
+    double y;
+    double dir_x;
+    double dir_y;
+    double plane_x;
+    double plane_y;
+} t_player;
 
 typedef struct s_config {
     t_texture textures[TEXTURE_COUNT];
     t_color   floor_color;
     t_color   ceiling_color;
     t_map     map;
-    // t_player  player;
+    t_player  player;
     int       have_floor;
     int       have_ceiling;
-    int       player_set;
 } t_config;
 
 typedef struct s_game {
