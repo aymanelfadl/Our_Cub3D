@@ -111,7 +111,7 @@ int parse_color_value(char *str, t_color *color)
 
 int game_config(t_game *game, char **map)
 {
-    if (!ft_strcmp(map[0], "F") && ft_split_size(map) >= 2)
+    if (!ft_strcmp(map[0], "F"))
     {
         if (!game->cfg.have_floor)
         {
@@ -127,14 +127,14 @@ int game_config(t_game *game, char **map)
             if (!parse_color_value(color_str, &game->cfg.floor_color))
             {
                 free(color_str);
-                return 0;
+                print_err("invalide color");
             }
             free(color_str);
             game->cfg.have_floor = 1;
             return 1;
         }
         else
-            return print_err("Duplicate Floor"), 0;
+            print_err("Duplicate Floor");
     }
     else if (!ft_strcmp(map[0], "C"))
     {
@@ -152,14 +152,14 @@ int game_config(t_game *game, char **map)
             if (!parse_color_value(color_str, &game->cfg.ceiling_color))
             {
                 free(color_str);
-                return 0;
+                print_err("invalide color");
             }
             free(color_str);
             game->cfg.have_ceiling = 1;
             return 1;
         }
         else
-            return print_err("Duplicate Ceiling"), 0;
+            print_err("Duplicate Ceiling");
     }
     else if (is_texture(map[0]) && ft_split_size(map) == 2)
     {
@@ -173,11 +173,10 @@ int game_config(t_game *game, char **map)
         else if (!ft_strcmp(map[0], "EA") && !game->cfg.textures[3].path)
             game->cfg.textures[3] = tex;
         else
-            return (print_err("Duplicate direction"), 0);
+            print_err("Duplicate direction");
         return 1;
     }
-    else
-        return (print_err("Wrong identifier"), 0);
+    return (print_err("Wrong identifier"), 0);
 }
 
 
