@@ -96,7 +96,7 @@ int in_range(int n, int min, int max)
 int parse_color_value(char *str, t_color *color)
 {
     char **split = ft_split(str, ",");
-    if (!split)
+    if (!split && ft_split_size(split) != 3)
         return 0;
 
     color->red = ft_atoi(split[0]);
@@ -115,20 +115,46 @@ int game_config(t_game *game, char **map)
     {
         if (!game->cfg.have_floor)
         {
-            if (!parse_color_value(map[1], &game->cfg.floor_color))
+            int i = 2;
+            char *color_str = ft_strdup(map[1]);
+            while (map[i])
+            {
+                char *tmp = ft_strjoin(color_str, map[i]);
+                free(color_str);
+                color_str = tmp;
+                i++;
+            }
+            if (!parse_color_value(color_str, &game->cfg.floor_color))
+            {
+                free(color_str);
                 return 0;
+            }
+            free(color_str);
             game->cfg.have_floor = 1;
             return 1;
         }
         else
             return print_err("Duplicate Floor"), 0;
     }
-    else if (!ft_strcmp(map[0], "C") && ft_split_size(map) >= 2)
+    else if (!ft_strcmp(map[0], "C"))
     {
         if (!game->cfg.have_ceiling)
         {
-            if (!parse_color_value(map[1], &game->cfg.ceiling_color))
+            int i = 2;
+            char *color_str = ft_strdup(map[1]);
+            while (map[i])
+            {
+                char *tmp = ft_strjoin(color_str, map[i]);
+                free(color_str);
+                color_str = tmp;
+                i++;
+            }
+            if (!parse_color_value(color_str, &game->cfg.ceiling_color))
+            {
+                free(color_str);
                 return 0;
+            }
+            free(color_str);
             game->cfg.have_ceiling = 1;
             return 1;
         }
@@ -238,7 +264,7 @@ int game_map(t_game *game, int fd)
 
         if (line[len - 1] == '\n')
             len--;
-
+        
         while (i < len)
         {
             char c = line[i];
@@ -254,25 +280,19 @@ int game_map(t_game *game, int fd)
                 game->cfg.player.pos_y = row;
                 player_found = 1;
             }
-
             game->cfg.map.grid[row][i] = c;
             i++;
         }
-        
-        while (i < game->cfg.map.width)
-        {
-            game->cfg.map.grid[row][i] = 'X';
-            i++;
-        }
-
+        game->cfg.map.grid[row][i] = '\0';
         free(line);
+
         row++;
         line = get_next_line(fd);
     }
+    game->cfg.map.grid[row] = NULL;
 
     if (!player_found)
         print_err("No player found in map");
-
     return player_found;
 }
 
@@ -290,7 +310,6 @@ t_game *game_info(int fd, t_game *game)
         }
         
         char **split = ft_split(line, " \t\n\v\f\r");
-        debug_print_split(split, line);
         if (!split || ft_split_size(split) == 0)
         {
             ft_free_split(split);
@@ -309,7 +328,6 @@ t_game *game_info(int fd, t_game *game)
             free(line);
             break;
         }
-
         ft_free_split(split);
         free(line);
     }

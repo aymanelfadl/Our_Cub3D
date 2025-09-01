@@ -5,7 +5,6 @@ cub3D
 */*/*.o
 
 *.a
-maps/*
 
 context/*
 !context/.gitkeep
