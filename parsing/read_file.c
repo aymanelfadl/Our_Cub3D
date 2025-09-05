@@ -279,11 +279,18 @@ int is_valid_map_char(char c)
             c == 'N' || c == 'S' || c == 'E' || c == 'W');
 }
 
-// int game_map(t_game *game, char *line)
-// {
+int game_map(t_game *game, char *line)
+{
+    static int y;
 
-//     return 0;
-// }
+    if (ft_strchr(line, '1') || ft_strchr(line, '0'))
+    {
+        game->cfg.map.grid[y] = ft_strdup(line);
+        y++;
+    }
+    return 1;
+}
+
 
 t_game *game_info(int fd, t_game *game)
 {
@@ -299,17 +306,17 @@ t_game *game_info(int fd, t_game *game)
             line = get_next_line(fd);
             continue;
         }
-        // if (element_index == 6)
-        // {
-        //     if (!game_map(game, line))
-        //     {
-        //         free(line);
-        //         print_err("invalid map");
-        //     }
-        //     free(line);
-        //     line = get_next_line(fd);
-        //     continue;
-        // }
+        if (element_index == 6)
+        {
+            if (!game_map(game, line))
+            {
+                free(line);
+                print_err("something about the map");
+            }
+            free(line);
+            line = get_next_line(fd);
+            continue;
+        }
         char **split = ft_split(line, " \t\n\v\f\r");
         if (!split || ft_split_size(split) == 0)
         {
@@ -327,7 +334,6 @@ t_game *game_info(int fd, t_game *game)
             free(line);
             break;
         }
-
         ft_free_split(split);
         free(line);
         line = get_next_line(fd);
@@ -347,7 +353,7 @@ t_game *init_game(const char *file)
     t_game *game = ft_calloc(1, sizeof(t_game));
     if (!game)
         return print_err("Calloc failed"), NULL;
-
+    
     int fd = open(file, O_RDONLY);
     if (fd < 0)
     {
@@ -362,6 +368,10 @@ t_game *init_game(const char *file)
         game->cfg.map.height = dim[1];
         free(dim);
     }
+    game->cfg.map.grid = allocate_map_grid(game->cfg.map.width, game->cfg.map.height);
+    if (!game->cfg.map.grid)
+        return print_err("Map :Calloc failed"), NULL;
+    
     printf("h==> %d\nw==> %d\n", game->cfg.map.height, game->cfg.map.width);
     game_info(fd, game);
     close(fd);
@@ -396,7 +406,7 @@ int main(int ac, char *av[])
     {
         for (int i = 0; i < game->cfg.map.height; i++)
             if (game->cfg.map.grid[i])
-                printf("%s\n", game->cfg.map.grid[i]);
+                printf("%s", game->cfg.map.grid[i]);
 
         for (int i = 0; i < game->cfg.map.height; i++)
             if (game->cfg.map.grid[i])
