@@ -318,11 +318,14 @@ t_game *game_info(int fd, t_game *game)
             line = get_next_line(fd);
             continue;
         }
-
-        if (element_index < 6)
+        
+        if (game_config(game, split))
+            element_index++;
+        else
         {
-            if (game_config(game, split))
-                element_index++;
+            ft_free_split(split);
+            free(line);
+            break;
         }
 
         ft_free_split(split);
@@ -360,6 +363,7 @@ t_game *init_game(const char *file)
         free(dim);
     }
     printf("h==> %d\nw==> %d\n", game->cfg.map.height, game->cfg.map.width);
+    game_info(fd, game);
     close(fd);
     return game;
 }
