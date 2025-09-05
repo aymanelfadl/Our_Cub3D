@@ -293,7 +293,7 @@ int game_map(t_game *game, char *line)
 void normalize_map(t_game *game)
 {
     char **new_grid;
-    int y, x;
+    int y, x, map_started;
 
     new_grid = allocate_map_grid(game->cfg.map.height, game->cfg.map.width);
     if (!new_grid)
@@ -303,14 +303,23 @@ void normalize_map(t_game *game)
     while (y < game->cfg.map.height)
     {
         x = 0;
+        map_started = 0;
         while (x < game->cfg.map.width)
         {
-            if (x < (int)ft_strlen(game->cfg.map.grid[y]) &&
-                game->cfg.map.grid[y][x] != '\n' &&
-                game->cfg.map.grid[y][x] != '\0')
-                new_grid[y][x] = game->cfg.map.grid[y][x];
+            if (x < (int)ft_strlen(game->cfg.map.grid[y]) && game->cfg.map.grid[y][x] != '\n' && game->cfg.map.grid[y][x] != '\0')
+            {
+                if (game->cfg.map.grid[y][x] == '1' || game->cfg.map.grid[y][x] == '0')
+                    map_started = 1;
+                
+                if (game->cfg.map.grid[y][x] == ' ' && !map_started)
+                    new_grid[y][x] = ' ';
+                else if (game->cfg.map.grid[y][x] == ' ' && map_started)
+                    new_grid[y][x] = '0';
+                else
+                    new_grid[y][x] = game->cfg.map.grid[y][x];
+            }
             else
-                new_grid[y][x] = 'X';
+                new_grid[y][x] = ' ';
             x++;
         }
         new_grid[y][x] = '\0';
@@ -324,7 +333,7 @@ void normalize_map(t_game *game)
 int is_valid_map_char(char c)
 {
     return (c == '0' || c == '1' || c == ' ' ||
-            c == 'N' || c == 'S' || c == 'E' || c == 'W' || c == 'X');
+            c == 'N' || c == 'S' || c == 'E' || c == 'W');
 }
 
 int is_it_player(char c)
@@ -345,12 +354,12 @@ t_direction get_direction(char c)
 
 int dfs(t_map map, int y, int x, char **visited)
 {
-    if (y < 0 || x < 0 || y >= map.height || x >= map.width || map.grid[y][x] == ' ')
+    if (y < 0 || x < 0 || y >= map.height || x >= map.width || map.grid[y][x] == ' ' )
         return 0;
 
     if (map.grid[y][x] == '1' || visited[y][x] == '1')
         return 1;
-
+ 
     visited[y][x] = '1';
 
     if (!dfs(map, y - 1, x, visited))
@@ -506,69 +515,69 @@ t_game *init_game(const char *file)
     return game;
 }
 
-void my_mlx_pixel_put(t_img *img, int x, int y, int color)
-{
-    if (x < 0 || x >= WINDOW_WIDTH|| y < 0 || y >= WINDOW_HEIGHT)
-        return;
-    char *pixel = img->addr + (y * img->line_len + x * (img->bpp / 8));
-    *(unsigned int *)pixel = color;
-}
+// void my_mlx_pixel_put(t_img *img, int x, int y, int color)
+// {
+//     if (x < 0 || x >= WINDOW_WIDTH|| y < 0 || y >= WINDOW_HEIGHT)
+//         return;
+//     char *pixel = img->addr + (y * img->line_len + x * (img->bpp / 8));
+//     *(unsigned int *)pixel = color;
+// }
 
-void init_frame(t_game *game)
-{
-    game->frame.mlx_img = mlx_new_image (game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
-    game->frame.addr =  mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
-}
+// void init_frame(t_game *game)
+// {
+//     game->frame.mlx_img = mlx_new_image (game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+//     game->frame.addr =  mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
+// }
 
-void draw_tile(t_game *game, int start_x, int start_y, int size, int color)
-{
-    for (int y = 0; y < size; y++)
-    {
-        for (int x = 0; x < size; x++)
-            my_mlx_pixel_put(&game->frame, start_x + x, start_y + y, color);
-    }
-}
+// void draw_tile(t_game *game, int start_x, int start_y, int size, int color)
+// {
+//     for (int y = 0; y < size; y++)
+//     {
+//         for (int x = 0; x < size; x++)
+//             my_mlx_pixel_put(&game->frame, start_x + x, start_y + y, color);
+//     }
+// }
 
 
-void render(t_game *game)
-{
-    int tile_size;
-    int x, y;
+// void render(t_game *game)
+// {
+//     int tile_size;
+//     int x, y;
 
-    // Compute scale (minimap fits in window)
-    int scale_x = WINDOW_WIDTH / game->cfg.map.width;
-    int scale_y = WINDOW_HEIGHT / game->cfg.map.height;
-    tile_size = (scale_x < scale_y) ? scale_x : scale_y;
+//     // Compute scale (minimap fits in window)
+//     int scale_x = WINDOW_WIDTH / game->cfg.map.width;
+//     int scale_y = WINDOW_HEIGHT / game->cfg.map.height;
+//     tile_size = (scale_x < scale_y) ? scale_x : scale_y;
 
-    y = 0;
-    while (y < game->cfg.map.height)
-    {
-        x = 0;
-        while (x < game->cfg.map.width)
-        {
-            char cell = game->cfg.map.grid[y][x];
-            int color;
+//     y = 0;
+//     while (y < game->cfg.map.height)
+//     {
+//         x = 0;
+//         while (x < game->cfg.map.width)
+//         {
+//             char cell = game->cfg.map.grid[y][x];
+//             int color;
 
-            if (cell == '1')
-                color = 0x000000;
-            else if (cell == '0')
-                color = 0xFFFFFF;
-            else
-                color = 0x00FF00;
+//             if (cell == '1')
+//                 color = 0x000000;
+//             else if (cell == '0')
+//                 color = 0xFFFFFF;
+//             else
+//                 color = 0x00FF00;
 
-            draw_tile(game, x * tile_size, y * tile_size, tile_size, color);
-            x++;
-        }
-        y++;
-    }
+//             draw_tile(game, x * tile_size, y * tile_size, tile_size, color);
+//             x++;
+//         }
+//         y++;
+//     }
 
-    // Draw player in RED
-    int px = game->cfg.player.pos_x * tile_size;
-    int py = game->cfg.player.pos_y * tile_size;
-    draw_tile(game, px, py, tile_size, 0xFF0000);
+//     // Draw player in RED
+//     int px = game->cfg.player.pos_x * tile_size;
+//     int py = game->cfg.player.pos_y * tile_size;
+//     draw_tile(game, px, py, tile_size, 0xFF0000);
     
-    mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
-}
+//     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
+// }
 
 
 int main(int ac, char *av[])
@@ -619,14 +628,14 @@ int main(int ac, char *av[])
 
     // =================================================================== //
 
-    game->mlx = mlx_init();
-    game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D");
-    init_frame(game);
-    render(game);
+    // game->mlx = mlx_init();
+    // game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D");
+    // init_frame(game);
+    // render(game);
     
-    mlx_loop(game->mlx);
-    mlx_destroy_window(game->mlx, game->win);
-    mlx_destroy_display(game->mlx);
+    // mlx_loop(game->mlx);
+    // mlx_destroy_window(game->mlx, game->win);
+    // mlx_destroy_display(game->mlx);
 
     for (int i = 0; i < game->cfg.map.height; i++)
             if (game->cfg.map.grid[i])
