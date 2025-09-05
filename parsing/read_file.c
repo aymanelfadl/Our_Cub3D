@@ -249,7 +249,7 @@ int *get_map_dimension(const char *file)
     return dim;
 }
 
-char **allocate_map_grid(int width, int height)
+char **allocate_map_grid(int height)
 {
     int i;
     char **grid;
@@ -258,19 +258,6 @@ char **allocate_map_grid(int width, int height)
     grid = ft_calloc(height + 1, sizeof(char *));
     if (!grid)
         return NULL;
-
-    while (i < height)
-    {
-        grid[i] = ft_calloc(width + 1, sizeof(char));
-        if (!grid[i])
-        {
-            while (--i > -1)
-                free(grid[i]);
-            free(grid);
-            return NULL;
-        }
-        i++;
-    }
     return grid;
 }
 int is_valid_map_char(char c)
@@ -368,7 +355,7 @@ t_game *init_game(const char *file)
         game->cfg.map.height = dim[1];
         free(dim);
     }
-    game->cfg.map.grid = allocate_map_grid(game->cfg.map.width, game->cfg.map.height);
+    game->cfg.map.grid = allocate_map_grid(game->cfg.map.height);
     if (!game->cfg.map.grid)
         return print_err("Map :Calloc failed"), NULL;
     
