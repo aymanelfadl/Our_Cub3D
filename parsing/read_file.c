@@ -306,10 +306,10 @@ void normalize_map(t_game *game)
         while (x < game->cfg.map.width)
         {
             if (x < (int)ft_strlen(game->cfg.map.grid[y]) &&
-                   game->cfg.map.grid[y][x] != '\n' &&
-                   game->cfg.map.grid[y][x] != '\0')
+                game->cfg.map.grid[y][x] != '\n' &&
+                game->cfg.map.grid[y][x] != '\0')
                 new_grid[y][x] = game->cfg.map.grid[y][x];
-            else 
+            else
                 new_grid[y][x] = ' ';
             x++;
         }
@@ -343,6 +343,43 @@ t_direction get_direction(char c)
     return WE;
 }
 
+int dfs(t_map map, int y, int x, char **visited)
+{
+    if (y < 0 || x < 0 || y >= map.height || x >= map.width || map.grid[y][x] == ' ')
+        return 0;
+
+    if (map.grid[y][x] == '1' || visited[y][x] == '1')
+        return 1;
+
+    visited[y][x] = '1';
+
+    if (!dfs(map, y - 1, x, visited))
+        return 0;
+    if (!dfs(map, y + 1, x, visited))
+        return 0;
+    if (!dfs(map, y, x - 1, visited))
+        return 0;
+    if (!dfs(map, y, x + 1, visited))
+        return 0;
+
+    return 1;
+}
+
+int is_close_map(t_game *game)
+{
+    char **visited = allocate_map_grid(game->cfg.map.height, game->cfg.map.width);
+    if (!visited)
+        return perror("Error"), 0;
+
+    if (!dfs(game->cfg.map, game->cfg.player.pos_y, game->cfg.player.pos_x, visited))
+    {
+        ft_free_split(visited);
+        return 0;
+    }
+    ft_free_split(visited);
+    return 1;
+}
+
 int valid_map(t_game *game)
 {
     int y = 0;
@@ -374,7 +411,8 @@ int valid_map(t_game *game)
     }
     if (!p_found)
         print_err("no players ?");
-
+    if (!is_close_map(game))
+        print_err("MAP  should be closed");
     return 1;
 }
 
@@ -462,7 +500,7 @@ t_game *init_game(const char *file)
     close(fd);
 
     normalize_map(game);
-    if(!valid_map(game))
+    if (!valid_map(game))
         return NULL;
 
     return game;
@@ -520,7 +558,6 @@ int main(int ac, char *av[])
     else
         printf(" Direction: Unknown (%d)\n", game->cfg.player.direction);
 
-    
     free(game->cfg.map.grid);
     free(game);
 
