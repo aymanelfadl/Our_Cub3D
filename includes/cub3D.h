@@ -5,9 +5,13 @@
 #include "../libft/libft.h"
 
 #include <stdio.h>
+#include <mlx.h>
 
 #define TEXTURE_COUNT 4
 #define FOV_PLANE 0.66
+
+#define WINDOW_WIDTH 600
+#define WINDOW_HEIGHT 300
 
 typedef enum e_direction
 {
@@ -28,8 +32,6 @@ typedef struct s_img
 {
     void    *mlx_img;
     char    *addr;
-    int     width;       
-    int     height;
     int     bpp;         
     int     line_len;
     int     endian;
@@ -68,8 +70,6 @@ typedef struct s_game {
     void     *win;
     t_img    frame;
     t_config cfg;
-    int      win_w;
-    int      win_h;
 } t_game;
 
 

@@ -310,7 +310,7 @@ void normalize_map(t_game *game)
                 game->cfg.map.grid[y][x] != '\0')
                 new_grid[y][x] = game->cfg.map.grid[y][x];
             else
-                new_grid[y][x] = ' ';
+                new_grid[y][x] = 'X';
             x++;
         }
         new_grid[y][x] = '\0';
@@ -324,7 +324,7 @@ void normalize_map(t_game *game)
 int is_valid_map_char(char c)
 {
     return (c == '0' || c == '1' || c == ' ' ||
-            c == 'N' || c == 'S' || c == 'E' || c == 'W');
+            c == 'N' || c == 'S' || c == 'E' || c == 'W' || c == 'X');
 }
 
 int is_it_player(char c)
@@ -505,6 +505,72 @@ t_game *init_game(const char *file)
 
     return game;
 }
+
+void my_mlx_pixel_put(t_img *img, int x, int y, int color)
+{
+    if (x < 0 || x >= WINDOW_WIDTH|| y < 0 || y >= WINDOW_HEIGHT)
+        return;
+    char *pixel = img->addr + (y * img->line_len + x * (img->bpp / 8));
+    *(unsigned int *)pixel = color;
+}
+
+void init_frame(t_game *game)
+{
+    game->frame.mlx_img = mlx_new_image (game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+    game->frame.addr =  mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
+}
+
+void draw_tile(t_game *game, int start_x, int start_y, int size, int color)
+{
+    for (int y = 0; y < size; y++)
+    {
+        for (int x = 0; x < size; x++)
+            my_mlx_pixel_put(&game->frame, start_x + x, start_y + y, color);
+    }
+}
+
+
+void render(t_game *game)
+{
+    int tile_size;
+    int x, y;
+
+    // Compute scale (minimap fits in window)
+    int scale_x = WINDOW_WIDTH / game->cfg.map.width;
+    int scale_y = WINDOW_HEIGHT / game->cfg.map.height;
+    tile_size = (scale_x < scale_y) ? scale_x : scale_y;
+
+    y = 0;
+    while (y < game->cfg.map.height)
+    {
+        x = 0;
+        while (x < game->cfg.map.width)
+        {
+            char cell = game->cfg.map.grid[y][x];
+            int color;
+
+            if (cell == '1')
+                color = 0x000000;
+            else if (cell == '0')
+                color = 0xFFFFFF;
+            else
+                color = 0x00FF00;
+
+            draw_tile(game, x * tile_size, y * tile_size, tile_size, color);
+            x++;
+        }
+        y++;
+    }
+
+    // Draw player in RED
+    int px = game->cfg.player.pos_x * tile_size;
+    int py = game->cfg.player.pos_y * tile_size;
+    draw_tile(game, px, py, tile_size, 0xFF0000);
+    
+    mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
+}
+
+
 int main(int ac, char *av[])
 {
     if (ac != 2)
@@ -535,15 +601,8 @@ int main(int ac, char *av[])
         for (int i = 0; i < game->cfg.map.height; i++)
             if (game->cfg.map.grid[i])
                 printf("%s\n", game->cfg.map.grid[i]);
-
-        for (int i = 0; i < game->cfg.map.height; i++)
-            if (game->cfg.map.grid[i])
-                free(game->cfg.map.grid[i]);
     }
 
-    for (int i = 0; i < TEXTURE_COUNT; i++)
-        if (game->cfg.textures[i].path)
-            free(game->cfg.textures[i].path);
     printf("PLAYER:\n");
     printf(" Position: x=%d, y=%d\n", game->cfg.player.pos_x, game->cfg.player.pos_y);
 
@@ -557,6 +616,25 @@ int main(int ac, char *av[])
         printf(" Direction: East\n");
     else
         printf(" Direction: Unknown (%d)\n", game->cfg.player.direction);
+
+    // =================================================================== //
+
+    game->mlx = mlx_init();
+    game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D");
+    init_frame(game);
+    render(game);
+    
+    mlx_loop(game->mlx);
+    mlx_destroy_window(game->mlx, game->win);
+    mlx_destroy_display(game->mlx);
+
+    for (int i = 0; i < game->cfg.map.height; i++)
+            if (game->cfg.map.grid[i])
+                free(game->cfg.map.grid[i]);
+
+    for (int i = 0; i < TEXTURE_COUNT; i++)
+        if (game->cfg.textures[i].path)
+            free(game->cfg.textures[i].path);
 
     free(game->cfg.map.grid);
     free(game);

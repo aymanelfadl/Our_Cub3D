@@ -1,8 +1,8 @@
 CC = cc
+
 CFLAGS = -Iincludes/  -Wall -Wextra -Werror 
 
-# MLX_FLAGS = -lmlx -lXext -lX11 -lm -lbsd
-# LDFLAGS = -pie
+MLX_FLAGS = -lmlx -lXext -lX11 -lm -lbsd
 
 NAME = cub3D
 
@@ -20,7 +20,7 @@ OBJ = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT)
-	$(CC) $(LDFLAGS) $(OBJ)  $(LIBFT) $(MLX_FLAGS) -o $(NAME)
+	$(CC)  $(CFLAGS) $(OBJ)  $(LIBFT) $(MLX_FLAGS) -o $(NAME)
 
 $(LIBFT):
 	@make -C $(LIBFT_DIR)
