@@ -1,6 +1,5 @@
 #include "cub3D.h"
 
-
 int ft_split_size(char **arr)
 {
     int i = 0;
@@ -11,18 +10,19 @@ int ft_split_size(char **arr)
     return i;
 }
 
-
 void debug_print_split(char **split, const char *original_line)
 {
     printf("Original line: '%s'\n", original_line);
     printf("Split size: %d\n", ft_split_size(split));
-    
-    if (!split) {
+
+    if (!split)
+    {
         printf("Split is NULL\n");
         return;
     }
-    
-    for (int i = 0; split[i]; i++) {
+
+    for (int i = 0; split[i]; i++)
+    {
         printf("split[%d]: '%s' (length: %zu)\n", i, split[i], strlen(split[i]));
     }
     printf("===================\n\n");
@@ -84,7 +84,7 @@ t_texture get_texture(char **map)
     if (check_extension(map[1], ".xpm"))
         tex.path = ft_strdup(map[1]);
     else
-        return(print_err("Texture path"), tex);
+        return (print_err("Texture path"), tex);
     return tex;
 }
 
@@ -106,7 +106,6 @@ int wrap_ft_aoti(const char *str)
     }
     return (ft_atoi(str));
 }
-
 
 int parse_color_value(char *str, t_color *color)
 {
@@ -194,47 +193,67 @@ int game_config(t_game *game, char **map)
     return (print_err("Wrong identifier"), 0);
 }
 
+int is_config(char *str)
+{
+    if (ft_strnstr(str, "F", ft_strlen(str)) ||
+        ft_strnstr(str, "C", ft_strlen(str)) ||
+        ft_strnstr(str, "NO", ft_strlen(str)) ||
+        ft_strnstr(str, "SO", ft_strlen(str)) ||
+        ft_strnstr(str, "WE", ft_strlen(str)) ||
+        ft_strnstr(str, "EA", ft_strlen(str)))
+        return 0;
+    return 1;
+}
+
 
 int *get_map_dimension(const char *file)
 {
-    int fd = open(file, O_RDONLY);
-    if (fd < 0)
-    {
-        perror("Error");
-        return NULL;
-    }
+    int fd;
+    char *line;
+    int *dim;
 
-    int *dim = malloc(sizeof(int) * 2);
+    fd = open(file, O_RDONLY);
+    if (fd < 0)
+        return (perror("Error"), NULL);
+    dim = malloc(2 * sizeof(int));
+    if (!dim)
+        return (perror("Error"), NULL);
+
     dim[0] = 0; // width
     dim[1] = 0; // height
 
-    char *line = get_next_line(fd);
+    line = get_next_line(fd);
+    
     int map_started = 0;
+
     while (line)
     {
-        if (ft_strchr(line, '1') || ft_strchr(line, '0'))
-            map_started = 1;
-        if (map_started)
+        if (line[0] == '\n' || line[0] == '\0' || !is_config(line))
         {
-            int len = ft_strlen(line);
-            if (line[len - 1] == '\n')
-                len--;
-            if (dim[0] < len)
-                dim[0] = len;
+            free(line);
+            if (map_started)
+                print_err("the map content which always has to be the last && no new lines in side the map :)");
+            line = get_next_line(fd);
+            continue;
+        }
+        if (ft_strchr(line, '1') || ft_strchr(line, '0'))
+        {
+            map_started = 1;
+            if (dim[0] < (int)ft_strlen(line))
+            dim[0] = ft_strlen(line);
             dim[1]++;
         }
         free(line);
         line = get_next_line(fd);
     }
-    close(fd);
     return dim;
 }
 
 char **allocate_map_grid(int width, int height)
 {
-    int i;  
+    int i;
     char **grid;
-    
+
     i = 0;
     grid = ft_calloc(height + 1, sizeof(char *));
     if (!grid)
@@ -260,74 +279,43 @@ int is_valid_map_char(char c)
             c == 'N' || c == 'S' || c == 'E' || c == 'W');
 }
 
-int game_map(t_game *game, int fd)
-{
-    char *line;
-    int row = 0;
-    int player_found = 0;
-    
-    game->cfg.map.grid = allocate_map_grid(game->cfg.map.width, game->cfg.map.height);
-    if (!game->cfg.map.grid)
-        return 0;
+// int game_map(t_game *game, char *line)
+// {
 
-    line = get_next_line(fd);
-    while (line && row < game->cfg.map.height)
-    {
-        int i = 0;
-        int len = ft_strlen(line);
-
-        if (line[len - 1] == '\n')
-            len--;
-        
-        while (i < len)
-        {
-            char c = line[i];
-            if (!is_valid_map_char(c))
-                return (print_err("Invalid character in map"), 0);
-
-            if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
-            {
-                if (player_found)
-                    return (print_err("Multiple players in map"), 0);
-
-                game->cfg.player.pos_x = i;
-                game->cfg.player.pos_y = row;
-                player_found = 1;
-            }
-            game->cfg.map.grid[row][i] = c;
-            i++;
-        }
-        game->cfg.map.grid[row][i] = '\0';
-        free(line);
-
-        row++;
-        line = get_next_line(fd);
-    }
-    game->cfg.map.grid[row] = NULL;
-
-    if (!player_found)
-        print_err("No player found in map");
-    return player_found;
-}
+//     return 0;
+// }
 
 t_game *game_info(int fd, t_game *game)
 {
     char *line;
     int element_index = 0;
 
-    while ((line = get_next_line(fd)))
+    line = get_next_line(fd);
+    while (line)
     {
         if (line[0] == '\n' || line[0] == '\0')
         {
             free(line);
+            line = get_next_line(fd);
             continue;
         }
-        
+        // if (element_index == 6)
+        // {
+        //     if (!game_map(game, line))
+        //     {
+        //         free(line);
+        //         print_err("invalid map");
+        //     }
+        //     free(line);
+        //     line = get_next_line(fd);
+        //     continue;
+        // }
         char **split = ft_split(line, " \t\n\v\f\r");
         if (!split || ft_split_size(split) == 0)
         {
             ft_free_split(split);
             free(line);
+            line = get_next_line(fd);
             continue;
         }
 
@@ -336,21 +324,14 @@ t_game *game_info(int fd, t_game *game)
             if (game_config(game, split))
                 element_index++;
         }
-        else
-        {
-            ft_free_split(split);
-            free(line);
-            break;
-        }
+
         ft_free_split(split);
         free(line);
+        line = get_next_line(fd);
     }
 
     if (element_index != 6)
         return (print_err("Invalid cfg element count"), NULL);
-
-    if (!game_map(game, fd))
-        return (print_err("Invalid Map"), NULL);
 
     return game;
 }
@@ -378,10 +359,8 @@ t_game *init_game(const char *file)
         game->cfg.map.height = dim[1];
         free(dim);
     }
-
-    game_info(fd, game);
+    printf("h==> %d\nw==> %d\n", game->cfg.map.height, game->cfg.map.width);
     close(fd);
-    
     return game;
 }
 int main(int ac, char *av[])
@@ -414,7 +393,7 @@ int main(int ac, char *av[])
         for (int i = 0; i < game->cfg.map.height; i++)
             if (game->cfg.map.grid[i])
                 printf("%s\n", game->cfg.map.grid[i]);
-        
+
         for (int i = 0; i < game->cfg.map.height; i++)
             if (game->cfg.map.grid[i])
                 free(game->cfg.map.grid[i]);
