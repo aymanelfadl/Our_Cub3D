@@ -205,7 +205,6 @@ int is_config(char *str)
     return 1;
 }
 
-
 int *get_map_dimension(const char *file)
 {
     int fd;
@@ -223,7 +222,7 @@ int *get_map_dimension(const char *file)
     dim[1] = 0; // height
 
     line = get_next_line(fd);
-    
+
     int map_started = 0;
 
     while (line)
@@ -240,7 +239,7 @@ int *get_map_dimension(const char *file)
         {
             map_started = 1;
             if (dim[0] < (int)ft_strlen(line))
-            dim[0] = ft_strlen(line);
+                dim[0] = ft_strlen(line);
             dim[1]++;
         }
         free(line);
@@ -279,12 +278,6 @@ char **allocate_map_grid(int height, int width)
     return grid;
 }
 
-int is_valid_map_char(char c)
-{
-    return (c == '0' || c == '1' || c == ' ' ||
-            c == 'N' || c == 'S' || c == 'E' || c == 'W');
-}
-
 int game_map(t_game *game, char *line)
 {
     static int y;
@@ -299,31 +292,90 @@ int game_map(t_game *game, char *line)
 
 void normalize_map(t_game *game)
 {
-    t_map norm_map;
+    char **new_grid;
+    int y, x;
 
-    norm_map.grid = allocate_map_grid(game->cfg.map.width, game->cfg.map.height);
-    if (!norm_map.grid)
+    new_grid = allocate_map_grid(game->cfg.map.height, game->cfg.map.width);
+    if (!new_grid)
         print_err("Failed to allocate normalized map");
 
-    for (int y = 0; y < game->cfg.map.height; y++)
+    y = 0;
+    while (y < game->cfg.map.height)
     {
-        int x = 0;
-        while (x < game->cfg.map.width && game->cfg.map.grid[y][x] != '\n' && game->cfg.map.grid[y][x] != '\0')
-        {
-            norm_map.grid[y][x] = game->cfg.map.grid[y][x];
-            x++;
-        }
-
+        x = 0;
         while (x < game->cfg.map.width)
         {
-            norm_map.grid[y][x] = ' ';
+            if (x < (int)ft_strlen(game->cfg.map.grid[y]) &&
+                   game->cfg.map.grid[y][x] != '\n' &&
+                   game->cfg.map.grid[y][x] != '\0')
+                new_grid[y][x] = game->cfg.map.grid[y][x];
+            else 
+                new_grid[y][x] = ' ';
             x++;
         }
-        norm_map.grid[y][x] = '\0';
+        new_grid[y][x] = '\0';
+        y++;
     }
 
     ft_free_split(game->cfg.map.grid);
-    game->cfg.map.grid = norm_map.grid;
+    game->cfg.map.grid = new_grid;
+}
+
+int is_valid_map_char(char c)
+{
+    return (c == '0' || c == '1' || c == ' ' ||
+            c == 'N' || c == 'S' || c == 'E' || c == 'W');
+}
+
+int is_it_player(char c)
+{
+    return (c == 'N' || c == 'S' || c == 'E' || c == 'W');
+}
+
+t_direction get_direction(char c)
+{
+    if (!ft_strcmp("N", &c))
+        return NO;
+    else if (!ft_strcmp("S", &c))
+        return SO;
+    else if (!ft_strcmp("E", &c))
+        return EA;
+    return WE;
+}
+
+int valid_map(t_game *game)
+{
+    int y = 0;
+    int x;
+    int p_found = 0;
+
+    while (y < game->cfg.map.height)
+    {
+        x = 0;
+        while (x < game->cfg.map.width)
+        {
+            if (is_valid_map_char(game->cfg.map.grid[y][x]))
+            {
+                if (is_it_player(game->cfg.map.grid[y][x]))
+                {
+                    if (p_found)
+                        print_err("Duplicate Players");
+                    game->cfg.player.pos_x = x;
+                    game->cfg.player.pos_y = y;
+                    game->cfg.player.direction = get_direction(game->cfg.map.grid[y][x]);
+                    p_found = 1;
+                }
+            }
+            else
+                print_err("no part of map IDs");
+            x++;
+        }
+        y++;
+    }
+    if (!p_found)
+        print_err("no players ?");
+    if ()
+    return 1;
 }
 
 void game_info(int fd, t_game *game)
@@ -359,7 +411,7 @@ void game_info(int fd, t_game *game)
             line = get_next_line(fd);
             continue;
         }
-        
+
         if (game_config(game, split))
             element_index++;
         else
@@ -384,7 +436,7 @@ t_game *init_game(const char *file)
     t_game *game = ft_calloc(1, sizeof(t_game));
     if (!game)
         return print_err("Calloc failed"), NULL;
-    
+
     int fd = open(file, O_RDONLY);
     if (fd < 0)
     {
@@ -410,9 +462,9 @@ t_game *init_game(const char *file)
     close(fd);
 
     normalize_map(game);
-    // if(!valid_map(game))
-    //     return NULL;
-    
+    if(!valid_map(game))
+        return NULL;
+
     return game;
 }
 int main(int ac, char *av[])
@@ -454,6 +506,21 @@ int main(int ac, char *av[])
     for (int i = 0; i < TEXTURE_COUNT; i++)
         if (game->cfg.textures[i].path)
             free(game->cfg.textures[i].path);
+    printf("PLAYER:\n");
+    printf(" Position: x=%d, y=%d\n", game->cfg.player.pos_x, game->cfg.player.pos_y);
+
+    if (game->cfg.player.direction == NO)
+        printf(" Direction: North\n");
+    else if (game->cfg.player.direction == SO)
+        printf(" Direction: South\n");
+    else if (game->cfg.player.direction == WE)
+        printf(" Direction: West\n");
+    else if (game->cfg.player.direction == EA)
+        printf(" Direction: East\n");
+    else
+        printf(" Direction: Unknown (%d)\n", game->cfg.player.direction);
+
+    
     free(game->cfg.map.grid);
     free(game);
 
