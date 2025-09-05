@@ -93,15 +93,30 @@ int in_range(int n, int min, int max)
     return n >= min && n <= max;
 }
 
+int wrap_ft_aoti(const char *str)
+{
+    int i;
+
+    i = 0;
+    while (str[i])
+    {
+        if (!ft_isdigit(str[i]))
+            return -1;
+        i++;
+    }
+    return (ft_atoi(str));
+}
+
+
 int parse_color_value(char *str, t_color *color)
 {
     char **split = ft_split(str, ",");
-    if (!split && ft_split_size(split) != 3)
+    if (!split || ft_split_size(split) != 3)
         return 0;
 
-    color->red = ft_atoi(split[0]);
-    color->green = ft_atoi(split[1]);
-    color->blue = ft_atoi(split[2]);
+    color->red = wrap_ft_aoti(split[0]);
+    color->green = wrap_ft_aoti(split[1]);
+    color->blue = wrap_ft_aoti(split[2]);
     ft_free_split(split);
 
     return in_range(color->red, 0, 255) &&
@@ -217,7 +232,7 @@ int *get_map_dimension(const char *file)
 
 char **allocate_map_grid(int width, int height)
 {
-    int i;
+    int i;  
     char **grid;
     
     i = 0;
