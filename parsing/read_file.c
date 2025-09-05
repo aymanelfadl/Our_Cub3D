@@ -374,7 +374,7 @@ int valid_map(t_game *game)
     }
     if (!p_found)
         print_err("no players ?");
-    if ()
+
     return 1;
 }
 
