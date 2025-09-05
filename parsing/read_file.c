@@ -249,7 +249,7 @@ int *get_map_dimension(const char *file)
     return dim;
 }
 
-char **allocate_map_grid(int height)
+char **allocate_map_grid(int height, int width)
 {
     int i;
     char **grid;
@@ -258,8 +258,27 @@ char **allocate_map_grid(int height)
     grid = ft_calloc(height + 1, sizeof(char *));
     if (!grid)
         return NULL;
+    if (width > 0)
+    {
+        while (i < height)
+        {
+            grid[i] = ft_calloc(width + 1, sizeof(char));
+            if (!grid[i])
+            {
+                while (i >= 0)
+                {
+                    free(grid[i]);
+                    i--;
+                }
+                free(grid);
+                return NULL;
+            }
+            i++;
+        }
+    }
     return grid;
 }
+
 int is_valid_map_char(char c)
 {
     return (c == '0' || c == '1' || c == ' ' ||
@@ -278,8 +297,36 @@ int game_map(t_game *game, char *line)
     return 1;
 }
 
+void normalize_map(t_game *game)
+{
+    t_map norm_map;
 
-t_game *game_info(int fd, t_game *game)
+    norm_map.grid = allocate_map_grid(game->cfg.map.width, game->cfg.map.height);
+    if (!norm_map.grid)
+        print_err("Failed to allocate normalized map");
+
+    for (int y = 0; y < game->cfg.map.height; y++)
+    {
+        int x = 0;
+        while (x < game->cfg.map.width && game->cfg.map.grid[y][x] != '\n' && game->cfg.map.grid[y][x] != '\0')
+        {
+            norm_map.grid[y][x] = game->cfg.map.grid[y][x];
+            x++;
+        }
+
+        while (x < game->cfg.map.width)
+        {
+            norm_map.grid[y][x] = ' ';
+            x++;
+        }
+        norm_map.grid[y][x] = '\0';
+    }
+
+    ft_free_split(game->cfg.map.grid);
+    game->cfg.map.grid = norm_map.grid;
+}
+
+void game_info(int fd, t_game *game)
 {
     char *line;
     int element_index = 0;
@@ -325,11 +372,8 @@ t_game *game_info(int fd, t_game *game)
         free(line);
         line = get_next_line(fd);
     }
-
     if (element_index != 6)
-        return (print_err("Invalid cfg element count"), NULL);
-
-    return game;
+        print_err("Invalid cfg element count");
 }
 
 t_game *init_game(const char *file)
@@ -355,13 +399,20 @@ t_game *init_game(const char *file)
         game->cfg.map.height = dim[1];
         free(dim);
     }
-    game->cfg.map.grid = allocate_map_grid(game->cfg.map.height);
+    game->cfg.map.grid = allocate_map_grid(game->cfg.map.height, -1);
     if (!game->cfg.map.grid)
-        return print_err("Map :Calloc failed"), NULL;
-    
+        print_err("Map :Calloc failed");
+
     printf("h==> %d\nw==> %d\n", game->cfg.map.height, game->cfg.map.width);
     game_info(fd, game);
+    if (!game)
+        return NULL;
     close(fd);
+
+    normalize_map(game);
+    // if(!valid_map(game))
+    //     return NULL;
+    
     return game;
 }
 int main(int ac, char *av[])
@@ -393,7 +444,7 @@ int main(int ac, char *av[])
     {
         for (int i = 0; i < game->cfg.map.height; i++)
             if (game->cfg.map.grid[i])
-                printf("%s", game->cfg.map.grid[i]);
+                printf("%s\n", game->cfg.map.grid[i]);
 
         for (int i = 0; i < game->cfg.map.height; i++)
             if (game->cfg.map.grid[i])

@@ -52,7 +52,8 @@ typedef struct s_player {
     t_direction direction;
 } t_player;
 
-typedef struct s_config {
+typedef struct s_config
+{
     t_texture textures[TEXTURE_COUNT];
     t_color   floor_color;
     t_color   ceiling_color;
