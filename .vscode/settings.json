@@ -2,6 +2,8 @@
     "files.associations": {
         "*.css": "tailwindcss",
         "libft.h": "c",
-        "cub3d.h": "c"
+        "cub3d.h": "c",
+        "stdio.h": "c",
+        "mlx.h": "c"
     }
 }

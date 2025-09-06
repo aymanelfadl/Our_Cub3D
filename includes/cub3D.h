@@ -10,8 +10,8 @@
 #define TEXTURE_COUNT 4
 #define FOV_PLANE 0.66
 
-#define WINDOW_WIDTH 600
-#define WINDOW_HEIGHT 300
+#define WINDOW_WIDTH 1000
+#define WINDOW_HEIGHT 1000
 
 typedef enum e_direction
 {
@@ -71,6 +71,33 @@ typedef struct s_game {
     t_img    frame;
     t_config cfg;
 } t_game;
+
+
+// Textures
+int is_texture(char *id);
+void which_identifier(t_texture *tex, char *key);
+t_texture get_texture(char **map);
+int game_config(t_game *game, char **map);
+
+// Colors
+char *merge_map_colors(char **map);
+int parse_color_value(char *str, t_color *color);
+void get_color_pointers(t_game *game, int is_floor, int **flag, t_color **color);
+void parse_apply_color(t_color *color, char **map);
+int handle_color(t_game *game, char **map, int is_floor);
+int in_range(int n, int min, int max);
+
+// Utils
+int ft_split_size(char **arr);
+int ft_strcmp(const char *s1, const char *s2);
+int wrap_ft_aoti(const char *str);
+char **allocate_map_grid(int height, int width);
+void print_err(const char *msg);
+void ft_free_split(char **arr);
+int check_extension(const char *file, const char *suffix);
+void check_duplicate(int *flag, int is_floor);
+
+
 
 
 #endif 

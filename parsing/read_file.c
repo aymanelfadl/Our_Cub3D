@@ -1,14 +1,6 @@
 #include "cub3D.h"
 
-int ft_split_size(char **arr)
-{
-    int i = 0;
-    if (!arr)
-        return 0;
-    while (arr[i])
-        i++;
-    return i;
-}
+
 
 void debug_print_split(char **split, const char *original_line)
 {
@@ -28,169 +20,12 @@ void debug_print_split(char **split, const char *original_line)
     printf("===================\n\n");
 }
 
-int ft_strcmp(const char *s1, const char *s2)
-{
-    size_t i = 0;
-    while (s1[i] && s2[i] && s1[i] == s2[i])
-        i++;
-    return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-}
-
-void print_err(const char *msg)
-{
-    printf("Error\n%s\n", msg);
-    exit(EXIT_FAILURE);
-}
-
-void ft_free_split(char **arr)
-{
-    if (!arr)
-        return;
-    for (int i = 0; arr[i]; i++)
-        free(arr[i]);
-    free(arr);
-}
-
 int check_extension(const char *file, const char *suffix)
 {
     int len = ft_strlen(file);
     if (len < (int)ft_strlen(suffix))
         return 0;
     return (ft_strcmp(file + len - ft_strlen(suffix), suffix) == 0);
-}
-
-int is_texture(char *id)
-{
-    return (!ft_strcmp(id, "NO") || !ft_strcmp(id, "SO") ||
-            !ft_strcmp(id, "WE") || !ft_strcmp(id, "EA"));
-}
-
-void which_identifier(t_texture *tex, char *key)
-{
-    if (!ft_strcmp(key, "NO"))
-        tex->id = NO;
-    else if (!ft_strcmp(key, "SO"))
-        tex->id = SO;
-    else if (!ft_strcmp(key, "WE"))
-        tex->id = WE;
-    else if (!ft_strcmp(key, "EA"))
-        tex->id = EA;
-}
-
-t_texture get_texture(char **map)
-{
-    t_texture tex;
-    which_identifier(&tex, map[0]);
-    if (check_extension(map[1], ".xpm"))
-        tex.path = ft_strdup(map[1]);
-    else
-        return (print_err("Texture path"), tex);
-    return tex;
-}
-
-int in_range(int n, int min, int max)
-{
-    return n >= min && n <= max;
-}
-
-int wrap_ft_aoti(const char *str)
-{
-    int i;
-
-    i = 0;
-    while (str[i])
-    {
-        if (!ft_isdigit(str[i]))
-            return -1;
-        i++;
-    }
-    return (ft_atoi(str));
-}
-
-int parse_color_value(char *str, t_color *color)
-{
-    char **split = ft_split(str, ",");
-    if (!split || ft_split_size(split) != 3)
-        return 0;
-
-    color->red = wrap_ft_aoti(split[0]);
-    color->green = wrap_ft_aoti(split[1]);
-    color->blue = wrap_ft_aoti(split[2]);
-    ft_free_split(split);
-
-    return in_range(color->red, 0, 255) &&
-           in_range(color->green, 0, 255) &&
-           in_range(color->blue, 0, 255);
-}
-
-int game_config(t_game *game, char **map)
-{
-    if (!ft_strcmp(map[0], "F"))
-    {
-        if (!game->cfg.have_floor)
-        {
-            int i = 2;
-            char *color_str = ft_strdup(map[1]);
-            while (map[i])
-            {
-                char *tmp = ft_strjoin(color_str, map[i]);
-                free(color_str);
-                color_str = tmp;
-                i++;
-            }
-            if (!parse_color_value(color_str, &game->cfg.floor_color))
-            {
-                free(color_str);
-                print_err("invalide color");
-            }
-            free(color_str);
-            game->cfg.have_floor = 1;
-            return 1;
-        }
-        else
-            print_err("Duplicate Floor");
-    }
-    else if (!ft_strcmp(map[0], "C"))
-    {
-        if (!game->cfg.have_ceiling)
-        {
-            int i = 2;
-            char *color_str = ft_strdup(map[1]);
-            while (map[i])
-            {
-                char *tmp = ft_strjoin(color_str, map[i]);
-                free(color_str);
-                color_str = tmp;
-                i++;
-            }
-            if (!parse_color_value(color_str, &game->cfg.ceiling_color))
-            {
-                free(color_str);
-                print_err("invalide color");
-            }
-            free(color_str);
-            game->cfg.have_ceiling = 1;
-            return 1;
-        }
-        else
-            print_err("Duplicate Ceiling");
-    }
-    else if (is_texture(map[0]) && ft_split_size(map) == 2)
-    {
-        t_texture tex = get_texture(map);
-        if (!ft_strcmp(map[0], "NO") && !game->cfg.textures[0].path)
-            game->cfg.textures[0] = tex;
-        else if (!ft_strcmp(map[0], "SO") && !game->cfg.textures[1].path)
-            game->cfg.textures[1] = tex;
-        else if (!ft_strcmp(map[0], "WE") && !game->cfg.textures[2].path)
-            game->cfg.textures[2] = tex;
-        else if (!ft_strcmp(map[0], "EA") && !game->cfg.textures[3].path)
-            game->cfg.textures[3] = tex;
-        else
-            print_err("Duplicate direction");
-        return 1;
-    }
-    return (print_err("Wrong identifier"), 0);
 }
 
 int is_config(char *str)
@@ -248,35 +83,6 @@ int *get_map_dimension(const char *file)
     return dim;
 }
 
-char **allocate_map_grid(int height, int width)
-{
-    int i;
-    char **grid;
-
-    i = 0;
-    grid = ft_calloc(height + 1, sizeof(char *));
-    if (!grid)
-        return NULL;
-    if (width > 0)
-    {
-        while (i < height)
-        {
-            grid[i] = ft_calloc(width + 1, sizeof(char));
-            if (!grid[i])
-            {
-                while (i >= 0)
-                {
-                    free(grid[i]);
-                    i--;
-                }
-                free(grid);
-                return NULL;
-            }
-            i++;
-        }
-    }
-    return grid;
-}
 
 int game_map(t_game *game, char *line)
 {
@@ -515,70 +321,104 @@ t_game *init_game(const char *file)
     return game;
 }
 
-// void my_mlx_pixel_put(t_img *img, int x, int y, int color)
-// {
-//     if (x < 0 || x >= WINDOW_WIDTH|| y < 0 || y >= WINDOW_HEIGHT)
-//         return;
-//     char *pixel = img->addr + (y * img->line_len + x * (img->bpp / 8));
-//     *(unsigned int *)pixel = color;
-// }
+void my_mlx_pixel_put(t_img *img, int x, int y, int color)
+{
+    if (x < 0 || x >= WINDOW_WIDTH|| y < 0 || y >= WINDOW_HEIGHT)
+        return;
+    char *pixel = img->addr + (y * img->line_len + x * (img->bpp / 8));
+    *(unsigned int *)pixel = color;
+}
 
-// void init_frame(t_game *game)
-// {
-//     game->frame.mlx_img = mlx_new_image (game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
-//     game->frame.addr =  mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
-// }
+void init_frame(t_game *game)
+{
+    game->frame.mlx_img = mlx_new_image (game->mlx, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+    game->frame.addr =  mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
+}
 
-// void draw_tile(t_game *game, int start_x, int start_y, int size, int color)
-// {
-//     for (int y = 0; y < size; y++)
-//     {
-//         for (int x = 0; x < size; x++)
-//             my_mlx_pixel_put(&game->frame, start_x + x, start_y + y, color);
-//     }
-// }
+int get_scale(int map_w, int map_h, int full_map)
+{
+    int scale_x, scale_y, scale;
+    int max_w, max_h;
+
+    if (full_map)
+    {
+        scale_x = WINDOW_WIDTH / map_w;
+        scale_y = WINDOW_HEIGHT / map_h;
+        
+        if (scale_x < scale_y)
+            scale = scale_x;
+        else
+            scale = scale_y;
+
+        printf("map scale is :: %d\n", scale); 
+    }
+    else
+    {
+        max_w = WINDOW_WIDTH / 4;
+        max_h = WINDOW_HEIGHT / 4;
+        scale_x = max_w / map_w;
+        scale_y = max_h / map_h;
+        
+        if (scale_x < scale_y)
+            scale = scale_x;
+        else
+            scale = scale_y;
+        
+        if (scale < 2)
+            scale = 2; 
+        
+        printf("mini map scale is :: %d\n", scale); 
+    }
+
+    return scale;
+}
+
+void draw_tile(t_game *game, int pixel_x, int pixel_y, int scale, int color)
+{
+    int y = 0, x;
+    while (y < scale)
+    {
+        x = 0;
+        while (x < scale)
+        {
+            my_mlx_pixel_put(&game->frame, pixel_x + x, pixel_y + y, color);
+            x++;
+        }
+        y++;
+    }
+}
 
 
-// void render(t_game *game)
-// {
-//     int tile_size;
-//     int x, y;
+void render(t_game *game)
+{
+    int scale = get_scale(game->cfg.map.width, game->cfg.map.height, 0);
 
-//     // Compute scale (minimap fits in window)
-//     int scale_x = WINDOW_WIDTH / game->cfg.map.width;
-//     int scale_y = WINDOW_HEIGHT / game->cfg.map.height;
-//     tile_size = (scale_x < scale_y) ? scale_x : scale_y;
+    int y = 0, x = 0;
 
-//     y = 0;
-//     while (y < game->cfg.map.height)
-//     {
-//         x = 0;
-//         while (x < game->cfg.map.width)
-//         {
-//             char cell = game->cfg.map.grid[y][x];
-//             int color;
+    while (y < game->cfg.map.height)
+    {
+        x = 0;
+        while (x < game->cfg.map.width)
+        {
+            char cell = game->cfg.map.grid[y][x];
+            int color;
 
-//             if (cell == '1')
-//                 color = 0x000000;
-//             else if (cell == '0')
-//                 color = 0xFFFFFF;
-//             else
-//                 color = 0x00FF00;
-
-//             draw_tile(game, x * tile_size, y * tile_size, tile_size, color);
-//             x++;
-//         }
-//         y++;
-//     }
-
-//     // Draw player in RED
-//     int px = game->cfg.player.pos_x * tile_size;
-//     int py = game->cfg.player.pos_y * tile_size;
-//     draw_tile(game, px, py, tile_size, 0xFF0000);
-    
-//     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
-// }
-
+            if (is_it_player(cell))
+                color = 0xFF0000;
+            else if (cell == '0') 
+                color = 0xFFFFFF;
+            else
+                color = 0x00FF00;
+            
+            int p_x = x * scale;
+            int p_y = y * scale;
+            draw_tile(game, p_x, p_y, scale, color);
+            x++;   
+        }
+        y++;
+    }
+    mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
+}
 
 int main(int ac, char *av[])
 {
@@ -628,14 +468,14 @@ int main(int ac, char *av[])
 
     // =================================================================== //
 
-    // game->mlx = mlx_init();
-    // game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D");
-    // init_frame(game);
-    // render(game);
+    game->mlx = mlx_init();
+    game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D");
+    init_frame(game);
+    render(game);
     
-    // mlx_loop(game->mlx);
-    // mlx_destroy_window(game->mlx, game->win);
-    // mlx_destroy_display(game->mlx);
+    mlx_loop(game->mlx);
+    mlx_destroy_window(game->mlx, game->win);
+    mlx_destroy_display(game->mlx);
 
     for (int i = 0; i < game->cfg.map.height; i++)
             if (game->cfg.map.grid[i])
