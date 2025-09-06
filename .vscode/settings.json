@@ -5,5 +5,8 @@
         "cub3d.h": "c",
         "stdio.h": "c",
         "mlx.h": "c"
-    }
+    },
+    "[c]": {
+        "editor.defaultFormatter": "keyhr.42-c-format"
+    },
 }

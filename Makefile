@@ -13,9 +13,12 @@ LIBFT = $(LIBFT_DIR)/libft.a
 
 PARSING = parsing/read_file.c parsing/parse_color.c \
 		  parsing/parse_texture.c parsing/clean_up.c \
+		  parsing/normalize_map.c parsing/parse_map.c \
+		  parsing/validate_map.c parsing/init_parsing.c \
 		  parsing/utils.c parsing/utils1.c
 
-SRC = $(PARSING) 
+
+SRC = $(PARSING) main.c
 
 OBJ = $(SRC:.c=.o)
 

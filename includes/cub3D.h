@@ -72,6 +72,9 @@ typedef struct s_game {
     t_config cfg;
 } t_game;
 
+// Main Parsing
+t_game *init_game(const char *file);
+void game_info(int fd, t_game *game);
 
 // Textures
 int is_texture(char *id);
@@ -87,6 +90,14 @@ void parse_apply_color(t_color *color, char **map);
 int handle_color(t_game *game, char **map, int is_floor);
 int in_range(int n, int min, int max);
 
+// Map
+int *get_map_dimension(const char *file);
+int valid_map(t_game *game);
+int game_map(t_game *game, char *line);
+void normalize_map(t_game *game);
+int scan_map_cells(t_game *game);
+int is_close_map(t_game *game);
+
 // Utils
 int ft_split_size(char **arr);
 int ft_strcmp(const char *s1, const char *s2);
@@ -96,8 +107,14 @@ void print_err(const char *msg);
 void ft_free_split(char **arr);
 int check_extension(const char *file, const char *suffix);
 void check_duplicate(int *flag, int is_floor);
+int check_extension(const char *file, const char *suffix);
+int is_config(char *str);
+int is_valid_map_char(char c);
+int is_it_player(char c);
 
 
+
+void debug_print_split(char **split, const char *original_line);
 
 
 #endif 
