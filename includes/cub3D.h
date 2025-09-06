@@ -10,8 +10,8 @@
 #define TEXTURE_COUNT 4
 #define FOV_PLANE 0.66
 
-#define WINDOW_WIDTH 1000
-#define WINDOW_HEIGHT 1000
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 typedef enum e_direction
 {
@@ -49,8 +49,10 @@ typedef struct s_map {
 } t_map;
 
 typedef struct s_player {
-    int pos_x;
-    int pos_y;
+    float pos_x;
+    float pos_y;
+    float dir_x;
+    float dir_y;
     t_direction direction;
 } t_player;
 

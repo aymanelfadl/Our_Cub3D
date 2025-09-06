@@ -163,7 +163,7 @@ int main(int ac, char *av[])
     }
 
     printf("PLAYER:\n");
-    printf(" Position: x=%d, y=%d\n", game->cfg.player.pos_x, game->cfg.player.pos_y);
+    printf(" Position: x=%.2f, y=%.2f\n", game->cfg.player.pos_x, game->cfg.player.pos_y);
 
     if (game->cfg.player.direction == NO)
         printf(" Direction: North\n");

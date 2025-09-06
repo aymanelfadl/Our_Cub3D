@@ -12,21 +12,38 @@
 
 #include "cub3D.h"
 
-t_direction	get_direction(char c)
+t_direction get_direction(t_game *game, char c)
 {
 	if (c == 'N')
-		return (NO);
-	if (c == 'S')
-		return (SO);
-	if (c == 'E')
-		return (EA);
-	return (WE);
+	{
+		game->cfg.player.dir_x = 1;
+		game->cfg.player.dir_y = -1;
+		return NO;
+	}
+	else if (c == 'S')
+	{
+		game->cfg.player.dir_x = 0;
+		game->cfg.player.dir_y = 1;
+		return SO;
+	}
+	else if (c == 'E')
+	{
+
+		game->cfg.player.dir_x = 1;
+		game->cfg.player.dir_y = 0;
+		return EA;
+	}
+	else
+	{
+		game->cfg.player.dir_x = -1;
+		game->cfg.player.dir_y = 0;
+		return WE;
+	}
 }
 
-int	dfs(t_map map, int y, int x, char **visited)
+int dfs(t_map map, int y, int x, char **visited)
 {
-	if (y < 0 || x < 0 || y >= map.height || x >= map.width
-		|| map.grid[y][x] == ' ')
+	if (y < 0 || x < 0 || y >= map.height || x >= map.width || map.grid[y][x] == ' ')
 		return (0);
 	if (map.grid[y][x] == '1' || visited[y][x] == '1')
 		return (1);
@@ -42,25 +59,25 @@ int	dfs(t_map map, int y, int x, char **visited)
 	return (1);
 }
 
-int	is_close_map(t_game *game)
+int is_close_map(t_game *game)
 {
-	char	**visited;
-	int		result;
+	char **visited;
+	int result;
 
 	visited = allocate_map_grid(game->cfg.map.height, game->cfg.map.width);
 	if (!visited)
 		return (perror("Error"), 0);
 	result = dfs(game->cfg.map, game->cfg.player.pos_y, game->cfg.player.pos_x,
-			visited);
+				 visited);
 	ft_free_split(visited);
 	if (!result)
 		return (0);
 	return (1);
 }
 
-void	check_cell(t_game *game, int y, int x, int *p_found)
+void check_cell(t_game *game, int y, int x, int *p_found)
 {
-	char	c;
+	char c;
 
 	c = game->cfg.map.grid[y][x];
 	if (!is_valid_map_char(c))
@@ -71,16 +88,16 @@ void	check_cell(t_game *game, int y, int x, int *p_found)
 			print_err("Duplicate Players");
 		game->cfg.player.pos_x = x;
 		game->cfg.player.pos_y = y;
-		game->cfg.player.direction = get_direction(c);
+		game->cfg.player.direction = get_direction(game, c);
 		*p_found = 1;
 	}
 }
 
-int	scan_map_cells(t_game *game)
+int scan_map_cells(t_game *game)
 {
-	int	y;
-	int	p_found;
-	int	x;
+	int y;
+	int p_found;
+	int x;
 
 	y = 0;
 	p_found = 0;
