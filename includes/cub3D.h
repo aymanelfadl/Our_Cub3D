@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <mlx.h>
+#include <math.h>
 
 #define TEXTURE_COUNT 4
 #define FOV_PLANE 60

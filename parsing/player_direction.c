@@ -26,8 +26,14 @@ void set_player_dir(t_game *game, char c)
 
 void set_player_plane(t_game *game)
 {
-    game->cfg.player.plane_x = -game->cfg.player.dir_y * FOV_PLANE;
-    game->cfg.player.plane_y =  game->cfg.player.dir_x * FOV_PLANE;
+    double fov_rad;
+    double plane_len;
+
+    fov_rad  = FOV_PLANE * M_PI / 180.0;
+    plane_len = tan(fov_rad / 2.0);
+    
+    game->cfg.player.plane_x = -game->cfg.player.dir_y * plane_len;
+    game->cfg.player.plane_y =  game->cfg.player.dir_x * plane_len;
 }
 
 t_direction get_direction(t_game *game, char c)
