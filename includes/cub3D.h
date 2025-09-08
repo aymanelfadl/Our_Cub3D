@@ -8,7 +8,9 @@
 #include <mlx.h>
 
 #define TEXTURE_COUNT 4
-#define FOV_PLANE 0.66
+#define FOV_PLANE 60
+#define M_PI 3.14159265358979323846
+
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -53,6 +55,8 @@ typedef struct s_player {
     float pos_y;
     float dir_x;
     float dir_y;
+    float plane_x;
+    float plane_y;
     t_direction direction;
 } t_player;
 
@@ -99,6 +103,7 @@ int game_map(t_game *game, char *line);
 void normalize_map(t_game *game);
 int scan_map_cells(t_game *game);
 int is_close_map(t_game *game);
+t_direction get_direction(t_game *game, char c);
 
 // Utils
 int ft_split_size(char **arr);

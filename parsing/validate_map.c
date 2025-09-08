@@ -12,35 +12,6 @@
 
 #include "cub3D.h"
 
-t_direction get_direction(t_game *game, char c)
-{
-	if (c == 'N')
-	{
-		game->cfg.player.dir_x = 1;
-		game->cfg.player.dir_y = -1;
-		return NO;
-	}
-	else if (c == 'S')
-	{
-		game->cfg.player.dir_x = 0;
-		game->cfg.player.dir_y = 1;
-		return SO;
-	}
-	else if (c == 'E')
-	{
-
-		game->cfg.player.dir_x = 1;
-		game->cfg.player.dir_y = 0;
-		return EA;
-	}
-	else
-	{
-		game->cfg.player.dir_x = -1;
-		game->cfg.player.dir_y = 0;
-		return WE;
-	}
-}
-
 int dfs(t_map map, int y, int x, char **visited)
 {
 	if (y < 0 || x < 0 || y >= map.height || x >= map.width || map.grid[y][x] == ' ')
