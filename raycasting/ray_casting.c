@@ -109,10 +109,18 @@ void render(t_game *game)
         int lineHeight = (int)(WINDOW_HEIGHT / perpWallDist);
         int startLine = -lineHeight / 2 + WINDOW_HEIGHT / 2;
         int endLine = lineHeight / 2 + WINDOW_HEIGHT / 2;
+
+        int color;
         if (hit.side)
-            draw_vertical_line(game, x, startLine, endLine, 0xFF0000);
+        {
+            color = (step_y > 0) ? 0xFFFFFF : 0x0000FF;
+            draw_vertical_line(game, x, startLine, endLine, color);
+        }
         else
-            draw_vertical_line(game, x, startLine, endLine, 0x0000FF);
+        {
+            color = (step_x > 0) ? 0xFF0000 : 0x00FF00;
+            draw_vertical_line(game, x, startLine, endLine, color);
+        }
         
         // Optional: print for debug
         printf("ray %d: hit at (%.2f, %.2f), side=%d, dist=%.2f, lineHeight=%d\n",
