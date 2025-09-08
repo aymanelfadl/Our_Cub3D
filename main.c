@@ -30,106 +30,6 @@ void debug_print_split(char **split, const char *original_line)
     printf("===================\n\n");
 }
 
-
-void my_mlx_pixel_put(t_img *img, int x, int y, int color)
-{
-    if (x < 0 || x >= WINDOW_WIDTH|| y < 0 || y >= WINDOW_HEIGHT)
-        return;
-    char *pixel = img->addr + (y * img->line_len + x * (img->bpp / 8));
-    *(unsigned int *)pixel = color;
-}
-
-void init_frame(t_game *game)
-{
-    game->frame.mlx_img = mlx_new_image (game->mlx, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-    game->frame.addr =  mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
-}
-
-int get_scale(int map_w, int map_h, int full_map)
-{
-    int scale_x, scale_y, scale;
-    int max_w, max_h;
-
-    if (full_map)
-    {
-        scale_x = WINDOW_WIDTH / map_w;
-        scale_y = WINDOW_HEIGHT / map_h;
-        
-        if (scale_x < scale_y)
-            scale = scale_x;
-        else
-            scale = scale_y;
-
-        printf("map scale is :: %d\n", scale); 
-    }
-    else
-    {
-        max_w = WINDOW_WIDTH / 4;
-        max_h = WINDOW_HEIGHT / 4;
-        scale_x = max_w / map_w;
-        scale_y = max_h / map_h;
-        
-        if (scale_x < scale_y)
-            scale = scale_x;
-        else
-            scale = scale_y;
-        
-        if (scale < 2)
-            scale = 2; 
-        
-        printf("mini map scale is :: %d\n", scale); 
-    }
-
-    return scale;
-}
-
-void draw_tile(t_game *game, int pixel_x, int pixel_y, int scale, int color)
-{
-    int y = 0, x;
-    while (y < scale)
-    {
-        x = 0;
-        while (x < scale)
-        {
-            my_mlx_pixel_put(&game->frame, pixel_x + x, pixel_y + y, color);
-            x++;
-        }
-        y++;
-    }
-}
-
-
-void render(t_game *game)
-{
-    int scale = get_scale(game->cfg.map.width, game->cfg.map.height, 0);
-
-    int y = 0, x = 0;
-
-    while (y < game->cfg.map.height)
-    {
-        x = 0;
-        while (x < game->cfg.map.width)
-        {
-            char cell = game->cfg.map.grid[y][x];
-            int color;
-
-            if (is_it_player(cell))
-                color = 0xFF0000;
-            else if (cell == '0') 
-                color = 0xFFFFFF;
-            else
-                color = 0x00FF00;
-            
-            int p_x = x * scale;
-            int p_y = y * scale;
-            draw_tile(game, p_x, p_y, scale, color);
-            x++;   
-        }
-        y++;
-    }
-    mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
-}
-
 int main(int ac, char *av[])
 {
     if (ac != 2)
@@ -177,15 +77,6 @@ int main(int ac, char *av[])
         printf(" Direction: Unknown (%d)\n", game->cfg.player.direction);
 
     // =================================================================== //
-
-    game->mlx = mlx_init();
-    game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "Cub3D");
-    init_frame(game);
-    render(game);
-    
-    mlx_loop(game->mlx);
-    mlx_destroy_window(game->mlx, game->win);
-    mlx_destroy_display(game->mlx);
 
     for (int i = 0; i < game->cfg.map.height; i++)
             if (game->cfg.map.grid[i])
