@@ -13,8 +13,8 @@
 #define M_PI 3.14159265358979323846
 
 
-#define WINDOW_WIDTH 10
-#define WINDOW_HEIGHT 5
+#define WINDOW_WIDTH 50
+#define WINDOW_HEIGHT 50
 
 typedef enum e_direction
 {
@@ -71,6 +71,16 @@ typedef struct s_config
     int       have_floor;
     int       have_ceiling;
 } t_config;
+
+
+typedef struct s_hit
+{
+    float hit_x;
+    float hit_y;
+    int is_hit;
+    int side;
+} t_hit;
+
 
 typedef struct s_game {
     void     *mlx;
