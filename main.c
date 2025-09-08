@@ -77,7 +77,8 @@ int main(int ac, char *av[])
         printf(" Direction: Unknown (%d)\n", game->cfg.player.direction);
 
     // =================================================================== //
-
+    start_game(game);
+    
     for (int i = 0; i < game->cfg.map.height; i++)
             if (game->cfg.map.grid[i])
                 free(game->cfg.map.grid[i]);

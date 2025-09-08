@@ -57,8 +57,8 @@ void check_cell(t_game *game, int y, int x, int *p_found)
 	{
 		if (*p_found)
 			print_err("Duplicate Players");
-		game->cfg.player.pos_x = x;
-		game->cfg.player.pos_y = y;
+		game->cfg.player.pos_x = x + 0.5;
+		game->cfg.player.pos_y = y + 0.5;
 		game->cfg.player.direction = get_direction(game, c);
 		*p_found = 1;
 	}

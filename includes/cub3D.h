@@ -13,8 +13,8 @@
 #define M_PI 3.14159265358979323846
 
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH 10
+#define WINDOW_HEIGHT 5
 
 typedef enum e_direction
 {
@@ -120,6 +120,9 @@ int is_config(char *str);
 int is_valid_map_char(char c);
 int is_it_player(char c);
 
+
+// 
+void start_game(t_game *game);
 
 
 void debug_print_split(char **split, const char *original_line);
