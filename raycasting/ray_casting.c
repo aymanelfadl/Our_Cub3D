@@ -12,35 +12,38 @@ void my_mlx_pixel_put(t_img *img, int x, int y, int color)
 void draw_vertical_line(t_game *game, int x)
 {
     int lineHeight;
+    float wall_x;
     if (!game->cfg.player.ray.hit.side)
+    {
         lineHeight = (int)(WINDOW_HEIGHT / (game->cfg.player.ray.distance_x - game->cfg.player.ray.next_cell_x));
+        wall_x = game->cfg.player.pos_y  + (game->cfg.player.ray.distance_x - game->cfg.player.ray.next_cell_x) * game->cfg.player.ray.ray_y;
+    }
     else
+    {
         lineHeight = (int)(WINDOW_HEIGHT / (game->cfg.player.ray.distance_y - game->cfg.player.ray.next_cell_y));
+        wall_x = game->cfg.player.pos_x  + (game->cfg.player.ray.distance_y - game->cfg.player.ray.next_cell_y) * game->cfg.player.ray.ray_x;
+    }
+
+
+    
+    wall_x -= floor(wall_x);
+    int tex = (int)(wall_x * (float)texture->width);
 
     int startLine = -lineHeight / 2 + WINDOW_HEIGHT / 2;
     int endLine = lineHeight / 2 + WINDOW_HEIGHT / 2;
 
-    int color;
-    if (!game->cfg.player.ray.hit.side)
-    {
-        if (game->cfg.player.ray.step_x > 0)
-            color = 0xFF0000; // W
-        else
-            color = 0xFFFF00; // E
-    }
-    else
-    {
-        if (game->cfg.player.ray.step_y > 0)
-            color = 0x00FFFF; // S
-        else
-            color = 0x00FFFF; // N
-    }
+    float step = (float)texture->height / lineHeight;
+    float pos_tex = (startLine - WINDOW_HEIGHT / 2 + lineHeight / 2) * step; 
 
     while (startLine <= endLine)
     {
+        int tex_y = (int)pos_tex & (texture->height - 1);
+        pos_tex += step;
+        int color = *(unsigned int *)(texture->addr + (tex_y * texture->line_len + tex * (texture->bpp / 8)));
         my_mlx_pixel_put(&game->frame, x, startLine, color);
         startLine++;
     }
+
 }
 void compute_ray_direction(t_game *game, int column)
 {
@@ -103,7 +106,6 @@ void perform_dda(t_game *game, int *map_y, int *map_x)
             game->cfg.player.ray.hit.side = 1; // horizontal wall
         }
 
-        // Check if ray hit a wall
         if (game->cfg.map.grid[*map_y][*map_x] == '1')
             game->cfg.player.ray.hit.is_hit = 1;
     }
@@ -119,10 +121,38 @@ int close_game(t_game *game)
     exit(0);
 }
 
+void draw_center(t_game *game, int size, int color)
+{
+    int cx = WINDOW_WIDTH / 2;
+    int cy = WINDOW_HEIGHT / 2;
+
+    int x = cx - size;
+    while (x <= cx + size)
+    {
+        my_mlx_pixel_put(&game->frame, x, cy, color);
+        x++;
+    }
+
+    int y = cy - size;
+    while (y <= cy + size)
+    {
+        my_mlx_pixel_put(&game->frame, cx, y, color);
+        y++;
+    }
+}
+
 
 
 void render(t_game *game)
 {
+
+    game->cfg.textures[0].img->mlx_img = mlx_xpm_file_to_image(game->mlx, game->cfg.textures[0].path,
+                                            &game->cfg.textures[0].img->width, &game->cfg.textures[0].img->height);
+    game->cfg.textures[0].img->addr = mlx_get_data_addr(texture->mlx_img,
+                                    &texture->bpp,
+                                    &texture->line_len,
+                                    &texture->endian);
+
     for (int x = 0; x < WINDOW_WIDTH; x++)
     {
 
@@ -140,6 +170,7 @@ void render(t_game *game)
         // 8. From here, you can calculate line height for rendering
         draw_vertical_line(game, x);
     }
+    draw_center(game, 8, 0);
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
 }
 
@@ -163,18 +194,18 @@ int handle_key(int key, t_game *game)
     float x_move;
     float y_move;
 
-    if (key == 119) // W
+    if (key == 119)
     {
         x_move = game->cfg.player.pos_x + game->cfg.player.dir_x * MOVE_SPEED;
         y_move = game->cfg.player.pos_y + game->cfg.player.dir_y * MOVE_SPEED;
 
-        if (game->cfg.map.grid[(int)y_move][(int)x_move] != '1')
-        {
+        if (game->cfg.map.grid[(int)game->cfg.player.pos_y][(int)x_move] != '1')
             game->cfg.player.pos_x = x_move;
+        if (game->cfg.map.grid[(int)y_move][(int)game->cfg.player.pos_x] != '1')
             game->cfg.player.pos_y = y_move;
-        }
+
     }
-    if (key == 115) // S
+    if (key == 115)
     {
         x_move = game->cfg.player.pos_x - game->cfg.player.dir_x * MOVE_SPEED;
         y_move = game->cfg.player.pos_y - game->cfg.player.dir_y * MOVE_SPEED;
@@ -209,8 +240,8 @@ void start_game(t_game *game)
     game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
 
     render(game);
-    mlx_hook(game->win, 2, 1L<<0, handle_key, game); // Key press
-    mlx_hook(game->win, 17, 0, close_game, game);    // Window close
+    mlx_hook(game->win, 2, 1L<<0, handle_key, game);
+    mlx_hook(game->win, 17, 0, close_game, game);
 
 
     mlx_loop(game->mlx);
