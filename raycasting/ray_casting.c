@@ -133,24 +133,62 @@ void render(t_game *game)
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
 }
 
+void rotate_player(t_game *game, double angle)
+{
+    double old_dir_x = game->cfg.player.dir_x;
+    double old_plane_x = game->cfg.player.plane_x;
+
+    // rotate direction vector
+    game->cfg.player.dir_x = game->cfg.player.dir_x * cos(angle) - game->cfg.player.dir_y * sin(angle);
+    game->cfg.player.dir_y = old_dir_x * sin(angle) + game->cfg.player.dir_y * cos(angle);
+
+    // rotate camera plane
+    game->cfg.player.plane_x = game->cfg.player.plane_x * cos(angle) - game->cfg.player.plane_y * sin(angle);
+    game->cfg.player.plane_y = old_plane_x * sin(angle) + game->cfg.player.plane_y * cos(angle);
+}
+
 int handle_key(int key, t_game *game)
 {
-    printf("keycode :%d\n", key);
+    printf("keycode:%d\n", key);
+    float x_move;
+    float y_move;
+
     if (key == 119) // W
     {
-        game->cfg.player.pos_x += game->cfg.player.dir_x * MOVE_SPEED;
-        game->cfg.player.pos_y += game->cfg.player.dir_y * MOVE_SPEED;
+        x_move = game->cfg.player.pos_x + game->cfg.player.dir_x * MOVE_SPEED;
+        y_move = game->cfg.player.pos_y + game->cfg.player.dir_y * MOVE_SPEED;
+
+        if (game->cfg.map.grid[(int)y_move][(int)x_move] != '1')
+        {
+            game->cfg.player.pos_x = x_move;
+            game->cfg.player.pos_y = y_move;
+        }
     }
     if (key == 115) // S
     {
-        game->cfg.player.pos_x -= game->cfg.player.dir_x * MOVE_SPEED;
-        game->cfg.player.pos_y -= game->cfg.player.dir_y * MOVE_SPEED;
+        x_move = game->cfg.player.pos_x - game->cfg.player.dir_x * MOVE_SPEED;
+        y_move = game->cfg.player.pos_y - game->cfg.player.dir_y * MOVE_SPEED;
+
+        if (game->cfg.map.grid[(int)y_move][(int)x_move] != '1')
+        {
+            game->cfg.player.pos_x = x_move;
+            game->cfg.player.pos_y = y_move;
+        }
     }
+    if (key == 97)
+        rotate_player(game, -ROT_SPEED);
+    if (key == 100)
+        rotate_player(game, ROT_SPEED);
+
+
+    mlx_destroy_image(game->mlx, game->frame.mlx_img);
     game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
     game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
     render(game);
+
     return 0;
 }
+
 
 void start_game(t_game *game)
 {
