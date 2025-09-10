@@ -11,7 +11,7 @@
 #define TEXTURE_COUNT 4
 #define FOV_PLANE 60
 #define M_PI 3.14159265358979323846
-
+#define MOVE_SPEED 0.1f
 
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 800
@@ -43,7 +43,32 @@ typedef struct s_img
 typedef struct s_texture {
     t_direction id;      
     char        *path;
+    t_img       *img;
 } t_texture;
+
+
+typedef struct s_hit
+{
+    float hit_x;
+    float hit_y;
+    int is_hit;
+    int side;
+} t_hit;
+
+
+typedef struct s_ray
+{
+    float camera_x;      
+    float ray_x;             
+    float ray_y;             
+    float next_cell_x;   
+    float next_cell_y;
+    float distance_x;
+    float distance_y;
+    int step_x;
+    int step_y;
+    t_hit hit;     
+} t_ray;
 
 typedef struct s_map {
     int   width;
@@ -59,6 +84,7 @@ typedef struct s_player {
     float plane_x;
     float plane_y;
     t_direction direction;
+    t_ray ray;
 } t_player;
 
 typedef struct s_config
@@ -71,16 +97,6 @@ typedef struct s_config
     int       have_floor;
     int       have_ceiling;
 } t_config;
-
-
-typedef struct s_hit
-{
-    float hit_x;
-    float hit_y;
-    int is_hit;
-    int side;
-} t_hit;
-
 
 typedef struct s_game {
     void     *mlx;
