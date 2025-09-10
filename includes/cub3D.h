@@ -12,8 +12,8 @@
 #define FOV_PLANE 60
 #define M_PI 3.14159265358979323846
 
-#define MOVE_SPEED 0.1f
-#define ROT_SPEED 0.05 
+#define MOVE_SPEED 0.2f
+#define ROT_SPEED 0.05f 
 
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 800

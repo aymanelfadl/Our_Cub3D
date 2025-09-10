@@ -22,9 +22,19 @@ void draw_vertical_line(t_game *game, int x)
 
     int color;
     if (!game->cfg.player.ray.hit.side)
-        color = (game->cfg.player.ray.step_x > 0) ? 0xFFFFFF : 0x0000FF;
+    {
+        if (game->cfg.player.ray.step_x > 0)
+            color = 0xFF0000; // W
+        else
+            color = 0xFFFF00; // E
+    }
     else
-        color = (game->cfg.player.ray.step_x > 0) ? 0xFF0000 : 0x00FF00;
+    {
+        if (game->cfg.player.ray.step_y > 0)
+            color = 0x00FFFF; // S
+        else
+            color = 0x00FFFF; // N
+    }
 
     while (startLine <= endLine)
     {
