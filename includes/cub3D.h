@@ -45,9 +45,9 @@ typedef struct s_img
 } t_img;
 
 typedef struct s_texture {
-    t_direction id;      
+    t_direction id;   
     char        *path;
-    t_img       *img;
+    t_img       img;
 } t_texture;
 
 

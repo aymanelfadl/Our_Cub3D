@@ -36,7 +36,11 @@ t_texture	get_texture(char **map)
 
 	which_identifier(&tex, map[0]);
 	if (check_extension(map[1], ".xpm"))
+	{
 		tex.path = ft_strdup(map[1]);
+		tex.img.width = 0;
+		tex.img.height = 0;
+	}
 	else
 		return (print_err("Texture path"), tex);
 	return (tex);
