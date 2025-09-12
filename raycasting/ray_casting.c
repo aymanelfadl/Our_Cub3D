@@ -20,13 +20,40 @@ t_img get_proper_texture(t_texture *texs, t_direction dir)
         if (texs[i].id == dir)
         {
             rst = texs[i].img;
-            printf("tex is :: %s\n", texs[i].path);
             break;
         }
         i++;
     }
     return rst;
 }
+
+int	color_to_int(t_color c)
+{
+	return ((c.red << 16) | (c.green << 8) | c.blue);
+}
+
+
+void draw_background(t_game *game, int ceil_color, int floor_color)
+{
+    int y;
+    int x;
+
+    y = 0;
+    while (y < WINDOW_HEIGHT)
+    {
+        x = 0;
+        while (x < WINDOW_WIDTH)
+        {
+            if (y < WINDOW_HEIGHT / 2)
+                my_mlx_pixel_put(&game->frame, x, y, ceil_color);
+            else
+                my_mlx_pixel_put(&game->frame, x, y, floor_color);
+            x++;
+        }
+        y++;
+    }
+}
+
 
 void draw_vertical_line(t_game *game, int x)
 {
@@ -76,6 +103,7 @@ void draw_vertical_line(t_game *game, int x)
 
     float step = (float)texture.height / lineHeight;
     float texPos = (drawStart - WINDOW_HEIGHT / 2 + lineHeight / 2) * step;
+
 
     while (drawStart <= drawEnd)
     {
@@ -217,6 +245,7 @@ int load_textures(t_game *game)
 
 void render(t_game *game)
 {
+    draw_background(game, color_to_int(game->cfg.ceiling_color), color_to_int(game->cfg.floor_color));
     for (int x = 0; x < WINDOW_WIDTH; x++)
     {
         int map_x = (int)floorf(game->cfg.player.pos_x);
