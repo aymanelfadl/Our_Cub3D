@@ -40,7 +40,7 @@ int	parse_color_value(char *str, t_color *color)
 
 	split = ft_split(str, ",");
 	if (!split || ft_split_size(split) != 3)
-		return (0);
+		return (ft_free_split(split), 0);
 	color->red = wrap_ft_aoti(split[0]);
 	color->green = wrap_ft_aoti(split[1]);
 	color->blue = wrap_ft_aoti(split[2]);
@@ -64,17 +64,15 @@ void	get_color_pointers(t_game *game, int is_floor, int **flag,
 	}
 }
 
-void	parse_apply_color(t_color *color, char **map)
+int	parse_apply_color(t_color *color, char **map)
 {
 	char	*color_str;
 
 	color_str = merge_map_colors(map);
 	if (!color_str || !parse_color_value(color_str, color))
-	{
-		free(color_str);
-		print_err("Invalid color");
-	}
+		return (free(color_str), 0);
 	free(color_str);
+	return (1);
 }
 
 int	handle_color(t_game *game, char **map, int is_floor)
@@ -83,8 +81,8 @@ int	handle_color(t_game *game, char **map, int is_floor)
 	t_color	*color;
 
 	get_color_pointers(game, is_floor, &flag, &color);
-	check_duplicate(flag, is_floor);
-	parse_apply_color(color, map);
+	if (*flag || !parse_apply_color(color, map))
+		return (0);
 	if (is_floor)
 		game->cfg.have_floor = 1;
 	else

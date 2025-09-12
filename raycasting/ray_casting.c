@@ -81,7 +81,7 @@ void draw_vertical_line(t_game *game, int x)
     }
 
     if (!texture.addr)
-        print_err("text err");
+        printf("text err");
 
     lineHeight = (int)(WINDOW_HEIGHT / perp_dist);
 
@@ -344,19 +344,19 @@ void start_game(t_game *game)
 {
     game->mlx = mlx_init();
     if (!game->mlx)
-        print_err("mlx_init failed");
+        printf("mlx_init failed");
 
     game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
     if (!game->win)
-        print_err("mlx_new_window failed");
+        printf("mlx_new_window failed");
 
     game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
     if (!game->frame.mlx_img)
-        print_err("mlx_new_image failed");
+        printf("mlx_new_image failed");
     game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
 
     if (!load_textures(game))
-        print_err("failed to load textures");
+        printf("failed to load textures");
 
     render(game);
     mlx_hook(game->win, 2, 1L << 0, handle_key, game);

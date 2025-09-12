@@ -27,21 +27,20 @@ static void	update_dimensions(int *dim, const char *line)
 	dim[1]++;
 }
 
-static void	process_line(int *dim, char *line, int *map_started)
+static int	process_line(int *dim, char *line, int *map_started)
 {
 	if (line[0] == '\n' || line[0] == '\0' || !is_config(line))
 	{
-		free(line);
 		if (*map_started)
-			print_err("Map must be last with no new lines inside");
-		return ;
+			return (printf("Error: \nmap must be last with no internal new lines\n"), 0);
+		return (1);
 	}
 	if (is_map_line(line))
 	{
 		*map_started = 1;
 		update_dimensions(dim, line);
 	}
-	free(line);
+	return (1);
 }
 
 int	*get_map_dimension(const char *file)
@@ -53,17 +52,19 @@ int	*get_map_dimension(const char *file)
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		return (perror("Error"), NULL);
+		return (printf("Error: \ncan't open the file\n"), NULL);
 	dim = malloc(2 * sizeof(int));
 	if (!dim)
-		return (perror("Error"), NULL);
+		return (printf("Error: \nallocation err\n"), NULL);
 	dim[0] = 0; // width
 	dim[1] = 0; // height
 	line = get_next_line(fd);
 	map_started = 0;
 	while (line)
 	{
-		process_line(dim, line, &map_started);
+		if (!process_line(dim, line, &map_started))
+			return (free(dim), free(line), NULL);
+		free(line);
 		line = get_next_line(fd);
 	}
 	close(fd);

@@ -29,7 +29,7 @@ static char	normalize_cell(t_game *game, int y, int x, int *map_started)
 	return (' ');
 }
 
-void	normalize_map(t_game *game)
+int	normalize_map(t_game *game)
 {
 	char	**new_grid;
 	int		map_started;
@@ -38,7 +38,7 @@ void	normalize_map(t_game *game)
 
 	new_grid = allocate_map_grid(game->cfg.map.height, game->cfg.map.width);
 	if (!new_grid)
-		print_err("Failed to allocate normalized map");
+		return (printf("Error: \nfailed to allocate normalized map\n"), 0);
 	y = 0;
 	while (y < game->cfg.map.height)
 	{
@@ -54,4 +54,5 @@ void	normalize_map(t_game *game)
 	}
 	ft_free_split(game->cfg.map.grid);
 	game->cfg.map.grid = new_grid;
+	return (1);
 }

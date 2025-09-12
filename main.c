@@ -64,17 +64,23 @@ void debug_print_split(char **split, const char *original_line)
     }
 }
 
-void end_game(t_game *game)
+void ft_free_texture(t_game *game)
 {
-    for (int i = 0; i < game->cfg.map.height; i++)
-            if (game->cfg.map.grid[i])
-                free(game->cfg.map.grid[i]);
+    int i;
 
-    for (int i = 0; i < TEXTURE_COUNT; i++)
+    i = 0;
+    while (i < TEXTURE_COUNT)
+    {
         if (game->cfg.textures[i].path)
             free(game->cfg.textures[i].path);
+        i++;
+    }
+}
 
-    free(game->cfg.map.grid);
+void end_game(t_game *game)
+{
+    ft_free_split(game->cfg.map.grid);
+    ft_free_texture(game);
     free(game);
 }
 
@@ -88,8 +94,7 @@ int main(int ac, char *av[])
     t_game *game = init_game(av[1]);
     if (!game)
     {
-        fprintf(stderr, "Failed to parse config.\n");
-        return 1;
+        exit(EXIT_FAILURE);
     }
     print_info(game);
 
@@ -100,6 +105,6 @@ int main(int ac, char *av[])
     // =================================================================== //
     
     end_game(game);
-    
+
     return 0;
 }
