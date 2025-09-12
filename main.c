@@ -64,25 +64,9 @@ void debug_print_split(char **split, const char *original_line)
     }
 }
 
-void ft_free_texture(t_game *game)
-{
-    int i;
 
-    i = 0;
-    while (i < TEXTURE_COUNT)
-    {
-        if (game->cfg.textures[i].path)
-            free(game->cfg.textures[i].path);
-        i++;
-    }
-}
 
-void end_game(t_game *game)
-{
-    ft_free_split(game->cfg.map.grid);
-    ft_free_texture(game);
-    free(game);
-}
+
 
 int main(int ac, char *av[])
 {
@@ -100,7 +84,11 @@ int main(int ac, char *av[])
 
     // =================================================================== //
     
-    start_game(game);
+    if (!start_game(game))
+    {
+        end_game(game);
+        exit(EXIT_FAILURE);
+    }
     
     // =================================================================== //
     

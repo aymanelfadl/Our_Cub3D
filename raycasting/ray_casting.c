@@ -216,11 +216,11 @@ void draw_center(t_game *game, int size, int color)
 
 int load_textures(t_game *game)
 {
-    int i;
-
-    i = 0;
-    while (i < TEXTURE_COUNT)
+    for (int i = 0; i < TEXTURE_COUNT; i++)
     {
+        if (!game->cfg.textures[i].path)
+            continue;
+
         game->cfg.textures[i].img.mlx_img = mlx_xpm_file_to_image(
             game->mlx,
             game->cfg.textures[i].path,
@@ -237,11 +237,10 @@ int load_textures(t_game *game)
 
         if (!game->cfg.textures[i].img.addr)
             return 0;
-
-        i++;
     }
     return 1;
 }
+
 
 void render(t_game *game)
 {
@@ -340,26 +339,29 @@ int handle_key(int key, t_game *game)
 
     return 0;
 }
-void start_game(t_game *game)
+
+
+int start_game(t_game *game)
 {
     game->mlx = mlx_init();
     if (!game->mlx)
-        printf("mlx_init failed");
+        return (printf("mlx_init failed"), 0);
 
     game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
     if (!game->win)
-        printf("mlx_new_window failed");
+        return (printf("mlx_new_window failed"), 0);
 
     game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
     if (!game->frame.mlx_img)
-        printf("mlx_new_image failed");
+        return (printf("mlx_new_image failed"), 0);
     game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
 
     if (!load_textures(game))
-        printf("failed to load textures");
-
+        return (printf("Error: \nfailed to load textures\n"), 0);
+    
     render(game);
     mlx_hook(game->win, 2, 1L << 0, handle_key, game);
     mlx_hook(game->win, 17, 0, close_game, game);
     mlx_loop(game->mlx);
+    return 1;
 }

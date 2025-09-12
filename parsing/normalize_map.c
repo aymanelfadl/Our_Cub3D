@@ -50,6 +50,7 @@ int	normalize_map(t_game *game)
 			x++;
 		}
 		new_grid[y][game->cfg.map.width] = '\0';
+		printf("%s", game->cfg.map.grid[y]);
 		y++;
 	}
 	ft_free_split(game->cfg.map.grid);

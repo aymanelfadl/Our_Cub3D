@@ -69,10 +69,9 @@ t_game	*init_game(const char *file)
 	}
 	if (!setup_map(game, file))	
 		return (ft_free_split(game->cfg.map.grid), free(game), NULL);
-	if (!game_info(fd, game)) 
+	if (!game_info(fd, game) || !finalize_game(game)) 
 		return (ft_free_texture(game), ft_free_split(game->cfg.map.grid), free(game), NULL);
-	if (!finalize_game(game))
-		return (ft_free_texture(game) , ft_free_split(game->cfg.map.grid), free(game), NULL);
+
 	close(fd);
 	return (game);
 }

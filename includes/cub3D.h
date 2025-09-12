@@ -150,8 +150,8 @@ int is_it_player(char c);
 void ft_free_texture(t_game *game);
 
 // 
-void start_game(t_game *game);
-
+int start_game(t_game *game);
+void end_game(t_game *game);
 
 void debug_print_split(char **split, const char *original_line);
 
