@@ -141,10 +141,33 @@ int is_valid_map_char(char c);
 int is_it_player(char c);
 void ft_free_texture(t_game *game);
 void ft_free_textures_img(t_game *game);
+void my_mlx_pixel_put(t_img *img, int x, int y, int color);
+int	color_to_int(t_color c);
+t_img get_proper_texture(t_texture *texs, t_direction dir);
 
 // RayCasting  
+void render(t_game *game);
 int start_game(t_game *game);
 void end_game(t_game *game);
+
+// DDA
+void perform_dda(t_game *game, int *map_y, int *map_x);
+void init_dda(t_game *game, int map_y, int map_x);
+void compute_ray_direction(t_game *game, int column);
+
+// Drawing
+void draw_background(t_game *game, int ceil_color, int floor_color);
+void draw_center(t_game *game, int size, int color);
+void draw_vertical_line(t_game *game, int x);
+
+
+// Events
+int handle_key(int key, t_game *game);
+void player_movement(int key, t_game *game);
+int close_game(t_game *game);
+
+
+// 
 
 
 void debug_print_split(char **split, const char *original_line);
