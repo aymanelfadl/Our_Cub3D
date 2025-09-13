@@ -1,10 +1,10 @@
-NO textures/blue_left.png
-SO textures/blue_left.png
-WE textures/blue_left.png
-EA textures/blue_left.png
+NO textures/blue_left.xpm
+SO textures/blue_left.xpm
+WE textures/blue_left.xpm
+EA textures/blue_left.xpm
 
-F 0,0,0
-C 0,0,0
+F 0,2,1
+C 0,1,155
 
 101000001000000000001
 111111111111111111111

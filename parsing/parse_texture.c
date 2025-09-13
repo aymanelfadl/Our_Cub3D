@@ -12,13 +12,13 @@
 
 #include "cub3D.h"
 
-int	is_texture(char *id)
+static int	is_texture(char *id)
 {
 	return (!ft_strcmp(id, "NO") || !ft_strcmp(id, "SO") || !ft_strcmp(id, "WE")
 		|| !ft_strcmp(id, "EA"));
 }
 
-void	which_identifier(t_texture *tex, char *key)
+static void	which_identifier(t_texture *tex, char *key)
 {
 	if (!ft_strcmp(key, "NO"))
 		tex->id = NO;
@@ -30,7 +30,7 @@ void	which_identifier(t_texture *tex, char *key)
 		tex->id = EA;
 }
 
-t_texture	get_texture(char **map)
+static t_texture	get_texture(char **map)
 {
 	t_texture	tex;
 

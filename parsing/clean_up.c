@@ -60,6 +60,18 @@ void ft_free_mlx(t_game *game)
 	free(game->mlx);
 }
 
+void ft_free_textures_img(t_game *game)
+{
+    int i;
+
+    i = 0;
+    while (i < TEXTURE_COUNT)
+    {
+        mlx_destroy_image(game->mlx, game->cfg.textures[i].img.mlx_img);
+        i++;
+    }
+}
+
 void end_game(t_game *game)
 {
 	ft_free_mlx(game);

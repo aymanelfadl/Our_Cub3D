@@ -70,18 +70,19 @@ void debug_print_split(char **split, const char *original_line)
 
 int main(int ac, char *av[])
 {
+    t_game *game;
+
     if (ac != 2)
     {
         printf("Usage: %s <file.cub>\n", av[0]);
         return 1;
     }
-    t_game *game = init_game(av[1]);
+    
+    game = init_game(av[1]);
     if (!game)
-    {
         exit(EXIT_FAILURE);
-    }
-    print_info(game);
 
+    print_info(game);
     // =================================================================== //
     
     if (!start_game(game))
@@ -89,9 +90,8 @@ int main(int ac, char *av[])
         end_game(game);
         exit(EXIT_FAILURE);
     }
-    
     // =================================================================== //
-    
+    ft_free_textures_img(game);
     end_game(game);
 
     return 0;

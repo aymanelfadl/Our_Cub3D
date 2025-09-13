@@ -114,27 +114,20 @@ t_game *init_game(const char *file);
 int game_info(int fd, t_game *game);
 
 // Textures
-int is_texture(char *id);
-void which_identifier(t_texture *tex, char *key);
-t_texture get_texture(char **map);
 int game_config(t_game *game, char **map);
+t_direction get_direction(t_game *game, char c);
 
 // Colors
-char *merge_map_colors(char **map);
-int parse_color_value(char *str, t_color *color);
-void get_color_pointers(t_game *game, int is_floor, int **flag, t_color **color);
-int parse_apply_color(t_color *color, char **map);
 int handle_color(t_game *game, char **map, int is_floor);
 int in_range(int n, int min, int max);
 
 // Map
 int *get_map_dimension(const char *file);
-int valid_map(t_game *game);
 int game_map(t_game *game, char *line);
 int normalize_map(t_game *game);
+int valid_map(t_game *game);
 int scan_map_cells(t_game *game);
 int is_close_map(t_game *game);
-t_direction get_direction(t_game *game, char c);
 
 // Utils
 int ft_split_size(char **arr);
@@ -143,15 +136,16 @@ int wrap_ft_aoti(const char *str);
 char **allocate_map_grid(int height, int width);
 void ft_free_split(char **arr);
 int check_extension(const char *file, const char *suffix);
-int check_extension(const char *file, const char *suffix);
 int is_config(char *str);
 int is_valid_map_char(char c);
 int is_it_player(char c);
 void ft_free_texture(t_game *game);
+void ft_free_textures_img(t_game *game);
 
-// 
+// RayCasting  
 int start_game(t_game *game);
 void end_game(t_game *game);
+
 
 void debug_print_split(char **split, const char *original_line);
 

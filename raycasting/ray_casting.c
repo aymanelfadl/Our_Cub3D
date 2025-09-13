@@ -331,7 +331,11 @@ int handle_key(int key, t_game *game)
         rotate_player(game, -ROT_SPEED);
 
     if (key == 65307)
+    {
+        ft_free_textures_img(game);
+        end_game(game);
         exit(1);
+    }
     mlx_destroy_image(game->mlx, game->frame.mlx_img);
     game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
     game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);

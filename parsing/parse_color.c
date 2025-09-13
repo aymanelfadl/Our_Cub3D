@@ -12,7 +12,7 @@
 
 #include "cub3D.h"
 
-char	*merge_map_colors(char **map)
+static char	*merge_map_colors(char **map)
 {
 	int		i;
 	char	*color_str;
@@ -34,7 +34,7 @@ char	*merge_map_colors(char **map)
 	return (color_str);
 }
 
-int	parse_color_value(char *str, t_color *color)
+static int	parse_color_value(char *str, t_color *color)
 {
 	char	**split;
 
@@ -49,7 +49,7 @@ int	parse_color_value(char *str, t_color *color)
 		&& in_range(color->blue, 0, 255));
 }
 
-void	get_color_pointers(t_game *game, int is_floor, int **flag,
+static void	get_color_pointers(t_game *game, int is_floor, int **flag,
 		t_color **color)
 {
 	if (is_floor)
@@ -64,7 +64,7 @@ void	get_color_pointers(t_game *game, int is_floor, int **flag,
 	}
 }
 
-int	parse_apply_color(t_color *color, char **map)
+static int	parse_apply_color(t_color *color, char **map)
 {
 	char	*color_str;
 
