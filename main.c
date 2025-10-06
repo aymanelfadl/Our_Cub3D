@@ -64,10 +64,6 @@ void debug_print_split(char **split, const char *original_line)
     }
 }
 
-
-
-
-
 int main(int ac, char *av[])
 {
     t_game *game;
@@ -83,8 +79,7 @@ int main(int ac, char *av[])
         exit(EXIT_FAILURE);
 
     print_info(game);
-    // =================================================================== //
-    
+    // =================================================================== //   
     if (!start_game(game))
     {
         end_game(game);
