@@ -2,10 +2,13 @@
 
 int load_textures(t_game *game)
 {
-    for (int i = 0; i < TEXTURE_COUNT; i++)
+    int i;
+
+    i = 0;
+    while (i < TEXTURE_COUNT)
     {
         if (!game->cfg.textures[i].path)
-            continue;
+            return 0;
 
         game->cfg.textures[i].img.mlx_img = mlx_xpm_file_to_image(
             game->mlx,
@@ -20,19 +23,20 @@ int load_textures(t_game *game)
             &game->cfg.textures[i].img.bpp,
             &game->cfg.textures[i].img.line_len,
             &game->cfg.textures[i].img.endian);
-
+        
         if (!game->cfg.textures[i].img.addr)
             return 0;
+        i++;
     }
     return 1;
 }
 
 void render(t_game *game)
-{   
+{
     int x;
     int map_x;
     int map_y;
-    
+
     draw_background(game, color_to_int(game->cfg.ceiling_color), color_to_int(game->cfg.floor_color));
     x = 0;
     while (x < WINDOW_WIDTH)
@@ -45,7 +49,6 @@ void render(t_game *game)
         draw_vertical_line(game, x);
         x++;
     }
-    draw_center(game, 8, 0);
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
 }
 
@@ -66,7 +69,7 @@ int start_game(t_game *game)
 
     if (!load_textures(game))
         return (printf("Error: \nfailed to load textures\n"), 0);
-    
+
     render(game);
     mlx_hook(game->win, 2, 1L << 0, handle_key, game);
     mlx_hook(game->win, 17, 0, close_game, game);

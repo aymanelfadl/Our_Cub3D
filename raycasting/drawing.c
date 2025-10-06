@@ -1,27 +1,6 @@
 #include "cub3D.h"
 
 
-
-void draw_center(t_game *game, int size, int color)
-{
-    int cx = WINDOW_WIDTH / 2;
-    int cy = WINDOW_HEIGHT / 2;
-
-    int x = cx - size;
-    while (x <= cx + size)
-    {
-        my_mlx_pixel_put(&game->frame, x, cy, color);
-        x++;
-    }
-
-    int y = cy - size;
-    while (y <= cy + size)
-    {
-        my_mlx_pixel_put(&game->frame, cx, y, color);
-        y++;
-    }
-}
-
 void draw_background(t_game *game, int ceil_color, int floor_color)
 {
     int y;
@@ -43,9 +22,6 @@ void draw_background(t_game *game, int ceil_color, int floor_color)
     }
 }
 
-
-
-
 void draw_vertical_line(t_game *game, int x)
 {
     int lineHeight;
@@ -53,10 +29,10 @@ void draw_vertical_line(t_game *game, int x)
     t_img texture;
 
     // FIXED: Compute perpendicular distance correctly
-    float perp_dist;
+    float dist;
     if (!game->cfg.player.ray.hit.side) // vertical wall
     {
-        perp_dist = game->cfg.player.ray.distance_x - game->cfg.player.ray.next_cell_x;
+        dist = game->cfg.player.ray.distance_x - game->cfg.player.ray.next_cell_x;
         if (game->cfg.player.ray.ray_x > 0)
             texture = get_proper_texture(game->cfg.textures, WE);
         else
@@ -64,7 +40,7 @@ void draw_vertical_line(t_game *game, int x)
     }
     else // horizontal wall
     {
-        perp_dist = game->cfg.player.ray.distance_y - game->cfg.player.ray.next_cell_y;
+        dist = game->cfg.player.ray.distance_y - game->cfg.player.ray.next_cell_y;
         if (game->cfg.player.ray.ray_y > 0)
             texture = get_proper_texture(game->cfg.textures, NO);
         else
@@ -74,13 +50,13 @@ void draw_vertical_line(t_game *game, int x)
     if (!texture.addr)
         printf("text err");
 
-    lineHeight = (int)(WINDOW_HEIGHT / perp_dist);
+    lineHeight = (int)(WINDOW_HEIGHT / dist);
 
     // Wall hit position for texture mapping
     if (!game->cfg.player.ray.hit.side)
-        wall_x = game->cfg.player.pos_y + perp_dist * game->cfg.player.ray.ray_y;
+        wall_x = game->cfg.player.pos_y + dist * game->cfg.player.ray.ray_y;
     else
-        wall_x = game->cfg.player.pos_x + perp_dist * game->cfg.player.ray.ray_x;
+        wall_x = game->cfg.player.pos_x + dist * game->cfg.player.ray.ray_x;
 
     wall_x -= floor(wall_x);
     int tex_x = (int)(wall_x * (float)texture.width);

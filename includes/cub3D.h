@@ -9,7 +9,7 @@
 #include <math.h>
 
 #define TEXTURE_COUNT 4
-#define FOV_PLANE 60
+#define FOV_PLANE 66
 #define M_PI 3.14159265358979323846
 
 #define MOVE_SPEED 0.2f
@@ -157,7 +157,6 @@ void compute_ray_direction(t_game *game, int column);
 
 // Drawing
 void draw_background(t_game *game, int ceil_color, int floor_color);
-void draw_center(t_game *game, int size, int color);
 void draw_vertical_line(t_game *game, int x);
 
 

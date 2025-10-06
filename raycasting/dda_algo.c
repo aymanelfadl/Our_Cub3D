@@ -3,6 +3,7 @@
 void compute_ray_direction(t_game *game, int column)
 {
     game->cfg.player.ray.camera_x = 2.0f * column / (float)WINDOW_WIDTH - 1.0f;
+
     game->cfg.player.ray.ray_x = game->cfg.player.dir_x + game->cfg.player.ray.camera_x * game->cfg.player.plane_x;
     game->cfg.player.ray.ray_y = game->cfg.player.dir_y + game->cfg.player.ray.camera_x * game->cfg.player.plane_y;
 
