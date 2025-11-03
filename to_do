@@ -1,7 +1,7 @@
 # Outstanding Work (most urgent first)
 
 1. **Game Loop & Input**
-	- Register MLX key hooks, update `t_player` on WASD/arrow keys, re-render each frame, and add a clean exit hook.
+	- Register MLX key hooks, update `t_player` on WASD/arrow keys, re-render each frame, and add a clean exit hook.------> DONE
 
 2. **Texture Loading & Sampling**
 	- Load wall textures with `mlx_xpm_file_to_image`, store runtime metadata, and sample them in the ray loop.
