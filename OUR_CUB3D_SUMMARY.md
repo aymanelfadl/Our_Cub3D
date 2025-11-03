@@ -10,10 +10,12 @@
 - `t_config` and `t_map` now track resolution, sprite metadata, and readiness flags inside `includes/cub3D.h`; the legacy parser remains in `backup_old_parser/` for reference.
 
 ## Build & Tooling
-- `Makefile` compiles the new parser sources, adds a `parser_tester` target with fixtures in `tests/`, links against the repo’s MiniLibX build (`minilibx-linux`), and disables PIE for compatibility.
+- `Makefile` now compiles against the repo’s MiniLibX headers, triggers `make -C minilibx-linux` automatically, links with the local library, and disables PIE for compatibility.
 
 ## Graphics Integration
-- `includes/cub3D.h` pulls in the MiniLibX header via a repo-relative path, keeping parser and renderer builds consistent without depending on a system-wide install.
+- `includes/cub3D.h` centralizes all MiniLibX constants, key codes, and player movement tunables, keeping renderer modules in sync.
+- `raycasting/ray_casting.c` owns the runtime loop: it clears the frame each render, performs DDA ray casting, and pushes the frame buffer to the window.
+- MLX hooks handle window close events and keyboard input using MiniLibX’s key codes; helper routines cover movement, rotation, collision checks, and clean shutdowns.
 
 ## Testing & Runtime
-- Regression tests and the Valgrind leak check cover both happy and error paths, and `./cub3D maps/good/cheese_maze.cub` now renders a frame pending keyboard event hooks.
+- Regression tests and the Valgrind leak check cover both happy and error paths. At runtime, `./cub3D maps/good/hanzo.cub` now opens a window, renders walls, and supports WASD rotation/translation (`Q`/`E` strafe, `Esc` exit).
