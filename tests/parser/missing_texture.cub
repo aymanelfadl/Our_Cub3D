@@ -1,0 +1,12 @@
+R 640 480
+NO textures/does_not_exist.xpm
+SO textures/wall_2.xpm
+WE textures/wall_3.xpm
+EA textures/wall_4.xpm
+S textures/sprite_1.xpm
+F 30,30,30
+C 220,180,180
+
+1111
+1N01
+1111
