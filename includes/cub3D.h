@@ -5,6 +5,7 @@
 #include "../libft/libft.h"
 
 #include <stdio.h>
+#include "../minilibx-linux/mlx.h"
 #include <math.h>
 
 #define TEXTURE_COUNT 4
