@@ -1,28 +1,28 @@
 # Outstanding Work (most urgent first)
 
-1. **Game Loop & Input**
-	- Register MLX key hooks, update `t_player` on WASD/arrow keys, re-render each frame, and add a clean exit hook.------> DONE
+1. **Game Loop & Input** — *DONE*
+	- MLX key hooks in `raycasting/ray_casting.c` update `t_player`, clear/ redraw each frame, and cleanly exit on `Esc`.
 
 2. **Texture Loading & Sampling**
 	- Load wall textures with `mlx_xpm_file_to_image`, store runtime metadata, and sample them in the ray loop.
 
-3. **Rendering Loop Structure**
-	- Centralize rendering in a reusable function and use `mlx_loop_hook` (or equivalent) to keep frames updating.
-
-4. **Collision Detection**
-	- Block movement through walls by checking map cells before applying position deltas.
-
-5. **Resource Cleanup**
-	- Destroy MLX images/windows and free parser allocations on shutdown and error paths.
-
-6. **Sprite & Object Support**
-	- Parse sprite data, load textures, and render them with depth-sorted drawing.
-
-7. **Floor/Ceiling Rendering**
+3. **Floor/Ceiling Rendering**
 	- Fill floor/ceiling with configured colours or textures instead of the black background.
 
-8. **Runtime Error Handling**
+4. **Rendering Loop Structure**
+	- Explore `mlx_loop_hook` or a timed redraw to decouple rendering from key events.
+
+5. **Collision Detection**
+	- Fine-tune walkability checks (padding near walls, diagonal movement) and add tests.
+
+6. **Resource Cleanup**
+	- Destroy MLX images/windows and free parser allocations on shutdown and error paths.
+
+7. **Texture Error Handling**
 	- Surface clear runtime errors (texture load, MLX init, render failures) and exit gracefully.
+
+8. **Sprite & Object Support**
+	- Parse sprite data, load textures, and render them with depth-sorted drawing.
 
 9. **Automated Runtime Tests**
 	- Add smoke/integration tests that exercise the rendering pipeline alongside parser coverage.
