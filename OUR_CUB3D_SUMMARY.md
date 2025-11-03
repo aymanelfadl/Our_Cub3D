@@ -1,7 +1,19 @@
-# Parser Rewrite Summary
+# Cub3D Refactor Overview
 
-- Replaced the ad-hoc parsing flow with a modular parser (`src/parse/*.c`) exposed through `includes/parser.h`, wiring `main.c` to `parse_cub_file` and central `parser_release_config`.
-- Built iterative flood-fill enclosure checking in `src/parse/floodfill.c`, map normalization/sprite counting in `src/parse/map_build.c`, and strict config validators in `src/parse/validation_*.c`, all returning error codes instead of exiting.
-- Extended `t_config`/`t_map` with resolution, sprite, and state flags in `includes/cub3D.h`, while keeping old sources archived under `backup_old_parser/`.
-- Updated `Makefile` to consume the new parser sources and added a `parser_tester` target plus regression assets (`tests/parser_main.c`, `.cub` fixtures, `tests/run_parser_tests.sh`); removed the global `<mlx.h>` include from the public header and limited it to `raycasting/ray_casting.c` so parser builds no longer depend on MLX headers.
-- Added regression tests and a Valgrind-backed leak check covering success and failure cases for the parser.
+## Architecture
+- Modular parser lives under `src/parse/` and is surfaced through `includes/parser.h`; `main.c` now drives `parse_cub_file` and frees resources via `parser_release_config`.
+
+## Parsing & Validation
+- Flood-fill enclosure (`floodfill.c`), map normalization and sprite counting (`map_build.c`), and directive checks in the validation modules now emit structured error codes instead of exiting abruptly.
+
+## State & Data
+- `t_config` and `t_map` now track resolution, sprite metadata, and readiness flags inside `includes/cub3D.h`; the legacy parser remains in `backup_old_parser/` for reference.
+
+## Build & Tooling
+- `Makefile` compiles the new parser sources, adds a `parser_tester` target with fixtures in `tests/`, links against the repo’s MiniLibX build (`minilibx-linux`), and disables PIE for compatibility.
+
+## Graphics Integration
+- `includes/cub3D.h` pulls in the MiniLibX header via a repo-relative path, keeping parser and renderer builds consistent without depending on a system-wide install.
+
+## Testing & Runtime
+- Regression tests and the Valgrind leak check cover both happy and error paths, and `./cub3D maps/good/cheese_maze.cub` now renders a frame pending keyboard event hooks.
