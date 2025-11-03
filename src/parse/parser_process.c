@@ -160,7 +160,7 @@ static int ensure_required_config(t_config *cfg)
 {
     int i;
 
-    if (!cfg->have_resolution || !cfg->have_floor || !cfg->have_ceiling)
+    if (!cfg->have_floor || !cfg->have_ceiling)
         return (PARSE_ERR_CONFIG_MISSING);
     i = 0;
     while (i < TEXTURE_COUNT)
@@ -169,8 +169,6 @@ static int ensure_required_config(t_config *cfg)
             return (PARSE_ERR_CONFIG_MISSING);
         i++;
     }
-    if (!cfg->have_sprite)
-        return (PARSE_ERR_CONFIG_MISSING);
     return (PARSE_OK);
 }
 
