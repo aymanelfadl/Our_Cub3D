@@ -5,6 +5,7 @@
 #include "../libft/libft.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "../minilibx-linux/mlx.h"
 #include <math.h>
 
@@ -15,6 +16,23 @@
 
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 800
+
+#define EVENT_KEY_PRESS 2
+#define EVENT_DESTROY 17
+#define MASK_KEY_PRESS (1L << 0)
+
+#define KEY_ESC 65307
+#define KEY_W 119
+#define KEY_S 115
+#define KEY_A 97
+#define KEY_D 100
+#define KEY_Q 113
+#define KEY_E 101
+#define KEY_LEFT 65361
+#define KEY_RIGHT 65363
+
+#define MOVE_SPEED 0.08f
+#define ROT_SPEED 0.05f
 
 typedef enum e_direction
 {
@@ -97,6 +115,13 @@ typedef struct s_game {
 } t_game;
 
 void start_game(t_game *game);
+
+static int  handle_key_press(int keycode, t_game *game);
+static int  handle_close(t_game *game);
+static int  move_player(t_game *game, float dx, float dy);
+static void rotate_player(t_game *game, float angle);
+static int  is_walkable(t_game *game, float x, float y);
+static void shutdown_game(t_game *game, int exit_code);
 
 
 #endif 

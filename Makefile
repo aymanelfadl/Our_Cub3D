@@ -1,8 +1,10 @@
 CC = cc
 
-CFLAGS = -Iincludes/  -Wall -Wextra -Werror 
+CFLAGS = -Iincludes/ -Iminilibx-linux -Wall -Wextra -Werror 
 
-MLX_FLAGS = -lmlx -lXext -lX11 -lm -lbsd
+LDFLAGS = -no-pie
+
+MLX_FLAGS = -Lminilibx-linux -lmlx -lXext -lX11 -lm
 
 NAME = cub3D
 
@@ -27,8 +29,9 @@ PARSER_TEST_OBJ = tests/parser_main.o
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(LIBFT) 
-	$(CC)  $(CFLAGS) $(OBJ)  $(LIBFT) $(MLX_FLAGS) -o $(NAME)
+$(NAME): $(OBJ) $(LIBFT)
+	@make -C minilibx-linux
+	$(CC)  $(CFLAGS) $(OBJ)  $(LIBFT) $(MLX_FLAGS) $(LDFLAGS) -o $(NAME)
 
 $(LIBFT):
 	@make -C $(LIBFT_DIR)

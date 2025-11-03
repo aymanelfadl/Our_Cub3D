@@ -1,4 +1,5 @@
 #include "cub3D.h"
+#include "parser.h"
 
 void my_mlx_pixel_put(t_img *img, int x, int y, int color)
 {
@@ -22,6 +23,10 @@ void draw_vertical_line(t_game *game, int x, int drawStart, int drawEnd, int col
 
 void render(t_game *game)
 {
+    // Reset the frame buffer so old pixels do not linger between renders
+    if (game->frame.addr)
+        ft_bzero(game->frame.addr, (size_t)game->frame.line_len * WINDOW_HEIGHT);
+
     for (int x = 0; x < WINDOW_WIDTH; x++)
     {
         // 1. Compute ray direction for this column
@@ -114,9 +119,6 @@ void render(t_game *game)
         else
             draw_vertical_line(game, x, startLine, endLine, 0x0000FF);
         
-        // Optional: print for debug
-        printf("ray %d: hit at (%.2f, %.2f), side=%d, dist=%.2f, lineHeight=%d\n",
-               x, hit.hit_x, hit.hit_y, hit.side, perpWallDist, lineHeight);
     }
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
 }
@@ -129,7 +131,123 @@ void start_game(t_game *game)
     game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
     game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
 
+#if defined(__GNUC__) && !defined(__clang__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
+    mlx_hook(game->win, EVENT_DESTROY, 0, (int (*)())handle_close, game);
+    mlx_hook(game->win, EVENT_KEY_PRESS, MASK_KEY_PRESS, (int (*)())handle_key_press, game);
+#if defined(__GNUC__) && !defined(__clang__)
+# pragma GCC diagnostic pop
+#endif
+
     render(game);
 
     mlx_loop(game->mlx);
+}
+
+static int handle_key_press(int keycode, t_game *game)
+{
+    int updated;
+    updated = 0;
+    if (keycode == KEY_ESC)
+        shutdown_game(game, 0);
+    else if (keycode == KEY_W)
+        updated = move_player(game, game->cfg.player.dir_x * MOVE_SPEED,
+                              game->cfg.player.dir_y * MOVE_SPEED);
+    else if (keycode == KEY_S)
+        updated = move_player(game, -game->cfg.player.dir_x * MOVE_SPEED,
+                              -game->cfg.player.dir_y * MOVE_SPEED);
+    else if (keycode == KEY_Q)
+        updated = move_player(game, -game->cfg.player.plane_x * MOVE_SPEED,
+                              -game->cfg.player.plane_y * MOVE_SPEED);
+    else if (keycode == KEY_E)
+        updated = move_player(game, game->cfg.player.plane_x * MOVE_SPEED,
+                              game->cfg.player.plane_y * MOVE_SPEED);
+    else if (keycode == KEY_A || keycode == KEY_LEFT)
+    {
+        rotate_player(game, -ROT_SPEED);
+        updated = 1;
+    }
+    else if (keycode == KEY_D || keycode == KEY_RIGHT)
+    {
+        rotate_player(game, ROT_SPEED);
+        updated = 1;
+    }
+    if (updated)
+        render(game);
+    return (0);
+}
+
+static int handle_close(t_game *game)
+{
+    shutdown_game(game, 0);
+    return (0);
+}
+
+static int move_player(t_game *game, float dx, float dy)
+{
+    int moved;
+
+    moved = 0;
+    if (is_walkable(game, game->cfg.player.pos_x + dx, game->cfg.player.pos_y))
+    {
+        game->cfg.player.pos_x += dx;
+        moved = 1;
+    }
+    if (is_walkable(game, game->cfg.player.pos_x, game->cfg.player.pos_y + dy))
+    {
+        game->cfg.player.pos_y += dy;
+        moved = 1;
+    }
+    return (moved);
+}
+
+static void rotate_player(t_game *game, float angle)
+{
+    float old_dir_x;
+    float old_plane_x;
+    float cos_angle;
+    float sin_angle;
+
+    cos_angle = cosf(angle);
+    sin_angle = sinf(angle);
+    old_dir_x = game->cfg.player.dir_x;
+    game->cfg.player.dir_x = game->cfg.player.dir_x * cos_angle - game->cfg.player.dir_y * sin_angle;
+    game->cfg.player.dir_y = old_dir_x * sin_angle + game->cfg.player.dir_y * cos_angle;
+    old_plane_x = game->cfg.player.plane_x;
+    game->cfg.player.plane_x = game->cfg.player.plane_x * cos_angle - game->cfg.player.plane_y * sin_angle;
+    game->cfg.player.plane_y = old_plane_x * sin_angle + game->cfg.player.plane_y * cos_angle;
+}
+
+static int is_walkable(t_game *game, float x, float y)
+{
+    int map_x;
+    int map_y;
+
+    if (x < 0 || y < 0)
+        return (0);
+    map_x = (int)x;
+    map_y = (int)y;
+    if (map_y < 0 || map_y >= game->cfg.map.height)
+        return (0);
+    if (map_x < 0 || map_x >= game->cfg.map.width)
+        return (0);
+    if (game->cfg.map.grid[map_y] == NULL)
+        return (0);
+    if ((int)ft_strlen(game->cfg.map.grid[map_y]) <= map_x)
+        return (0);
+    if (game->cfg.map.grid[map_y][map_x] == '1' || game->cfg.map.grid[map_y][map_x] == ' ')
+        return (0);
+    return (1);
+}
+
+static void shutdown_game(t_game *game, int exit_code)
+{
+    if (game->frame.mlx_img)
+        mlx_destroy_image(game->mlx, game->frame.mlx_img);
+    if (game->win)
+        mlx_destroy_window(game->mlx, game->win);
+    parser_release_config(&game->cfg);
+    exit(exit_code);
 }
