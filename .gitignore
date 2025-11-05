@@ -6,6 +6,7 @@ cub3D
 
 *.a
 
+minilibx-linux/*
 context/*
 !context/.gitkeep
 
