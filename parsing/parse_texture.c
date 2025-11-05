@@ -12,13 +12,13 @@
 
 #include "cub3D.h"
 
-int	is_texture(char *id)
+static int	is_texture(char *id)
 {
 	return (!ft_strcmp(id, "NO") || !ft_strcmp(id, "SO") || !ft_strcmp(id, "WE")
 		|| !ft_strcmp(id, "EA"));
 }
 
-void	which_identifier(t_texture *tex, char *key)
+static void	which_identifier(t_texture *tex, char *key)
 {
 	if (!ft_strcmp(key, "NO"))
 		tex->id = NO;
@@ -30,15 +30,19 @@ void	which_identifier(t_texture *tex, char *key)
 		tex->id = EA;
 }
 
-t_texture	get_texture(char **map)
+static t_texture	get_texture(char **map)
 {
 	t_texture	tex;
 
 	which_identifier(&tex, map[0]);
 	if (check_extension(map[1], ".xpm"))
+	{
 		tex.path = ft_strdup(map[1]);
+		tex.img.width = 0;
+		tex.img.height = 0;
+	}
 	else
-		return (print_err("Texture path"), tex);
+		tex.path = NULL;
 	return (tex);
 }
 
@@ -50,6 +54,9 @@ int	handle_texture(t_game *game, char **map)
 	if (!is_texture(map[0]) || ft_split_size(map) != 2)
 		return (0);
 	tex = get_texture(map);
+	if (!tex.path)
+		return (0);
+
 	if (!ft_strcmp(map[0], "NO"))
 		i = 0;
 	else if (!ft_strcmp(map[0], "SO"))
@@ -58,8 +65,13 @@ int	handle_texture(t_game *game, char **map)
 		i = 2;
 	else
 		i = 3;
+	
 	if (game->cfg.textures[i].path)
-		print_err("Duplicate direction");
+	{
+    	free(tex.path);
+    	return 0;
+	}
+	
 	game->cfg.textures[i] = tex;
 	return (1);
 }
@@ -72,5 +84,5 @@ int	game_config(t_game *game, char **map)
 		return (handle_color(game, map, 0));
 	else if (handle_texture(game, map))
 		return (1);
-	return (print_err("Wrong identifier"), 0);
+	return (0);
 }

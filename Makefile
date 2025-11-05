@@ -15,7 +15,12 @@ PARSING = parsing/read_file.c parsing/parse_color.c \
 		  parsing/validate_map.c parsing/init_parsing.c \
 		  parsing/utils.c parsing/utils1.c parsing/player_direction.c
 
-RAYCASTING = raycasting/ray_casting.c
+RAYCASTING = raycasting/ray_casting.c \
+			 raycasting/drawing.c \
+			 raycasting/dda_algo.c \
+			 raycasting/events.c \
+			 raycasting/utils.c \
+			 raycasting/player_movement.c
 
 SRC = $(PARSING) $(RAYCASTING) main.c
 OBJ = $(SRC:.c=.o)

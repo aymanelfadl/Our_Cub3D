@@ -14,9 +14,10 @@
 
 int	valid_map(t_game *game)
 {
-	scan_map_cells(game);
+	if (!scan_map_cells(game))
+		return (0);
 	if (!is_close_map(game))
-		print_err("MAP should be closed");
+		return (printf("Error: \nmap must be closed\n"), 0);
 	return (1);
 }
 
@@ -33,31 +34,21 @@ static char	*get_next_nonempty_line(int fd)
 	return (line);
 }
 
-static void	process_config_line(t_game *game, char *line, int *element_index)
+static int	process_config_line(t_game *game, char *line, int *element_index)
 {
 	char	**split;
 
 	split = ft_split(line, " \t\n\v\f\r");
 	if (!split || ft_split_size(split) == 0)
-	{
-		ft_free_split(split);
-		return ;
-	}
-	if (game_config(game, split))
-		(*element_index)++;
+		return (ft_free_split(split), 0);
+	if (!game_config(game, split))
+		return (ft_free_split(split), 0);
+	(*element_index)++;
 	ft_free_split(split);
+	return (1);
 }
 
-static void	process_map_line(t_game *game, char *line)
-{
-	if (!game_map(game, line))
-	{
-		free(line);
-		print_err("something about the map");
-	}
-}
-
-void	game_info(int fd, t_game *game)
+int	game_info(int fd, t_game *game)
 {
 	char	*line;
 	int		element_index;
@@ -67,12 +58,19 @@ void	game_info(int fd, t_game *game)
 	while (line)
 	{
 		if (element_index == 6)
-			process_map_line(game, line);
+		{
+			if (!game_map(game, line))
+				return (free(line), printf("Error: \ninvalid map\n"), 0);
+		}
 		else
-			process_config_line(game, line, &element_index);
+		{
+			if (!process_config_line(game, line, &element_index))
+				return (free(line), printf("Error: \ninvalid configuration line\n"), 0);
+		}
 		free(line);
 		line = get_next_nonempty_line(fd);
 	}
 	if (element_index != 6)
-		print_err("Invalid cfg element count");
+		return (printf("Error: \ninvalid configuration element count\n"), 0);
+	return (1);
 }

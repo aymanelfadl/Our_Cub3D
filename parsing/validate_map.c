@@ -37,7 +37,7 @@ int is_close_map(t_game *game)
 
 	visited = allocate_map_grid(game->cfg.map.height, game->cfg.map.width);
 	if (!visited)
-		return (perror("Error"), 0);
+		return (0);
 	result = dfs(game->cfg.map, game->cfg.player.pos_y, game->cfg.player.pos_x,
 				 visited);
 	ft_free_split(visited);
@@ -46,22 +46,23 @@ int is_close_map(t_game *game)
 	return (1);
 }
 
-void check_cell(t_game *game, int y, int x, int *p_found)
+int check_cell(t_game *game, int y, int x, int *p_found)
 {
 	char c;
 
 	c = game->cfg.map.grid[y][x];
 	if (!is_valid_map_char(c))
-		print_err("no part of map IDs");
+		return (printf("Error: \nmissing map IDs\n"), 0);
 	if (is_it_player(c))
 	{
 		if (*p_found)
-			print_err("Duplicate Players");
+			return (printf("Error: \nmultiple player positions found\n"), 0);
 		game->cfg.player.pos_x = x + 0.5;
 		game->cfg.player.pos_y = y + 0.5;
 		game->cfg.player.direction = get_direction(game, c);
 		*p_found = 1;
 	}
+	return (1);
 }
 
 int scan_map_cells(t_game *game)
@@ -77,12 +78,13 @@ int scan_map_cells(t_game *game)
 		x = 0;
 		while (x < game->cfg.map.width)
 		{
-			check_cell(game, y, x, &p_found);
+			if (!check_cell(game, y, x, &p_found))
+				return (0);
 			x++;
 		}
 		y++;
 	}
 	if (!p_found)
-		print_err("no players ?");
+		return (printf("Error: no player position found"), 0);
 	return (1);
 }

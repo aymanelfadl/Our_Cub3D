@@ -1,6 +1,6 @@
 #include "cub3D.h"
 
-void set_player_dir(t_game *game, char c)
+static void set_player_dir(t_game *game, char c)
 {
     if (c == 'N')
     {
@@ -24,16 +24,14 @@ void set_player_dir(t_game *game, char c)
     }
 }
 
-void set_player_plane(t_game *game)
+static void set_player_plane(t_game *game)
 {
     double fov_rad;
-    double plane_len;
 
     fov_rad  = FOV_PLANE * M_PI / 180.0;
-    plane_len = tan(fov_rad / 2.0);
     
-    game->cfg.player.plane_x = -game->cfg.player.dir_y * plane_len;
-    game->cfg.player.plane_y =  game->cfg.player.dir_x * plane_len;
+    game->cfg.player.plane_x = -game->cfg.player.dir_y * tan(fov_rad / 2.0);
+    game->cfg.player.plane_y =  game->cfg.player.dir_x * tan(fov_rad / 2.0);
 }
 
 t_direction get_direction(t_game *game, char c)

@@ -12,12 +12,6 @@
 
 #include "cub3D.h"
 
-void	print_err(const char *msg)
-{
-	printf("Error\n%s\n", msg);
-	exit(EXIT_FAILURE);
-}
-
 void	ft_free_split(char **arr)
 {
 	int	i;
@@ -31,4 +25,57 @@ void	ft_free_split(char **arr)
 		i++;
 	}
 	free(arr);
+}
+
+void ft_free_texture(t_game *game)
+{
+    int i;
+
+    i = 0;
+    while (i < TEXTURE_COUNT)
+    {
+        if (game->cfg.textures[i].path)
+            free(game->cfg.textures[i].path);
+        i++;
+    }
+}
+
+void ft_free_mlx(t_game *game)
+{
+    if (!game || !game->mlx)
+        return;
+ 
+    if (game->frame.mlx_img)
+    {
+        mlx_destroy_image(game->mlx, game->frame.mlx_img);
+        game->frame.mlx_img = NULL;
+    }
+ 
+    if (game->win)
+    {
+        mlx_destroy_window(game->mlx, game->win);
+        game->win = NULL;
+    }
+	mlx_destroy_display(game->mlx);
+	free(game->mlx);
+}
+
+void ft_free_textures_img(t_game *game)
+{
+    int i;
+
+    i = 0;
+    while (i < TEXTURE_COUNT)
+    {
+        mlx_destroy_image(game->mlx, game->cfg.textures[i].img.mlx_img);
+        i++;
+    }
+}
+
+void end_game(t_game *game)
+{
+	ft_free_mlx(game);
+    ft_free_texture(game);
+    ft_free_split(game->cfg.map.grid);
+    free(game);
 }
