@@ -15,8 +15,8 @@
 #define MOVE_SPEED 0.2f
 #define ROT_SPEED 0.05f 
 
-#define WINDOW_WIDTH 1600
-#define WINDOW_HEIGHT 1200
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 typedef enum e_direction
 {
