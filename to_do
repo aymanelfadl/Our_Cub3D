@@ -3,8 +3,9 @@
 1. **Game Loop & Input** — *DONE*
 	- MLX key hooks in `raycasting/ray_casting.c` update `t_player`, clear/ redraw each frame, and cleanly exit on `Esc`.
 
-2. **Texture Loading & Sampling**
-	- Load wall textures with `mlx_xpm_file_to_image`, store runtime metadata, and sample them in the ray loop.
+2. **Texture Loading & Sampling** — *DONE*
+	- `texture_load_all` pulls NO/SO/WE/EA walls into MLX images and the ray loop samples texels per column (with a basic shading pass).
+	- Follow-up: ensure `texture_free_all` runs on shutdown/error paths so MLX images are released.
 
 3. **Floor/Ceiling Rendering**
 	- Fill floor/ceiling with configured colours or textures instead of the black background.
@@ -16,10 +17,10 @@
 	- Fine-tune walkability checks (padding near walls, diagonal movement) and add tests.
 
 6. **Resource Cleanup**
-	- Destroy MLX images/windows and free parser allocations on shutdown and error paths.
+	- Wire `texture_free_all` into shutdown, destroy the frame image, and audit parser clean-up on runtime exits.
 
 7. **Texture Error Handling**
-	- Surface clear runtime errors (texture load, MLX init, render failures) and exit gracefully.
+	- Bubble up precise errors for missing/corrupt XPM files and screen initialization failures (currently logs to `stderr`).
 
 8. **Sprite & Object Support**
 	- Parse sprite data, load textures, and render them with depth-sorted drawing.
