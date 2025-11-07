@@ -1,6 +1,14 @@
 #include "cub3D.h"
 #include "parser.h"
 
+/* Forward declarations for static/internal callbacks used by start_game */
+static int  handle_key_press(int keycode, t_game *game);
+static int  handle_close(t_game *game);
+static int  move_player(t_game *game, float dx, float dy);
+static void rotate_player(t_game *game, float angle);
+static int  is_walkable(t_game *game, float x, float y);
+static void shutdown_game(t_game *game, int exit_code);
+
 void my_mlx_pixel_put(t_img *img, int x, int y, int color)
 {
     if (x < 0 || x >= WINDOW_WIDTH || y < 0 || y >= WINDOW_HEIGHT)
@@ -114,10 +122,62 @@ void render(t_game *game)
         int lineHeight = (int)(WINDOW_HEIGHT / perpWallDist);
         int startLine = -lineHeight / 2 + WINDOW_HEIGHT / 2;
         int endLine = lineHeight / 2 + WINDOW_HEIGHT / 2;
-        if (hit.side)
-            draw_vertical_line(game, x, startLine, endLine, 0xFF0000);
+
+        /* select texture based on wall orientation */
+        int tex_index = 0;
+        if (hit.side == 0)
+        {
+            if (rayX > 0)
+                tex_index = WE;
+            else
+                tex_index = EA;
+        }
         else
-            draw_vertical_line(game, x, startLine, endLine, 0x0000FF);
+        {
+            if (rayY > 0)
+                tex_index = NO;
+            else
+                tex_index = SO;
+        }
+
+        t_texture *tex = &game->cfg.textures[tex_index];
+        if (!tex->loaded || !tex->img.addr || tex->width <= 0 || tex->height <= 0)
+        {
+            /* fallback to solid color */
+            if (hit.side)
+                draw_vertical_line(game, x, startLine, endLine, 0xFF0000);
+            else
+                draw_vertical_line(game, x, startLine, endLine, 0x0000FF);
+            continue;
+        }
+
+        /* calculate exact position on wall */
+        float wallX = (hit.side == 0) ? hit.hit_y : hit.hit_x;
+        wallX -= floorf(wallX);
+        int tex_x = (int)(wallX * (float)tex->width);
+        if (hit.side == 0 && rayX > 0)
+            tex_x = tex->width - tex_x - 1;
+        if (hit.side == 1 && rayY < 0)
+            tex_x = tex->width - tex_x - 1;
+
+        float step = (float)tex->height / (float)lineHeight;
+        float texPos = (startLine - WINDOW_HEIGHT / 2 + lineHeight / 2) * step;
+        for (int y = startLine; y <= endLine; ++y)
+        {
+            if (y < 0 || y >= WINDOW_HEIGHT)
+            {
+                texPos += step;
+                continue;
+            }
+            int tex_y = (int)texPos;
+            if (tex_y < 0) tex_y = 0;
+            if (tex_y >= tex->height) tex_y = tex->height - 1;
+            unsigned int color = tex_get_pixel(&tex->img, tex_x, tex_y);
+            if (hit.side)
+                color = (color >> 1) & 0x7F7F7F; /* simple shading */
+            my_mlx_pixel_put(&game->frame, x, y, color);
+            texPos += step;
+        }
         
     }
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
@@ -125,7 +185,8 @@ void render(t_game *game)
 
 void start_game(t_game *game)
 {
-    game->mlx = mlx_init();
+    if (!game->mlx)
+        game->mlx = mlx_init();
     game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
 
     game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);

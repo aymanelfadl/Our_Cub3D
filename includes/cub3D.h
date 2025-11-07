@@ -59,8 +59,12 @@ typedef struct s_img
 } t_img;
 
 typedef struct s_texture {
-    t_direction id;      
-    char        *path;
+    t_direction id;
+    char *path;        /* path set by parser */
+    t_img   img;       /* MLX image + addr/bpp/line_len/endian */
+    int     width;
+    int     height;
+    int     loaded;    /* 0/1 flag */
 } t_texture;
 
 typedef struct s_map {
@@ -116,12 +120,10 @@ typedef struct s_game {
 
 void start_game(t_game *game);
 
-static int  handle_key_press(int keycode, t_game *game);
-static int  handle_close(t_game *game);
-static int  move_player(t_game *game, float dx, float dy);
-static void rotate_player(t_game *game, float angle);
-static int  is_walkable(t_game *game, float x, float y);
-static void shutdown_game(t_game *game, int exit_code);
+/* textures API */
+int  texture_load_all(void *mlx, t_config *cfg);
+void texture_free_all(void *mlx, t_config *cfg);
+unsigned int tex_get_pixel(t_img *img, int x, int y);
 
 
 #endif 

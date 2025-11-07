@@ -19,8 +19,9 @@ PARSING = src/parse/parser.c src/parse/parser_process.c \
 		  src/parse/validation_color.c src/parse/cleanup.c
 
 RAYCASTING = raycasting/ray_casting.c
+TEXTURES = src/textures/loader.c src/textures/sampling.c
 
-SRC = $(PARSING) $(RAYCASTING) main.c
+SRC = $(PARSING) $(RAYCASTING) $(TEXTURES) main.c
 
 OBJ = $(SRC:.c=.o)
 
