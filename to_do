@@ -7,23 +7,27 @@
 	- `texture_load_all` pulls NO/SO/WE/EA walls into MLX images and the ray loop samples texels per column (with a basic shading pass).
 	- Follow-up: ensure `texture_free_all` runs on shutdown/error paths so MLX images are released.
 
-3. **Floor/Ceiling Rendering**
+3. **Resolution Handling**
+	- `parser_finalize_resolution` now falls back to `WINDOW_WIDTH`/`WINDOW_HEIGHT`; update `start_game` and render math to respect `cfg->resolution_*` instead of the compile-time constants.
+	- Add validation that the configured size does not exceed the display caps once MLX exposes them.
+
+4. **Floor/Ceiling Rendering**
 	- Fill floor/ceiling with configured colours or textures instead of the black background.
 
-4. **Rendering Loop Structure**
+5. **Rendering Loop Structure**
 	- Explore `mlx_loop_hook` or a timed redraw to decouple rendering from key events.
 
-5. **Collision Detection**
+6. **Collision Detection**
 	- Fine-tune walkability checks (padding near walls, diagonal movement) and add tests.
 
-6. **Resource Cleanup**
+7. **Resource Cleanup**
 	- Wire `texture_free_all` into shutdown, destroy the frame image, and audit parser clean-up on runtime exits.
 
-7. **Texture Error Handling**
+8. **Texture Error Handling**
 	- Bubble up precise errors for missing/corrupt XPM files and screen initialization failures (currently logs to `stderr`).
 
-8. **Sprite & Object Support**
+9. **Sprite & Object Support**
 	- Parse sprite data, load textures, and render them with depth-sorted drawing.
 
-9. **Automated Runtime Tests**
+10. **Automated Runtime Tests**
 	- Add smoke/integration tests that exercise the rendering pipeline alongside parser coverage.

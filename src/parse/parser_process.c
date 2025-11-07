@@ -95,8 +95,6 @@ static int dispatch_config(t_parse_state *state, const char *key, const char *va
     t_config    *cfg;
 
     cfg = &state->game->cfg;
-    if (key[0] == 'R' && key[1] == '\0')
-        return (parser_apply_resolution(cfg, value));
     if (key[0] == 'N' && key[1] == 'O' && key[2] == '\0')
         return (parser_apply_texture(cfg, NO, value));
     if (key[0] == 'S' && key[1] == 'O' && key[2] == '\0')
@@ -169,6 +167,7 @@ static int ensure_required_config(t_config *cfg)
             return (PARSE_ERR_CONFIG_MISSING);
         i++;
     }
+    parser_finalize_resolution(cfg);
     return (PARSE_OK);
 }
 

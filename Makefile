@@ -16,7 +16,8 @@ LIBFT = $(LIBFT_DIR)/libft.a
 PARSING = src/parse/parser.c src/parse/parser_process.c \
 		  src/parse/map_build.c src/parse/map_validate.c \
 		  src/parse/floodfill.c src/parse/validation_general.c \
-		  src/parse/validation_color.c src/parse/cleanup.c
+		  src/parse/validation_color.c src/parse/cleanup.c \
+		  src/parse/finalize_resolution.c
 
 RAYCASTING = raycasting/ray_casting.c
 TEXTURES = src/textures/loader.c src/textures/sampling.c
