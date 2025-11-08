@@ -14,8 +14,8 @@
 #define M_PI 3.14159265358979323846
 
 
-#define WINDOW_WIDTH 1000
-#define WINDOW_HEIGHT 800
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 #define EVENT_KEY_PRESS 2
 #define EVENT_DESTROY 17
@@ -31,7 +31,7 @@
 #define KEY_LEFT 65361
 #define KEY_RIGHT 65363
 
-#define MOVE_SPEED 0.08f
+#define MOVE_SPEED 0.1f
 #define ROT_SPEED 0.05f
 
 typedef enum e_direction
