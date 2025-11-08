@@ -17,14 +17,19 @@ static void rotate_player(t_game *game, double angle)
 
 int close_game(t_game *game)
 {
-    ft_free_textures_img(game);
-    end_game(game);
+    /* free textures and cleanup */
+    if (game && game->mlx)
+        texture_free_all(game->mlx, &game->cfg);
+    if (game && game->frame.mlx_img)
+        mlx_destroy_image(game->mlx, game->frame.mlx_img);
+    if (game && game->win)
+        mlx_destroy_window(game->mlx, game->win);
+    parser_release_config(&game->cfg);
     exit(EXIT_SUCCESS);
 }
 
 int handle_key(int key, t_game *game)
 {
-    printf("keycode:%d\n", key);
     player_movement(key, game);
     if (key == 65363)
         rotate_player(game, ROT_SPEED);
@@ -32,8 +37,13 @@ int handle_key(int key, t_game *game)
         rotate_player(game, -ROT_SPEED);
     if (key == 65307)
     {
-        ft_free_textures_img(game);
-        end_game(game);
+        if (game && game->mlx)
+            texture_free_all(game->mlx, &game->cfg);
+        if (game && game->frame.mlx_img)
+            mlx_destroy_image(game->mlx, game->frame.mlx_img);
+        if (game && game->win)
+            mlx_destroy_window(game->mlx, game->win);
+        parser_release_config(&game->cfg);
         exit(EXIT_SUCCESS);
     }
     mlx_destroy_image(game->mlx, game->frame.mlx_img);
