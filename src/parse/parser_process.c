@@ -167,6 +167,11 @@ static int ensure_required_config(t_config *cfg)
             return (PARSE_ERR_CONFIG_MISSING);
         i++;
     }
+    /* Floor and ceiling must be different colors */
+    if (cfg->floor_color.red == cfg->ceiling_color.red
+        && cfg->floor_color.green == cfg->ceiling_color.green
+        && cfg->floor_color.blue == cfg->ceiling_color.blue)
+        return (PARSE_ERR_COLOR_IDENTICAL);
     parser_finalize_resolution(cfg);
     return (PARSE_OK);
 }
