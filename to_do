@@ -31,3 +31,7 @@
 
 10. **Automated Runtime Tests**
 	- Add smoke/integration tests that exercise the rendering pipeline alongside parser coverage.
+
+11. **Merge `refactor/parser` into `main` — DONE**
+	- The `refactor/parser` branch was merged into `main` on 2025-11-08. Conflicts were resolved by accepting the refactor branch versions to bring `main` up to date with the refactor work.
+	- Follow-up: run a CI build and smoke tests to validate the merged state.

@@ -1,5 +1,10 @@
 # Cub3D Refactor Overview
 
+Status
+------
+- The changes from the `refactor/parser` branch were merged into `main` on 2025-11-08. The merge resolved conflicts by preferring the refactor branch content to bring `main` up to date with the refactor work. Please run the project's build/tests to validate the merged tree.
+
+
 ## Architecture
 - Modular parser lives under `src/parse/` and is surfaced through `includes/parser.h`; `main.c` now drives `parse_cub_file` and frees resources via `parser_release_config`.
 - Texture helpers live under `src/textures/` and expose `texture_load_all`, `texture_free_all`, and `tex_get_pixel` through `includes/cub3D.h`.
