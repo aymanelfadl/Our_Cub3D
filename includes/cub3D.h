@@ -56,6 +56,8 @@ typedef struct s_img
     int     bpp;         
     int     line_len;
     int     endian;
+    int     width;
+    int     height;
 } t_img;
 
 typedef struct s_texture {
@@ -74,6 +76,28 @@ typedef struct s_map {
     char **grid;
 } t_map;
 
+typedef struct s_hit
+{
+    float hit_x;
+    float hit_y;
+    int is_hit;
+    int side;
+} t_hit;
+
+typedef struct s_ray
+{
+    float camera_x;
+    float ray_x;
+    float ray_y;
+    float next_cell_x;
+    float next_cell_y;
+    int   step_x;
+    int   step_y;
+    float distance_x;
+    float distance_y;
+    struct s_hit hit;
+} t_ray;
+
 typedef struct s_player {
     float pos_x;
     float pos_y;
@@ -82,6 +106,7 @@ typedef struct s_player {
     float plane_x;
     float plane_y;
     t_direction direction;
+    t_ray    ray;
 } t_player;
 
 typedef struct s_config
@@ -102,15 +127,6 @@ typedef struct s_config
 } t_config;
 
 
-typedef struct s_hit
-{
-    float hit_x;
-    float hit_y;
-    int is_hit;
-    int side;
-} t_hit;
-
-
 typedef struct s_game {
     void     *mlx;
     void     *win;
@@ -118,12 +134,27 @@ typedef struct s_game {
     t_config cfg;
 } t_game;
 
-void start_game(t_game *game);
+int start_game(t_game *game);
 
 /* textures API */
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
 unsigned int tex_get_pixel(t_img *img, int x, int y);
+
+/* raycasting module functions (exported) */
+void draw_background(t_game *game, int ceil_color, int floor_color);
+int color_to_int(t_color c);
+void compute_ray_direction(t_game *game, int column);
+void init_dda(t_game *game, int map_y, int map_x);
+void perform_dda(t_game *game, int *map_y, int *map_x);
+void draw_vertical_line(t_game *game, int x);
+int handle_key(int key, t_game *game);
+int close_game(t_game *game);
+void my_mlx_pixel_put(t_img *img, int x, int y, int color);
+t_img get_proper_texture(t_texture *texs, t_direction dir);
+void parser_release_config(t_config *cfg);
+void player_movement(int key, t_game *game);
+void render(t_game *game);
 
 
 #endif 

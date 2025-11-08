@@ -19,7 +19,8 @@ PARSING = src/parse/parser.c src/parse/parser_process.c \
 		  src/parse/validation_color.c src/parse/cleanup.c \
 		  src/parse/finalize_resolution.c
 
-RAYCASTING = raycasting/ray_casting.c
+RAYCASTING = raycasting/dda_algo.c raycasting/drawing.c raycasting/events.c \
+			 raycasting/player_movement.c raycasting/ray_casting.c raycasting/utils.c
 TEXTURES = src/textures/loader.c src/textures/sampling.c
 
 SRC = $(PARSING) $(RAYCASTING) $(TEXTURES) main.c

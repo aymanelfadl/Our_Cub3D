@@ -45,7 +45,6 @@ static void	setup_map(t_game *game, const char *file)
 
 static void	read_game_file(int fd, t_game *game)
 {
-	printf("h==> %d\nw==> %d\n", game->cfg.map.height, game->cfg.map.width);
 	game_info(fd, game);
 	close(fd);
 }

@@ -54,21 +54,27 @@ void render(t_game *game)
 
 int start_game(t_game *game)
 {
-    game->mlx = mlx_init();
+    /* start_game: initialization */
     if (!game->mlx)
-        return (printf("mlx_init failed"), 0);
+        game->mlx = mlx_init();
+    if (!game->mlx)
+        return (fprintf(stderr, "mlx_init failed\n"), 0);
 
     game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
     if (!game->win)
-        return (printf("mlx_new_window failed"), 0);
+        return (fprintf(stderr, "mlx_new_window failed\n"), 0);
 
     game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
     if (!game->frame.mlx_img)
-        return (printf("mlx_new_image failed"), 0);
+        return (fprintf(stderr, "mlx_new_image failed\n"), 0);
     game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
 
-    if (!load_textures(game))
-        return (printf("Error: \nfailed to load textures\n"), 0);
+    /* Only load textures here if they haven't been loaded already by the caller */
+    if (!game->cfg.textures[0].img.mlx_img)
+    {
+        if (!load_textures(game))
+            return (fprintf(stderr, "Error: failed to load textures\n"), 0);
+    }
 
     render(game);
     mlx_hook(game->win, 2, 1L << 0, handle_key, game);

@@ -11,6 +11,11 @@ int load_texture(void *mlx, t_texture *tex)
         fprintf(stderr, "Error: texture or path is NULL\n");
         return (-1);
     }
+    if (!mlx)
+    {
+        fprintf(stderr, "Error: mlx is NULL when loading texture '%s'\n", tex->path);
+        return (-1);
+    }
     tex->img.mlx_img = mlx_xpm_file_to_image(mlx, tex->path, &w, &h);
     if (!tex->img.mlx_img)
     {
@@ -20,6 +25,8 @@ int load_texture(void *mlx, t_texture *tex)
     tex->img.addr = mlx_get_data_addr(tex->img.mlx_img, &tex->img.bpp, &tex->img.line_len, &tex->img.endian);
     tex->width = w;
     tex->height = h;
+    tex->img.width = w;
+    tex->img.height = h;
     tex->loaded = 1;
     return (0);
 }
