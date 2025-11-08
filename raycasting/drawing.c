@@ -5,7 +5,6 @@ void draw_background(t_game *game, int ceil_color, int floor_color)
 {
     int y;
     int x;
-
     y = 0;
     while (y < WINDOW_HEIGHT)
     {
@@ -16,6 +15,7 @@ void draw_background(t_game *game, int ceil_color, int floor_color)
                 my_mlx_pixel_put(&game->frame, x, y, ceil_color);
             else
                 my_mlx_pixel_put(&game->frame, x, y, floor_color);
+            (void)ceil_color; /* keep compiler happy if needed */
             x++;
         }
         y++;
@@ -48,7 +48,7 @@ void draw_vertical_line(t_game *game, int x)
     }
 
     if (!texture.addr)
-        printf("text err");
+        return; /* texture missing: skip drawing this column */
 
     lineHeight = (int)(WINDOW_HEIGHT / dist);
 

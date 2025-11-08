@@ -1,0 +1,33 @@
+# Outstanding Work (most urgent first)
+
+1. **Game Loop & Input** — *DONE*
+	- MLX key hooks in `raycasting/ray_casting.c` update `t_player`, clear/ redraw each frame, and cleanly exit on `Esc`.
+
+2. **Texture Loading & Sampling** — *DONE*
+	- `texture_load_all` pulls NO/SO/WE/EA walls into MLX images and the ray loop samples texels per column (with a basic shading pass).
+	- Follow-up: ensure `texture_free_all` runs on shutdown/error paths so MLX images are released.
+
+3. **Resolution Handling**
+	- `parser_finalize_resolution` now falls back to `WINDOW_WIDTH`/`WINDOW_HEIGHT`; update `start_game` and render math to respect `cfg->resolution_*` instead of the compile-time constants.
+	- Add validation that the configured size does not exceed the display caps once MLX exposes them.
+
+4. **Floor/Ceiling Rendering**
+	- Fill floor/ceiling with configured colours or textures instead of the black background.
+
+5. **Rendering Loop Structure**
+	- Explore `mlx_loop_hook` or a timed redraw to decouple rendering from key events.
+
+6. **Collision Detection**
+	- Fine-tune walkability checks (padding near walls, diagonal movement) and add tests.
+
+7. **Resource Cleanup**
+	- Wire `texture_free_all` into shutdown, destroy the frame image, and audit parser clean-up on runtime exits.
+
+8. **Texture Error Handling**
+	- Bubble up precise errors for missing/corrupt XPM files and screen initialization failures (currently logs to `stderr`).
+
+9. **Sprite & Object Support**
+	- Parse sprite data, load textures, and render them with depth-sorted drawing.
+
+10. **Automated Runtime Tests**
+	- Add smoke/integration tests that exercise the rendering pipeline alongside parser coverage.

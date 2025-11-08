@@ -3,91 +3,65 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ares <ares@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 11:11:03 by aelfadl           #+#    #+#             */
-/*   Updated: 2025/09/06 11:11:03 by aelfadl          ###   ########.fr       */
+/*   Updated: 2025/11/08 17:30:48 by ares             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
-
-void print_info(t_game *game)
-{
-    printf("Textures:\n");
-    for (int i = 0; i < TEXTURE_COUNT; i++)
-        printf(" %d: id=%d path=%s\n", i, game->cfg.textures[i].id, game->cfg.textures[i].path);
-
-    if (game->cfg.have_floor)
-        printf("Floor color: R=%d G=%d B=%d\n", game->cfg.floor_color.red, game->cfg.floor_color.green, game->cfg.floor_color.blue);
-    if (game->cfg.have_ceiling)
-        printf("Ceiling color: R=%d G=%d B=%d\n", game->cfg.ceiling_color.red, game->cfg.ceiling_color.green, game->cfg.ceiling_color.blue);
-
-    printf("MAP:\n");
-    if (game->cfg.map.grid)
-    {
-        for (int i = 0; i < game->cfg.map.height; i++)
-            if (game->cfg.map.grid[i])
-                printf("%s\n", game->cfg.map.grid[i]);
-    }
-
-    printf("PLAYER:\n");
-    printf(" Position: x=%.2f, y=%.2f\n", game->cfg.player.pos_x, game->cfg.player.pos_y);
-
-    if (game->cfg.player.direction == NO)
-        printf(" Direction: North\n");
-    else if (game->cfg.player.direction == SO)
-        printf(" Direction: South\n");
-    else if (game->cfg.player.direction == WE)
-        printf(" Direction: West\n");
-    else if (game->cfg.player.direction == EA)
-        printf(" Direction: East\n");
-    else
-        printf(" Direction: Unknown (%d)\n", game->cfg.player.direction);
-    printf("===================\n\n");
-}
-
-void debug_print_split(char **split, const char *original_line)
-{
-    printf("Original line: '%s'\n", original_line);
-    printf("Split size: %d\n", ft_split_size(split));
-
-    if (!split)
-    {
-        printf("Split is NULL\n");
-        return;
-    }
-
-    for (int i = 0; split[i]; i++)
-    {
-        printf("split[%d]: '%s' (length: %zu)\n", i, split[i], strlen(split[i]));
-    }
-}
+#include "parser.h"
 
 int main(int ac, char *av[])
 {
-    t_game *game;
-
     if (ac != 2)
     {
         printf("Usage: %s <file.cub>\n", av[0]);
         return 1;
     }
-    
-    game = init_game(av[1]);
-    if (!game)
-        exit(EXIT_FAILURE);
 
-    print_info(game);
-    // =================================================================== //   
-    if (!start_game(game))
+    t_game game;
+    int     code;
+
+    ft_bzero(&game, sizeof(t_game));
+    code = parse_cub_file(av[1], &game);
+    if (code != PARSE_OK)
     {
-        end_game(game);
-        exit(EXIT_FAILURE);
+        fprintf(stderr, "Error\n%s\n", parser_strerror(code));
+        parser_release_config(&game.cfg);
+        return (1);
     }
-    // =================================================================== //
-    ft_free_textures_img(game);
-    end_game(game);
-
-    return 0;
+    /* parsed texture paths (not printed) */
+    /* If parser didn't supply textures, fall back to built-in defaults (they will be loaded by start_game) */
+    {
+        const char *defaults[TEXTURE_COUNT] = {
+            "textures/wall_1.xpm",
+            "textures/wall_2.xpm",
+            "textures/wall_3.xpm",
+            "textures/wall_4.xpm"
+        };
+        for (int i = 0; i < TEXTURE_COUNT; ++i)
+        {
+            if (!game.cfg.textures[i].path)
+                game.cfg.textures[i].path = ft_strdup(defaults[i]);
+        }
+    }
+    /* initialize MLX so we can load textures before starting the game */
+    game.mlx = mlx_init();
+    if (!game.mlx)
+    {
+        fprintf(stderr, "Error\nFailed to initialize MLX\n");
+        parser_release_config(&game.cfg);
+        return (1);
+    }
+    if (texture_load_all(game.mlx, &game.cfg) != 0)
+    {
+        fprintf(stderr, "Error\nFailed to load textures\n");
+        parser_release_config(&game.cfg);
+        return (1);
+    }
+    start_game(&game);
+    parser_release_config(&game.cfg);
+    return (0);
 }
