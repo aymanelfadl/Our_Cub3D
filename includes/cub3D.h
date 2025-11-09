@@ -139,7 +139,6 @@ int start_game(t_game *game);
 /* textures API */
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
-unsigned int tex_get_pixel(t_img *img, int x, int y);
 
 /* raycasting module functions (exported) */
 void draw_background(t_game *game, int ceil_color, int floor_color);

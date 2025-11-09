@@ -8,7 +8,7 @@ cub3D
 
 context/*
 !context/.gitkeep
-
+/minilibx-linux
 .vscode
 .idea/
 *.swp
