@@ -47,21 +47,8 @@ int main(int ac, char *av[])
                 game.cfg.textures[i].path = ft_strdup(defaults[i]);
         }
     }
-    /* initialize MLX so we can load textures before starting the game */
-    game.mlx = mlx_init();
-    if (!game.mlx)
-    {
-        fprintf(stderr, "Error\nFailed to initialize MLX\n");
-        parser_release_config(&game.cfg);
-        return (1);
-    }
-    if (texture_load_all(game.mlx, &game.cfg) != 0)
-    {
-        fprintf(stderr, "Error\nFailed to load textures\n");
-        parser_release_config(&game.cfg);
-        return (1);
-    }
-    start_game(&game);
+    if (!start_game(&game))
+        return (parser_release_config(&game.cfg), 1);
     parser_release_config(&game.cfg);
     return (0);
 }
