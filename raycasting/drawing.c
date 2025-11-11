@@ -65,7 +65,7 @@ void draw_vertical_line(t_game *game, int x)
 
     float step = (float)texture.height / lineHeight;
     float texPos = (drawStart - WINDOW_HEIGHT / 2 + lineHeight / 2) * step;
-
+    
 
     while (drawStart <= drawEnd)
     {
@@ -80,6 +80,6 @@ void draw_vertical_line(t_game *game, int x)
         size_t off = (size_t)tex_y * (size_t)texture.line_len + (size_t)tex_x * (texture.bpp / 8);
         unsigned int color = *(unsigned int *)(texture.addr + off);
         my_mlx_pixel_put(&game->frame, x, drawStart, color);
+        drawStart++;
     }
-    drawStart++;
 }
