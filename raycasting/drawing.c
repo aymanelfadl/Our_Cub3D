@@ -15,7 +15,6 @@ void draw_background(t_game *game, int ceil_color, int floor_color)
                 my_mlx_pixel_put(&game->frame, x, y, ceil_color);
             else
                 my_mlx_pixel_put(&game->frame, x, y, floor_color);
-            (void)ceil_color; /* keep compiler happy if needed */
             x++;
         }
         y++;
@@ -28,7 +27,6 @@ void draw_vertical_line(t_game *game, int x)
     float wall_x;
     t_img texture;
 
-    // FIXED: Compute perpendicular distance correctly
     float dist;
     if (!game->cfg.player.ray.hit.side) // vertical wall
     {
@@ -38,7 +36,7 @@ void draw_vertical_line(t_game *game, int x)
         else
             texture = get_proper_texture(game->cfg.textures, EA);
     }
-    else // horizontal wall
+    else // horizontal 
     {
         dist = game->cfg.player.ray.distance_y - game->cfg.player.ray.next_cell_y;
         if (game->cfg.player.ray.ray_y > 0)
@@ -46,9 +44,6 @@ void draw_vertical_line(t_game *game, int x)
         else
             texture = get_proper_texture(game->cfg.textures, SO);
     }
-
-    if (!texture.addr)
-        return; /* texture missing: skip drawing this column */
 
     lineHeight = (int)(WINDOW_HEIGHT / dist);
 
@@ -85,6 +80,6 @@ void draw_vertical_line(t_game *game, int x)
         size_t off = (size_t)tex_y * (size_t)texture.line_len + (size_t)tex_x * (texture.bpp / 8);
         unsigned int color = *(unsigned int *)(texture.addr + off);
         my_mlx_pixel_put(&game->frame, x, drawStart, color);
-        drawStart++;
     }
+    drawStart++;
 }

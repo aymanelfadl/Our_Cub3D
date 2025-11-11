@@ -17,7 +17,6 @@ static void rotate_player(t_game *game, double angle)
 
 int close_game(t_game *game)
 {
-    /* free textures and cleanup */
     if (game && game->mlx)
         texture_free_all(game->mlx, &game->cfg);
     if (game && game->frame.mlx_img)

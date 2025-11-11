@@ -18,6 +18,7 @@ void compute_ray_direction(t_game *game, int column)
         game->cfg.player.ray.next_cell_y = 1e30f;
 }
 
+// next cell is the grid space. 
 void init_dda(t_game *game, int map_y, int map_x)
 {
     if (game->cfg.player.ray.ray_x < 0)
@@ -61,15 +62,6 @@ void perform_dda(t_game *game, int *map_y, int *map_x)
             (*map_y) += game->cfg.player.ray.step_y;
             game->cfg.player.ray.hit.side = 1; // horizontal wall
         }
-
-        /* safety: ensure we don't index outside the map bounds */
-        if (*map_y < 0 || *map_y >= game->cfg.map.height || *map_x < 0 || *map_x >= game->cfg.map.width)
-        {
-            /* stepped outside map — treat as a hit to stop the loop and avoid crash */
-            game->cfg.player.ray.hit.is_hit = 1;
-            break;
-        }
-
         if (game->cfg.map.grid[*map_y][*map_x] == '1')
             game->cfg.player.ray.hit.is_hit = 1;
     }
