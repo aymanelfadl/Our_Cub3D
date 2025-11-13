@@ -33,6 +33,8 @@
 
 #define MOVE_SPEED 0.1f
 #define ROT_SPEED 0.05f
+#define TILE_SIZE 10
+#define RADIUS 5 
 
 typedef enum e_direction
 {
@@ -131,6 +133,7 @@ typedef struct s_game {
     void     *mlx;
     void     *win;
     t_img    frame;
+    t_img    minimap;
     t_config cfg;
 } t_game;
 

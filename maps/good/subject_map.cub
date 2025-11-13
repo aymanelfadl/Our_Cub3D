@@ -3,7 +3,7 @@ SO textures/wall_2.xpm
 WE textures/sky_1.xpm
 EA textures/pillar.xpm
 
-F 0,255,0
+F 255,255,255
 C 255,0,0
 
         1111111111111111111111111
