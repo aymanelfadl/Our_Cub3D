@@ -159,6 +159,7 @@ void compute_ray_direction(t_game *game, int column);
 void init_dda(t_game *game, int map_y, int map_x);
 void perform_dda(t_game *game, int *map_y, int *map_x);
 void draw_vertical_line(t_game *game, int x);
+int mouse_move(int x, int y, void *game);
 int handle_key(int key, t_game *game);
 int close_game(t_game *game);
 void my_mlx_pixel_put(t_img *img, int x, int y, int color);

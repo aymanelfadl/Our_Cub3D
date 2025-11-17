@@ -137,7 +137,9 @@ int start_game(t_game *game)
 
     render(game);
     mlx_hook(game->win, 2, 1L << 0, handle_key, game);
+    mlx_hook(game->win, 6,  1L<<6, mouse_move, game);
     mlx_hook(game->win, 17, 0, close_game, game);
+    mlx_mouse_hide(game->mlx,game->win);
     mlx_loop(game->mlx);
     return 1;
 }
