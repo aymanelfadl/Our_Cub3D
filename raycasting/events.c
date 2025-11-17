@@ -55,16 +55,7 @@ int handle_key(int key, t_game *game)
     if (key == 65361)
         rotate_player(game, -ROT_SPEED);
     if (key == 65307)
-    {
-        if (game && game->mlx)
-            texture_free_all(game->mlx, &game->cfg);
-        if (game && game->frame.mlx_img)
-            mlx_destroy_image(game->mlx, game->frame.mlx_img);
-        if (game && game->win)
-            mlx_destroy_window(game->mlx, game->win);
-        parser_release_config(&game->cfg);
-        exit(EXIT_SUCCESS);
-    }
+        close_game(game);
     mlx_destroy_image(game->mlx, game->frame.mlx_img);
     game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
     game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
