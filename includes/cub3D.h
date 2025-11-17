@@ -144,6 +144,14 @@ int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
 unsigned int tex_get_pixel(t_img *img, int x, int y);
 
+/* textures Drawing*/
+t_img get_texture(t_game *game);
+float get_dist(t_game *game, int hit_side);
+float get_wall_hit(t_game *game, float dist);
+int get_drawing_start(int line_height);
+int get_drawing_end(int line_height);
+
+
 /* raycasting module functions (exported) */
 void draw_background(t_game *game, int ceil_color, int floor_color);
 int color_to_int(t_color c);

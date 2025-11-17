@@ -18,6 +18,7 @@ t_img get_proper_texture(t_texture *texs, t_direction dir)
 {
     int i;
     t_img rst;
+    
     rst.addr = NULL;
     i = 0;
     while (i < TEXTURE_COUNT)

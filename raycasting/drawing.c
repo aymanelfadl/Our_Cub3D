@@ -1,6 +1,5 @@
 #include "cub3D.h"
 
-
 void draw_background(t_game *game, int ceil_color, int floor_color)
 {
     int y;
@@ -21,65 +20,41 @@ void draw_background(t_game *game, int ceil_color, int floor_color)
     }
 }
 
+unsigned int get_texture_color(t_img texture, float tex_position, int tex_x)
+{
+    int tex_y;
+    size_t offset;
+    
+    tex_y = (int)tex_position;
+    if (tex_y < 0)
+        tex_y = 0;
+    if (tex_y >= texture.height)
+        tex_y = texture.height - 1;
+    offset = (size_t)tex_y * (size_t)texture.line_len + (size_t)tex_x * (texture.bpp / 8);
+    return (*(unsigned int *)(texture.addr + offset));
+}
+
 void draw_vertical_line(t_game *game, int x)
 {
-    int lineHeight;
-    float wall_x;
+    int line_height;
+    int draw_start;
+    int draw_end;
+    int tex_x;
     t_img texture;
-
-    float dist;
-    if (!game->cfg.player.ray.hit.side) // vertical wall
-    {
-        dist = game->cfg.player.ray.distance_x - game->cfg.player.ray.next_cell_x;
-        if (game->cfg.player.ray.ray_x > 0)
-            texture = get_proper_texture(game->cfg.textures, WE);
-        else
-            texture = get_proper_texture(game->cfg.textures, EA);
-    }
-    else // horizontal 
-    {
-        dist = game->cfg.player.ray.distance_y - game->cfg.player.ray.next_cell_y;
-        if (game->cfg.player.ray.ray_y > 0)
-            texture = get_proper_texture(game->cfg.textures, NO);
-        else
-            texture = get_proper_texture(game->cfg.textures, SO);
-    }
-
-    lineHeight = (int)(WINDOW_HEIGHT / dist);
-
-    // Wall hit position for texture mapping
-    if (!game->cfg.player.ray.hit.side)
-        wall_x = game->cfg.player.pos_y + dist * game->cfg.player.ray.ray_y;
-    else
-        wall_x = game->cfg.player.pos_x + dist * game->cfg.player.ray.ray_x;
-
-    wall_x -= floor(wall_x);
-    int tex_x = (int)(wall_x * (float)texture.width);
-
-    int drawStart = -lineHeight / 2 + WINDOW_HEIGHT / 2;
-    if (drawStart < 0)
-        drawStart = 0;
-    int drawEnd = lineHeight / 2 + WINDOW_HEIGHT / 2;
-    if (drawEnd >= WINDOW_HEIGHT)
-        drawEnd = WINDOW_HEIGHT - 1;
-
-    float step = (float)texture.height / lineHeight;
-    float texPos = (drawStart - WINDOW_HEIGHT / 2 + lineHeight / 2) * step;
+    float text_position;
+    float step;
     
-
-    while (drawStart <= drawEnd)
-    {
-        int tex_y = (int)texPos;
-        if (tex_y < 0)
-            tex_y = 0;
-        if (tex_y >= texture.height)
-            tex_y = texture.height - 1;
-
-        texPos += step;
-
-        size_t off = (size_t)tex_y * (size_t)texture.line_len + (size_t)tex_x * (texture.bpp / 8);
-        unsigned int color = *(unsigned int *)(texture.addr + off);
-        my_mlx_pixel_put(&game->frame, x, drawStart, color);
-        drawStart++;
+    texture = get_texture(game);
+    line_height = (int)(WINDOW_HEIGHT / get_dist(game, game->cfg.player.ray.hit.side));
+    draw_start = get_drawing_start(line_height);
+    draw_end = get_drawing_end(line_height);
+    tex_x = (int)(get_wall_hit(game, get_dist(game, game->cfg.player.ray.hit.side)) * (float)texture.width);
+    step = (float)texture.height / line_height;
+    text_position = (draw_start - WINDOW_HEIGHT / 2 + line_height / 2) * step;
+    while (draw_start <= draw_end)
+    {    
+        text_position += step;
+        my_mlx_pixel_put(&game->frame, x, draw_start, get_texture_color(texture, text_position, tex_x));
+        draw_start++;
     }
 }
