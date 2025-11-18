@@ -92,8 +92,6 @@ static int fill_row(t_parse_state *state, int row, int *player_count)
             cfg->map.grid[row][col] = '0';
             (*player_count)++;
         }
-        else if (c == '2')
-            cfg->map.sprite_count += 1;
         col++;
     }
     return (PARSE_OK);
@@ -141,12 +139,6 @@ int parser_normalize_map(t_parse_state *state)
     {
         destroy_map_grid(&state->game->cfg.map);
         return (code);
-    }
-    if (state->game->cfg.map.sprite_count > 0
-        && !state->game->cfg.have_sprite)
-    {
-        destroy_map_grid(&state->game->cfg.map);
-        return (PARSE_ERR_TEXTURE);
     }
     code = parser_validate_enclosure(&state->game->cfg.map);
     if (code != PARSE_OK)

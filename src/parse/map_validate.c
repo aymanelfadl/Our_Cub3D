@@ -3,7 +3,7 @@
 
 static int is_allowed_char(char c)
 {
-    return (c == '0' || c == '1' || c == '2' || c == 'N'
+    return (c == '0' || c == '1' || c == 'N'
         || c == 'S' || c == 'E' || c == 'W' || c == ' ');
 }
 

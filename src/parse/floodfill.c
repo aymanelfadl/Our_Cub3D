@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "parser_internal.h"
 
-#define IS_WALKABLE(c) ((c) == '0' || (c) == '2')
+#define IS_WALKABLE(c) ((c) == '0')
 
 typedef struct s_point
 {

@@ -103,8 +103,6 @@ static int dispatch_config(t_parse_state *state, const char *key, const char *va
         return (parser_apply_texture(cfg, WE, value));
     if (key[0] == 'E' && key[1] == 'A' && key[2] == '\0')
         return (parser_apply_texture(cfg, EA, value));
-    if (key[0] == 'S' && key[1] == '\0')
-        return (parser_apply_texture(cfg, TEXTURE_COUNT, value));
     if (key[0] == 'F' && key[1] == '\0')
         return (parser_apply_color(cfg, value, 1));
     if (key[0] == 'C' && key[1] == '\0')
@@ -167,12 +165,6 @@ static int ensure_required_config(t_config *cfg)
             return (PARSE_ERR_CONFIG_MISSING);
         i++;
     }
-    /* Floor and ceiling must be different colors */
-    if (cfg->floor_color.red == cfg->ceiling_color.red
-        && cfg->floor_color.green == cfg->ceiling_color.green
-        && cfg->floor_color.blue == cfg->ceiling_color.blue)
-        return (PARSE_ERR_COLOR_IDENTICAL);
-    parser_finalize_resolution(cfg);
     return (PARSE_OK);
 }
 

@@ -46,7 +46,9 @@ int parser_apply_texture(t_config *cfg, int index, const char *value)
         return (PARSE_ERR_ALLOC);
     if (index < TEXTURE_COUNT)
         cfg->textures[index].id = (t_direction)index;
+#ifdef BONUS
     else
         cfg->have_sprite = 1;
+#endif
     return (PARSE_OK);
 }
