@@ -18,6 +18,12 @@ PARSING = src/parse/parser.c src/parse/parser_process.c \
 		  src/parse/floodfill.c src/parse/validation_general.c \
 		  src/parse/validation_color.c src/parse/cleanup.c
 
+# Bonus parsing sources
+PARSING_BONUS = src/parse/bonus/map_validate_bonus.c \
+				src/parse/bonus/collect_doors.c \
+				src/parse/bonus/collect_sprites.c \
+				src/parse/bonus/parser_bonus.c
+
 RAYCASTING = raycasting/dda_algo.c raycasting/drawing.c raycasting/events.c \
 			 raycasting/player_movement.c raycasting/ray_casting.c raycasting/utils.c
 TEXTURES = src/textures/loader.c 
@@ -29,6 +35,10 @@ OBJ = $(SRC:.c=.o)
 PARSER_OBJS = $(PARSING:.c=.o)
 PARSER_TEST_OBJ = tests/parser_main.o
 
+# Bonus parser objects
+PARSER_BONUS_OBJS = $(PARSING:.c=.o) $(PARSING_BONUS:.c=.o)
+PARSER_BONUS_TEST_OBJ = tests/parser_bonus_test.o
+
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT)
@@ -39,16 +49,21 @@ $(LIBFT):
 	@make -C $(LIBFT_DIR)
 
 clean:
-	rm -f $(OBJ) $(PARSER_TEST_OBJ)
+	rm -f $(OBJ) $(PARSER_TEST_OBJ) $(PARSER_BONUS_TEST_OBJ)
 	@make -C $(LIBFT_DIR) clean
 
 fclean: clean
-	rm -f $(NAME) parser_tester
+	rm -f $(NAME) parser_tester parser_bonus_tester
 	@make -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
 parser_tester: $(PARSER_OBJS) $(PARSER_TEST_OBJ) $(LIBFT)
 	$(CC) $(CFLAGS) $(PARSER_OBJS) $(PARSER_TEST_OBJ) $(LIBFT) -o parser_tester
+
+# Parser bonus tester
+parser_bonus_tester: $(PARSER_BONUS_OBJS) $(PARSER_BONUS_TEST_OBJ) $(LIBFT)
+	$(CC) $(CFLAGS) $(PARSER_BONUS_OBJS) $(PARSER_BONUS_TEST_OBJ) $(LIBFT) -o parser_bonus_tester
+	@echo "✅ Parser bonus tester compiled!"
 
 .PHONY: all clean fclean re
