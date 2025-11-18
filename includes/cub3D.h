@@ -121,9 +121,6 @@ typedef struct s_config
     int       have_ceiling;
     int       have_sprite;
     int       have_player;
-    int       have_resolution;
-    int       resolution_width;
-    int       resolution_height;
 } t_config;
 
 

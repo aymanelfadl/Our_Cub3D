@@ -22,6 +22,5 @@ int     parser_validate_map_chars(const char *line);
 void    parser_set_player(t_config *cfg, int row, int col, char dir);
 int     parser_finalize_player(t_config *cfg, int count);
 int     parser_validate_enclosure(t_map *map);
-void    parser_finalize_resolution(t_config *cfg);
 
 #endif

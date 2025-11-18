@@ -46,7 +46,6 @@ const char   *parser_strerror(int code)
         [PARSE_ERR_CONFIG_MISSING] = "Required configuration entry is missing",
         [PARSE_ERR_TEXTURE] = "Texture entry is invalid or unreadable",
     [PARSE_ERR_COLOR] = "Color entry must be three integers between 0 and 255",
-        [PARSE_ERR_RESOLUTION] = "Resolution entry must be two positive integers",
         [PARSE_ERR_MAP_MISSING] = "Map block is missing or empty",
         [PARSE_ERR_MAP_INVALID_CHAR] = "Map contains invalid characters",
         [PARSE_ERR_MAP_GAP] = "Empty line inside map block",

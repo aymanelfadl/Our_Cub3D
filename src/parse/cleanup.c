@@ -47,9 +47,6 @@ void parser_release_config(t_config *cfg)
     cfg->have_floor = 0;
     cfg->have_ceiling = 0;
     cfg->have_player = 0;
-    cfg->have_resolution = 0;
-    cfg->resolution_width = 0;
-    cfg->resolution_height = 0;
 }
 
 void parser_free_map_lines(char **lines, int count)
