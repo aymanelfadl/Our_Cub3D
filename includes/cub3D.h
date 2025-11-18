@@ -182,4 +182,10 @@ void player_movement(int key, t_game *game);
 void render(t_game *game);
 
 
+/// bonus 
+void calculate_sprite_distances(t_game *game);
+void sort_sprites(t_sprite *sprites, int count);
+void draw_sprite(t_game *game, t_sprite *sprite);
+
+
 #endif 
