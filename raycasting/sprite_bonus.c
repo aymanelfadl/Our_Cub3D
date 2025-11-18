@@ -63,6 +63,30 @@ void sort_sprites(t_sprite *sprites, int count)
     }
 }
 
+void update_sprite_animations(t_game *game)
+{
+    int i;
+
+    i = 0;
+    while (i < game->sprite_count)
+    {
+        // Update frame timer
+        game->sprites[i].frame_timer += 0.016f;  // ~60 FPS (1/60 = 0.016)
+        
+        // Check if it's time to switch frames
+        if (game->sprites[i].frame_timer >= game->sprites[i].frame_duration)
+        {
+            game->sprites[i].frame_timer = 0.0f;
+            game->sprites[i].current_frame++;
+            
+            // Loop back to first frame
+            if (game->sprites[i].current_frame >= game->sprites[i].frame_count)
+                game->sprites[i].current_frame = 0;
+        }
+        i++;
+    }
+}
+
 void draw_sprite(t_game *game, t_sprite *sprite)
 {
     float sprite_x;
@@ -138,14 +162,19 @@ void draw_sprite(t_game *game, t_sprite *sprite)
         y = draw_start_y;
         while (y <= draw_end_y)
         {
+            // Use current animation frame
+            int frame_index = sprite->current_frame;
+            if (frame_index >= game->sprite_frame_count)
+                frame_index = 0;
+            
             // If texture loaded, use it
-            if (game->sprite_texture.addr != NULL)
+            if (game->sprite_textures[frame_index].addr != NULL)
             {
                 tex_x = (int)((stripe - (-sprite_width / 2 + sprite_screen_x)) * 
-                              game->sprite_texture.width / sprite_width);
-                tex_y = (int)((y - draw_start_y) * game->sprite_texture.height / sprite_height);
+                              game->sprite_textures[frame_index].width / sprite_width);
+                tex_y = (int)((y - draw_start_y) * game->sprite_textures[frame_index].height / sprite_height);
                 
-                color = get_sprite_pixel(&game->sprite_texture, tex_x, tex_y);
+                color = get_sprite_pixel(&game->sprite_textures[frame_index], tex_x, tex_y);
                 
                 if (!is_transparent(color))
                     my_mlx_pixel_put(&game->frame, stripe, y, color);

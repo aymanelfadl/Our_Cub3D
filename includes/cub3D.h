@@ -134,7 +134,10 @@ typedef struct s_sprite
     float x;
     float y;
     float distance;
-    int texture_id;    // 0=enemy, 1=barrel, 2=lamp, 3=item
+    int current_frame;     // Current animation frame (0, 1, 2, ...)
+    int frame_count;       // Total number of frames
+    float frame_timer;     // Time accumulator for frame switching
+    float frame_duration;  // Time per frame (lower = faster animation)
 } t_sprite;
 
 typedef struct s_door
@@ -153,7 +156,8 @@ typedef struct s_game {
     t_sprite *sprites;
     int       sprite_count;
     float     z_buffer[WINDOW_WIDTH];
-    t_img     sprite_texture;
+    t_img     sprite_textures[4];  // Array for animation frames (4 frames max)
+    int       sprite_frame_count;   // How many frames loaded
     t_door   *doors;
     int       door_count;
     t_img     door_texture;
@@ -189,12 +193,14 @@ t_img get_proper_texture(t_texture *texs, t_direction dir);
 void parser_release_config(t_config *cfg);
 void player_movement(int key, t_game *game);
 void render(t_game *game);
+int render_loop(t_game *game);
 
 
 /// bonus 
 void calculate_sprite_distances(t_game *game);
 void sort_sprites(t_sprite *sprites, int count);
 void draw_sprite(t_game *game, t_sprite *sprite);
+void update_sprite_animations(t_game *game);
 t_door *find_door_at(t_game *game, int x, int y);
 void toggle_door(t_game *game);
 

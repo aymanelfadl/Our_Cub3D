@@ -88,6 +88,13 @@ void draw_minimap(t_game *game)
     draw_player(game);
 }
 
+// Animation loop function for continuous rendering
+int render_loop(t_game *game)
+{
+    render(game);
+    return (0);
+}
+
 void render(t_game *game)
 {
     int x;
@@ -112,6 +119,7 @@ void render(t_game *game)
     
     if (game->sprite_count > 0)
     {
+        update_sprite_animations(game);  // Update animation frames
         calculate_sprite_distances(game);
         sort_sprites(game->sprites, game->sprite_count);
         int i = 0;
@@ -151,44 +159,81 @@ int start_game(t_game *game)
     if (texture_load_all(game->mlx, &game->cfg) != 0)
         return (fprintf(stderr, "Error\nFailed to load textures\n"), 0);
 
-    // Load sprite texture (hardcoded path - adjust as needed)
-    game->sprite_texture.mlx_img = mlx_xpm_file_to_image(game->mlx, 
-                                    "textures/pillar.xpm",
-                                    &game->sprite_texture.width,
-                                    &game->sprite_texture.height);
-    if (game->sprite_texture.mlx_img)
+    char *frame_paths[] = {
+        "textures/1.xpm",
+        "textures/2.xpm",
+        "textures/3.xpm",
+        "textures/4.xpm"
+    };
+    
+    game->sprite_frame_count = 0;
+    int i = 0;
+    while (i < 4)
     {
-        game->sprite_texture.addr = mlx_get_data_addr(game->sprite_texture.mlx_img,
-                                    &game->sprite_texture.bpp,
-                                    &game->sprite_texture.line_len,
-                                    &game->sprite_texture.endian);
-        printf("Sprite texture loaded: %dx%d\n", game->sprite_texture.width, game->sprite_texture.height);
+        game->sprite_textures[i].mlx_img = mlx_xpm_file_to_image(game->mlx,
+                                            frame_paths[i],
+                                            &game->sprite_textures[i].width,
+                                            &game->sprite_textures[i].height);
+        if (game->sprite_textures[i].mlx_img)
+        {
+            game->sprite_textures[i].addr = mlx_get_data_addr(game->sprite_textures[i].mlx_img,
+                                            &game->sprite_textures[i].bpp,
+                                            &game->sprite_textures[i].line_len,
+                                            &game->sprite_textures[i].endian);
+            game->sprite_frame_count++;
+            printf("Sprite frame %d loaded: %dx%d\n", i, game->sprite_textures[i].width, game->sprite_textures[i].height);
+        }
+        else
+        {
+            printf("Warning: Could not load sprite frame %d at '%s'\n", i, frame_paths[i]);
+            game->sprite_textures[i].addr = NULL;
+        }
+        i++;
     }
-    else
+    
+    // If no frames loaded, use a single fallback texture
+    if (game->sprite_frame_count == 0)
     {
-        printf("Warning: Could not load sprite texture 'textures/barrel.xpm'\n");
-        game->sprite_texture.addr = NULL;
+        printf("No animation frames loaded, using single texture fallback\n");
+        game->sprite_textures[0].mlx_img = mlx_xpm_file_to_image(game->mlx,
+                                            "textures/pillar.xpm",
+                                            &game->sprite_textures[0].width,
+                                            &game->sprite_textures[0].height);
+        if (game->sprite_textures[0].mlx_img)
+        {
+            game->sprite_textures[0].addr = mlx_get_data_addr(game->sprite_textures[0].mlx_img,
+                                            &game->sprite_textures[0].bpp,
+                                            &game->sprite_textures[0].line_len,
+                                            &game->sprite_textures[0].endian);
+            game->sprite_frame_count = 1;
+        }
     }
 
     // Create fake static sprites for testing
     // Place them in front of the player based on typical map positions
-    game->sprite_count = 3;
+    game->sprite_count = 1;
     game->sprites = malloc(sizeof(t_sprite) * game->sprite_count);
     if (game->sprites)
     {
-        // Adjust these positions to be near your player's starting location
-        // Player is around (42.5, 5.5), so put sprites ahead
-        game->sprites[0].x = 40.5f;  // Close to player
-        game->sprites[0].y = 5.5f;
+        // Debug: Show player position to help locate sprite
+        printf("=== PLAYER START POSITION ===\n");
+        printf("Player at: (%.1f, %.1f)\n", game->cfg.player.pos_x, game->cfg.player.pos_y);
+        printf("Player direction: (%.2f, %.2f)\n", game->cfg.player.dir_x, game->cfg.player.dir_y);
+        
+        // Single animated sprite - place it directly in front of player
+        // Player is at (42.5, 5.5) facing north (dir_y = -1)
+        // So place sprite a few units north (lower Y)
+        game->sprites[0].x = 42.5f;  // Same X as player
+        game->sprites[0].y = 2.5f;   // 3 units north (in front)
         game->sprites[0].distance = 0.0f;
+        game->sprites[0].current_frame = 0;
+        game->sprites[0].frame_count = game->sprite_frame_count;
+        game->sprites[0].frame_timer = 0.0f;
+        game->sprites[0].frame_duration = 0.05f;  // 0.05 seconds per frame (20 FPS - very fast!)
         
-        game->sprites[1].x = 38.5f;  // A bit further
-        game->sprites[1].y = 7.5f;
-        game->sprites[1].distance = 0.0f;
-        
-        game->sprites[2].x = 35.5f;  // Even further
-        game->sprites[2].y = 5.5f;
-        game->sprites[2].distance = 0.0f;
+        printf("Created sprite at: (%.1f, %.1f) - directly ahead!\n", game->sprites[0].x, game->sprites[0].y);
+        printf("Sprite frames: %d (animating at 20 FPS)\n", game->sprite_frame_count);
+        printf("=============================\n");
     }
 
     // Load door texture (use one of your wall textures or a custom door texture)
@@ -215,19 +260,28 @@ int start_game(t_game *game)
     game->doors = malloc(sizeof(t_door) * game->door_count);
     if (game->doors)
     {
-        // Place doors at specific map positions (adjust to your map)
-        game->doors[0].map_x = 37;  // Door 1 position
+        // Place doors near player for easy testing
+        // Player at (42.5, 5.5) facing north
+        
+        // Door 1: To the left (west) - easy to reach
+        game->doors[0].map_x = 40;
         game->doors[0].map_y = 5;
         game->doors[0].is_open = 0;  // Start closed
         
-        game->doors[1].map_x = 39;  // Door 2 position
-        game->doors[1].map_y = 7;
-        game->doors[1].is_open = 1;  // Start open (to test)
+        // Door 2: To the right (east) - easy to reach
+        game->doors[1].map_x = 44;
+        game->doors[1].map_y = 5;
+        game->doors[1].is_open = 1;  // Start open
         
-        printf("Created %d doors\n", game->door_count);
+        printf("=== DOORS ===\n");
+        printf("Door 1 at: (%d, %d) - [CLOSED] - to your LEFT\n", game->doors[0].map_x, game->doors[0].map_y);
+        printf("Door 2 at: (%d, %d) - [OPEN] - to your RIGHT\n", game->doors[1].map_x, game->doors[1].map_y);
+        printf("TIP: Walk near a door and press 'E' to toggle it\n");
+        printf("=============\n");
     }
 
     render(game);
+    mlx_loop_hook(game->mlx, render_loop, game);  // Keep rendering continuously for animation
     mlx_hook(game->win, 2, 1L << 0, handle_key, game);
     mlx_hook(game->win, 6,  1L<<6, mouse_move, game);
     mlx_hook(game->win, 17, 0, close_game, game);
