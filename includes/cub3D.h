@@ -137,6 +137,12 @@ typedef struct s_sprite
     int texture_id;    // 0=enemy, 1=barrel, 2=lamp, 3=item
 } t_sprite;
 
+typedef struct s_door
+{
+    int map_x;
+    int map_y;
+    int is_open;    // 0 = closed, 1 = open
+} t_door;
 
 typedef struct s_game {
     void     *mlx;
@@ -148,6 +154,9 @@ typedef struct s_game {
     int       sprite_count;
     float     z_buffer[WINDOW_WIDTH];
     t_img     sprite_texture;
+    t_door   *doors;
+    int       door_count;
+    t_img     door_texture;
 } t_game;
 
 int start_game(t_game *game);
@@ -186,6 +195,7 @@ void render(t_game *game);
 void calculate_sprite_distances(t_game *game);
 void sort_sprites(t_sprite *sprites, int count);
 void draw_sprite(t_game *game, t_sprite *sprite);
-
+t_door *find_door_at(t_game *game, int x, int y);
+void toggle_door(t_game *game);
 
 #endif 

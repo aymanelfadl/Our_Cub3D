@@ -191,6 +191,42 @@ int start_game(t_game *game)
         game->sprites[2].distance = 0.0f;
     }
 
+    // Load door texture (use one of your wall textures or a custom door texture)
+    game->door_texture.mlx_img = mlx_xpm_file_to_image(game->mlx,
+                                    "textures/floor_1.xpm",  // Or use "textures/north.xpm" as fallback
+                                    &game->door_texture.width,
+                                    &game->door_texture.height);
+    if (game->door_texture.mlx_img)
+    {
+        game->door_texture.addr = mlx_get_data_addr(game->door_texture.mlx_img,
+                                    &game->door_texture.bpp,
+                                    &game->door_texture.line_len,
+                                    &game->door_texture.endian);
+        printf("Door texture loaded: %dx%d\n", game->door_texture.width, game->door_texture.height);
+    }
+    else
+    {
+        printf("Warning: Could not load door texture\n");
+        game->door_texture.addr = NULL;
+    }
+
+    // Create hardcoded doors for testing
+    game->door_count = 2;
+    game->doors = malloc(sizeof(t_door) * game->door_count);
+    if (game->doors)
+    {
+        // Place doors at specific map positions (adjust to your map)
+        game->doors[0].map_x = 37;  // Door 1 position
+        game->doors[0].map_y = 5;
+        game->doors[0].is_open = 0;  // Start closed
+        
+        game->doors[1].map_x = 39;  // Door 2 position
+        game->doors[1].map_y = 7;
+        game->doors[1].is_open = 1;  // Start open (to test)
+        
+        printf("Created %d doors\n", game->door_count);
+    }
+
     render(game);
     mlx_hook(game->win, 2, 1L << 0, handle_key, game);
     mlx_hook(game->win, 6,  1L<<6, mouse_move, game);

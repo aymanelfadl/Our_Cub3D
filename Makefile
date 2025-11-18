@@ -21,7 +21,7 @@ PARSING = src/parse/parser.c src/parse/parser_process.c \
 
 RAYCASTING = raycasting/dda_algo.c raycasting/drawing.c raycasting/events.c \
 			 raycasting/player_movement.c raycasting/ray_casting.c raycasting/utils.c \
-			 raycasting/drawing_utils.c raycasting/sprite_bonus.c
+			 raycasting/drawing_utils.c raycasting/sprite_bonus.c raycasting/door_bonus.c
 
 
 TEXTURES = src/textures/loader.c src/textures/sampling.c

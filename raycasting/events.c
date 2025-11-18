@@ -54,6 +54,8 @@ int handle_key(int key, t_game *game)
         rotate_player(game, ROT_SPEED);
     if (key == 65361)
         rotate_player(game, -ROT_SPEED);
+    if (key == KEY_E)
+        toggle_door(game);
     if (key == 65307)
         close_game(game);
     mlx_destroy_image(game->mlx, game->frame.mlx_img);
