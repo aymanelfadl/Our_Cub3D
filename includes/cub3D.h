@@ -128,6 +128,15 @@ typedef struct s_config
     int       resolution_height;
 } t_config;
 
+// bonus
+typedef struct s_sprite
+{
+    float x;
+    float y;
+    float distance;
+    int texture_id;    // 0=enemy, 1=barrel, 2=lamp, 3=item
+} t_sprite;
+
 
 typedef struct s_game {
     void     *mlx;
@@ -135,6 +144,10 @@ typedef struct s_game {
     t_img    frame;
     t_img    minimap;
     t_config cfg;
+    t_sprite *sprites;
+    int       sprite_count;
+    float     z_buffer[WINDOW_WIDTH];
+    t_img     sprite_texture;
 } t_game;
 
 int start_game(t_game *game);

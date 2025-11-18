@@ -22,11 +22,9 @@ float get_dist(t_game *game, int hit_side)
 
 t_img get_texture(t_game *game)
 {
-    float dist;
     int hit_side;
 
     hit_side = game->cfg.player.ray.hit.side;
-    dist = get_dist(game, hit_side);
     if (!hit_side)
     {
         if (game->cfg.player.ray.ray_x > 0)

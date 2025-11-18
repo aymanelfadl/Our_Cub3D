@@ -142,12 +142,12 @@ int parser_normalize_map(t_parse_state *state)
         destroy_map_grid(&state->game->cfg.map);
         return (code);
     }
-    if (state->game->cfg.map.sprite_count > 0
-        && !state->game->cfg.have_sprite)
-    {
-        destroy_map_grid(&state->game->cfg.map);
-        return (PARSE_ERR_TEXTURE);
-    }
+    // if (state->game->cfg.map.sprite_count > 0
+    //     && !state->game->cfg.have_sprite)
+    // {
+    //     destroy_map_grid(&state->game->cfg.map);
+    //     return (PARSE_ERR_TEXTURE);
+    // }
     code = parser_validate_enclosure(&state->game->cfg.map);
     if (code != PARSE_OK)
     {
