@@ -10,7 +10,7 @@
 #include <math.h>
 
 #define TEXTURE_COUNT 4
-#define FOV_PLANE 60
+#define FOV_PLANE 90
 #define M_PI 3.14159265358979323846
 
 

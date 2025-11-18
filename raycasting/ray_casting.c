@@ -1,6 +1,5 @@
 #include "cub3D.h"
 
-
 void draw_player(t_game *game)
 {
     int player_radius;
@@ -95,6 +94,24 @@ int render_loop(t_game *game)
     return (0);
 }
 
+void draw_sprites(t_game *game)
+{
+    int i;
+    
+    if (game->sprite_count > 0)
+    {
+        update_sprite_animations(game);
+        calculate_sprite_distances(game);
+        sort_sprites(game->sprites, game->sprite_count);
+        i = 0;
+        while (i < game->sprite_count)
+        {
+            draw_sprite(game, &game->sprites[i]);
+            i++;
+        }
+    }
+}
+
 void render(t_game *game)
 {
     int x;
@@ -110,26 +127,11 @@ void render(t_game *game)
         compute_ray_direction(game, x);
         init_dda(game, map_y, map_x);
         perform_dda(game, &map_y, &map_x);
-
         game->z_buffer[x] = get_dist(game, game->cfg.player.ray.hit.side);
-
         draw_vertical_line(game, x);
         x++;
     }
-    
-    if (game->sprite_count > 0)
-    {
-        update_sprite_animations(game);  // Update animation frames
-        calculate_sprite_distances(game);
-        sort_sprites(game->sprites, game->sprite_count);
-        int i = 0;
-        while (i < game->sprite_count)
-        {
-            draw_sprite(game, &game->sprites[i]);
-            i++;
-        }
-    }
-    
+    draw_sprites(game);
     draw_minimap(game);
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
     mlx_put_image_to_window(game->mlx, game->win, game->minimap.mlx_img, 10, 10);
