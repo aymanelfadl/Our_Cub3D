@@ -6,7 +6,7 @@ static char **select_texture_slot(t_config *cfg, int index)
 {
     if (index < TEXTURE_COUNT)
         return (&cfg->textures[index].path);
-    return (&cfg->sprite_path);
+    return (NULL);
 }
 
 static int validate_texture_file(const char *path)
@@ -46,9 +46,5 @@ int parser_apply_texture(t_config *cfg, int index, const char *value)
         return (PARSE_ERR_ALLOC);
     if (index < TEXTURE_COUNT)
         cfg->textures[index].id = (t_direction)index;
-#ifdef BONUS
-    else
-        cfg->have_sprite = 1;
-#endif
     return (PARSE_OK);
 }

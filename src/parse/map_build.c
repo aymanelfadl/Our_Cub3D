@@ -16,7 +16,6 @@ static void destroy_map_grid(t_map *map)
     map->grid = NULL;
     map->height = 0;
     map->width = 0;
-    map->sprite_count = 0;
 }
 
 static int create_normalized_grid(t_map *map, int height, int width)
@@ -127,7 +126,6 @@ int parser_normalize_map(t_parse_state *state)
     width = compute_width(state);
     if (!create_normalized_grid(&state->game->cfg.map, height, width))
         return (PARSE_ERR_ALLOC);
-    state->game->cfg.map.sprite_count = 0;
     code = populate_rows(state, &player_count);
     if (code != PARSE_OK)
     {

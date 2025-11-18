@@ -16,7 +16,6 @@ static void free_map_grid(t_map *map)
     map->grid = NULL;
     map->height = 0;
     map->width = 0;
-    map->sprite_count = 0;
 }
 
 static void free_textures(t_config *cfg)
@@ -41,18 +40,12 @@ void parser_release_config(t_config *cfg)
     if (!cfg)
         return;
     free_textures(cfg);
-    if (cfg->sprite_path)
-    {
-        free(cfg->sprite_path);
-        cfg->sprite_path = NULL;
-    }
     free_map_grid(&cfg->map);
     ft_bzero(&cfg->floor_color, sizeof(t_color));
     ft_bzero(&cfg->ceiling_color, sizeof(t_color));
     ft_bzero(&cfg->player, sizeof(t_player));
     cfg->have_floor = 0;
     cfg->have_ceiling = 0;
-    cfg->have_sprite = 0;
     cfg->have_player = 0;
     cfg->have_resolution = 0;
     cfg->resolution_width = 0;
