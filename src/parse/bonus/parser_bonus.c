@@ -1,16 +1,8 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser_bonus.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: Yoares <Yoares@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/18 17:50:25 by Yoares            #+#    #+#             */
-/*   Updated: 2025/11/18 17:50:25 by Yoares           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <fcntl.h>
 #include <unistd.h>
 #include "parser_internal.h"
 #include "parser_bonus.h"
+
+int parse_cub_file_bonus(const char *path, t_game *game){
+    
+}
