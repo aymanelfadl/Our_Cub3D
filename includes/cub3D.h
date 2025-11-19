@@ -140,6 +140,17 @@ typedef struct s_sprite
     float frame_duration;  // Time per frame (lower = faster animation)
 } t_sprite;
 
+typedef struct s_sprite_render
+{
+    int sprite_height;
+    int sprite_width;
+    int sprite_screen_x;
+    int draw_start_x;
+    int draw_end_x;
+    int draw_start_y;
+    int draw_end_y;
+} t_sprite_render;
+
 typedef struct s_door
 {
     int map_x;

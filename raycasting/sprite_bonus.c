@@ -93,7 +93,7 @@ int convert_to_camera_coordinate(t_game *game, t_sprite *sprite, float *transfor
     determinant = game->cfg.player.plane_x * game->cfg.player.dir_y - game->cfg.player.dir_x * game->cfg.player.plane_y;
     *transform_x = (game->cfg.player.dir_y * sprite_x - game->cfg.player.dir_x * sprite_y) / determinant;
     *transform_y = (-game->cfg.player.plane_y * sprite_x + game->cfg.player.plane_x * sprite_y) / determinant;
-    if (transform_y <= 0)
+    if (*transform_y <= 0)
         return (0);
     return (1);
 }
@@ -142,61 +142,66 @@ float get_drawing_y(float transform_y, int is_start)
     return (draw_y);
 }
 
+void init_sprite_render(t_sprite_render *render, float transform_x, float transform_y)
+{
+    render->sprite_height = (int)(WINDOW_HEIGHT / transform_y);
+    render->sprite_width = render->sprite_height;
+    render->sprite_screen_x = (int)((WINDOW_WIDTH / 2) * (1 + transform_x / transform_y));
+    render->draw_start_x = get_drawing_x(transform_x, transform_y, 1);
+    render->draw_end_x = get_drawing_x(transform_x, transform_y, 0);
+    render->draw_start_y = get_drawing_y(transform_y, 1);
+    render->draw_end_y = get_drawing_y(transform_y, 0);
+}
+
+void draw_sprite_pixel(t_game *game, t_sprite *sprite, t_sprite_render *render, int x, int y)
+{
+    int tex_x;
+    int tex_y;
+    int frame_index;
+    unsigned int color;
+
+    frame_index = sprite->current_frame;
+    if (frame_index >= game->sprite_frame_count)
+        frame_index = 0;
+    
+    tex_x = (int)((x - (-render->sprite_width / 2 + render->sprite_screen_x)) * game->sprite_textures[frame_index].width / render->sprite_width);
+    tex_y = (int)((y - render->draw_start_y) * game->sprite_textures[frame_index].height / render->sprite_height);
+    
+    color = get_sprite_pixel(&game->sprite_textures[frame_index], tex_x, tex_y);
+    
+    if (!is_transparent(color))
+        my_mlx_pixel_put(&game->frame, x, y, color);
+}
+
+void draw_sprite_column(t_game *game, t_sprite *sprite, t_sprite_render *render, int x)
+{
+    int y;
+
+    y = render->draw_start_y;
+    while (y <= render->draw_end_y)
+    {
+        draw_sprite_pixel(game, sprite, render, x, y);
+        y++;
+    }
+}
+
 void draw_sprite(t_game *game, t_sprite *sprite)
 {
     float transform_x;
     float transform_y;
-    int sprite_screen_x;
-    int sprite_height;
-    int sprite_width;
-    int draw_start_y;
-    int draw_end_y;
-    int draw_start_x;
-    int draw_end_x;
-    int stripe;
-    int y;
-    int tex_x;
-    int tex_y;
-    unsigned int color;
-    
+    t_sprite_render render;
+    int x;
 
     if (!convert_to_camera_coordinate(game, sprite, &transform_x, &transform_y))
         return;
-
-    // Step 3: Calculate screen position and size
     
-    sprite_height = (int)(WINDOW_HEIGHT / transform_y);
-    sprite_width = sprite_height;
-    sprite_screen_x = (int)((WINDOW_WIDTH / 2) * (1 + transform_x / transform_y));
+    init_sprite_render(&render, transform_x, transform_y);
 
-    draw_start_x = get_drawing_x(transform_x, transform_y, 1);
-    draw_end_x = get_drawing_x(transform_x, transform_y, 0);
-    draw_start_y = get_drawing_y(transform_y, 1);
-    draw_end_y = get_drawing_y(transform_y, 0);
-
-    // Step 4: Draw sprite columns with texture
-    stripe = draw_start_x;
-    while (stripe <= draw_end_x)
+    x = render.draw_start_x;
+    while (x <= render.draw_end_x)
     {
-        if (stripe < 0 || stripe >= WINDOW_WIDTH)
-        {
-            stripe++;
-            continue;
-        }   
-        // Draw column
-        y = draw_start_y;
-        while (y <= draw_end_y)
-        {
-            int frame_index = sprite->current_frame;
-            if (frame_index >= game->sprite_frame_count)
-                frame_index = 0;
-            tex_x = (int)((stripe - (-sprite_width / 2 + sprite_screen_x)) *  game->sprite_textures[frame_index].width / sprite_width);
-            tex_y = (int)((y - draw_start_y) * game->sprite_textures[frame_index].height / sprite_height);    
-            color = get_sprite_pixel(&game->sprite_textures[frame_index], tex_x, tex_y);    
-            if (!is_transparent(color))
-                my_mlx_pixel_put(&game->frame, stripe, y, color);
-            y++;
-        }
-        stripe++;
+        if (x >= 0 && x < WINDOW_WIDTH && transform_y < game->z_buffer[x])
+            draw_sprite_column(game, sprite, &render, x);
+        x++;
     }
 }
