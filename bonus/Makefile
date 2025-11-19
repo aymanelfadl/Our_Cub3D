@@ -19,9 +19,9 @@ PARSING = src/parse/parser.c src/parse/parser_process.c \
 		  src/parse/validation_color.c src/parse/cleanup.c \
 		  src/parse/finalize_resolution.c
 
-RAYCASTING = raycasting/dda_algo.c raycasting/drawing.c raycasting/events.c \
-			 raycasting/player_movement.c raycasting/ray_casting.c raycasting/utils.c \
-			 raycasting/drawing_utils.c raycasting/sprite_bonus.c raycasting/door_bonus.c
+RAYCASTING = src/raycasting/dda_algo.c src/raycasting/drawing.c src/raycasting/events.c \
+			 src/raycasting/player_movement.c src/raycasting/ray_casting.c src/raycasting/utils.c \
+			 src/raycasting/drawing_utils.c src/raycasting/sprite_bonus.c src/raycasting/door_bonus.c
 
 
 TEXTURES = src/textures/loader.c src/textures/sampling.c
