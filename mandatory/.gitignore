@@ -1,0 +1,17 @@
+cub3D
+
+*.o
+*/*.o
+*/*/*.o
+
+*.a
+
+minilibx-linux/*
+context/*
+!context/.gitkeep
+
+.vscode
+.idea/
+*.swp
+*.swo
+*~

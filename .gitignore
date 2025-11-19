@@ -6,7 +6,11 @@ cub3D
 
 *.a
 
-minilibx-linux/*
+# MinilibX directories (embedded git repos)
+minilibx-linux/
+mandatory/minilibx-linux/
+bonus/minilibx-linux/
+
 context/*
 !context/.gitkeep
 
