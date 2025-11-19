@@ -2,8 +2,6 @@ CC = cc
 
 CFLAGS = -Iincludes/ -Iminilibx-linux -Wall -Wextra -Werror 
 
-LDFLAGS = -no-pie
-
 MLX_FLAGS = -Lminilibx-linux -lmlx -lXext -lX11 -lm
 
 NAME = cub3D
