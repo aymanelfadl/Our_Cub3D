@@ -52,12 +52,12 @@ static void move_right(t_game *game)
 
 void player_movement(int key, t_game *game)
 {
-    if (key == 119)
+    if (key == KEY_W)
         move_forward(game);
-    else if (key == 115)
+    else if (key == KEY_S)
         move_backward(game);
-    else if (key == 97)
+    else if (key == KEY_A)
         move_left(game);
-    else if (key == 100) 
+    else if (key == KEY_D) 
         move_right(game);
 }

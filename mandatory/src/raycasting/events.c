@@ -29,11 +29,11 @@ int close_game(t_game *game)
 int handle_key(int key, t_game *game)
 {
     player_movement(key, game);
-    if (key == 65363)
+    if (key == KEY_LEFT)
         rotate_player(game, ROT_SPEED);
-    if (key == 65361)
+    if (key == KEY_RIGHT)
         rotate_player(game, -ROT_SPEED);
-    if (key == 65307)
+    if (key == KEY_ESC)
         close_game(game);
     mlx_destroy_image(game->mlx, game->frame.mlx_img);
     game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
