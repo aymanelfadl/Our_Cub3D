@@ -14,9 +14,9 @@ void my_mlx_pixel_put(t_img *img, int x, int y, int color)
     *(unsigned int *)pixel = color;
 }
 
-int is_blocked(t_game *game, int x, int y)
+int is_blocked(t_game *game, float x, float y)
 {
-    if (game->cfg.map.grid[y][x] == '1')
+    if (game->cfg.map.grid[(int)y][(int)x] == '1')
         return (1);
 
     return (0);

@@ -15,7 +15,7 @@ void render(t_game *game)
         compute_ray_direction(game, x);
         init_dda(game, map_y, map_x);
         perform_dda(game, &map_y, &map_x);
-        draw_vertical_line(game, x);
+        draw_vertical_line(game, x, get_texture(game));
         x++;
     }
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);

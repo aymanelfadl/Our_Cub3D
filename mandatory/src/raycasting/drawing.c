@@ -20,12 +20,10 @@ void draw_background(t_game *game, int ceil_color, int floor_color)
     }
 }
 
-unsigned int get_texture_color(t_img texture, float tex_position, int tex_x)
+unsigned int get_texture_color(t_img texture, int tex_y, int tex_x)
 {
-    int tex_y;
     size_t offset;
     
-    tex_y = (int)tex_position;
     if (tex_y < 0)
         tex_y = 0;
     if (tex_y >= texture.height)
@@ -34,27 +32,36 @@ unsigned int get_texture_color(t_img texture, float tex_position, int tex_x)
     return (*(unsigned int *)(texture.addr + offset));
 }
 
-void draw_vertical_line(t_game *game, int x)
+void draw_vertical_line(t_game *game, int x, t_img texture)
 {
     int line_height;
     int draw_start;
     int draw_end;
     int tex_x;
-    t_img texture;
-    float text_position;
-    float step;
+    float tex_y;
+    float tex_step;
     
-    texture = get_texture(game);
-    line_height = (int)(WINDOW_HEIGHT / get_dist(game, game->cfg.player.ray.hit.side));
-    draw_start = get_drawing_start(line_height);
-    draw_end = get_drawing_end(line_height);
-    tex_x = (int)(get_wall_hit(game, get_dist(game, game->cfg.player.ray.hit.side)) * (float)texture.width);
-    step = (float)texture.height / line_height;
-    text_position = (draw_start - WINDOW_HEIGHT / 2 + line_height / 2) * step;
+    if (!game->cfg.player.ray.hit.side)
+        line_height = (int)(WINDOW_HEIGHT / game->cfg.player.ray.distance_x);
+    else
+        line_height = (int)(WINDOW_HEIGHT / game->cfg.player.ray.distance_y);
+    
+    tex_x = get_wall_hit(game, texture);
+    tex_step = (float)texture.height / line_height;
+
+    draw_end = (WINDOW_HEIGHT / 2) + (line_height / 2);
+    draw_start = (WINDOW_HEIGHT / 2) - (line_height / 2);
+    
+    tex_y = 0;
+    if (draw_start < 0)
+    {
+        tex_y = (-draw_start) * tex_step;
+        draw_start = 0;
+    }
     while (draw_start <= draw_end)
     {    
-        text_position += step;
-        my_mlx_pixel_put(&game->frame, x, draw_start, get_texture_color(texture, text_position, tex_x));
+        my_mlx_pixel_put(&game->frame, x, draw_start, get_texture_color(texture, (int)tex_y, tex_x));
+        tex_y += tex_step;
         draw_start++;
     }
 }

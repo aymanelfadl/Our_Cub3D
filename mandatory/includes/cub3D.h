@@ -10,7 +10,7 @@
 #include <math.h>
 
 #define TEXTURE_COUNT 4
-#define FOV_PLANE 90
+#define FOV_PLANE 60
 #define M_PI 3.14159265358979323846
 
 
@@ -27,6 +27,7 @@
 
 #define MOVE_SPEED 0.1f
 #define ROT_SPEED 0.05f
+
 
 typedef enum e_direction
 {
@@ -138,7 +139,7 @@ unsigned int tex_get_pixel(t_img *img, int x, int y);
 /* textures Drawing*/
 t_img get_texture(t_game *game);
 float get_dist(t_game *game, int hit_side);
-float get_wall_hit(t_game *game, float dist);
+int get_wall_hit(t_game *game, t_img texture);
 int get_drawing_start(int line_height);
 int get_drawing_end(int line_height);
 
@@ -149,7 +150,7 @@ int color_to_int(t_color c);
 void compute_ray_direction(t_game *game, int column);
 void init_dda(t_game *game, int map_y, int map_x);
 void perform_dda(t_game *game, int *map_y, int *map_x);
-void draw_vertical_line(t_game *game, int x);
+void draw_vertical_line(t_game *game, int x, t_img texture);
 int mouse_move(int x, int y, void *game);
 int handle_key(int key, t_game *game);
 int close_game(t_game *game);
@@ -159,6 +160,6 @@ void parser_release_config(t_config *cfg);
 void player_movement(int key, t_game *game);
 void render(t_game *game);
 int render_loop(t_game *game);
-int is_blocked(t_game *game, int x, int y);
+int is_blocked(t_game *game, float x, float y);
 
 #endif 

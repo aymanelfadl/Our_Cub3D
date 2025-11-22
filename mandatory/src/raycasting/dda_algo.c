@@ -64,6 +64,10 @@ void perform_dda(t_game *game, int *map_y, int *map_x)
         }
 
         if (game->cfg.map.grid[*map_y][*map_x] == '1')
+        {
+            game->cfg.player.ray.distance_x -= game->cfg.player.ray.next_cell_x;
+            game->cfg.player.ray.distance_y -= game->cfg.player.ray.next_cell_y;
             game->cfg.player.ray.hit.is_hit = 1;
+        }
     }
 }

@@ -29,9 +29,9 @@ int close_game(t_game *game)
 int handle_key(int key, t_game *game)
 {
     player_movement(key, game);
-    if (key == KEY_LEFT)
-        rotate_player(game, ROT_SPEED);
     if (key == KEY_RIGHT)
+        rotate_player(game, ROT_SPEED);
+    if (key == KEY_LEFT)
         rotate_player(game, -ROT_SPEED);
     if (key == KEY_ESC)
         close_game(game);
