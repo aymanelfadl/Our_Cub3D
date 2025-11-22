@@ -33,6 +33,7 @@
 
 #define MOVE_SPEED 0.1f
 #define ROT_SPEED 0.05f
+#define COLLISION_CONST 0.3
 #define TILE_SIZE 10
 #define RADIUS 5 
 
@@ -183,11 +184,7 @@ unsigned int tex_get_pixel(t_img *img, int x, int y);
 
 /* textures Drawing*/
 t_img get_texture(t_game *game);
-float get_dist(t_game *game, int hit_side);
-float get_wall_hit(t_game *game, float dist);
-int get_drawing_start(int line_height);
-int get_drawing_end(int line_height);
-
+int get_wall_hit(t_game *game, t_img texture);
 
 /* raycasting module functions (exported) */
 void draw_background(t_game *game, int ceil_color, int floor_color);
@@ -195,7 +192,8 @@ int color_to_int(t_color c);
 void compute_ray_direction(t_game *game, int column);
 void init_dda(t_game *game, int map_y, int map_x);
 void perform_dda(t_game *game, int *map_y, int *map_x);
-void draw_vertical_line(t_game *game, int x);
+void draw_vertical_line(t_game *game, int x, t_img texture);
+void apply_movement(t_game *game, float new_x, float new_y);
 int mouse_move(int x, int y, void *game);
 int handle_key(int key, t_game *game);
 int close_game(t_game *game);

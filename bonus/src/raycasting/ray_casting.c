@@ -127,8 +127,11 @@ void render(t_game *game)
         compute_ray_direction(game, x);
         init_dda(game, map_y, map_x);
         perform_dda(game, &map_y, &map_x);
-        game->z_buffer[x] = get_dist(game, game->cfg.player.ray.hit.side);
-        draw_vertical_line(game, x);
+        if (!game->cfg.player.ray.hit.side)
+            game->z_buffer[x] = game->cfg.player.ray.distance_x;
+        else
+            game->z_buffer[x] = game->cfg.player.ray.distance_y;
+        draw_vertical_line(game, x, get_texture(game));
         x++;
     }
     draw_sprites(game);
