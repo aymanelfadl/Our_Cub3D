@@ -4,6 +4,7 @@ void draw_background(t_game *game, int ceil_color, int floor_color)
 {
     int y;
     int x;
+    
     y = 0;
     while (y < WINDOW_HEIGHT)
     {
@@ -45,13 +46,10 @@ void draw_vertical_line(t_game *game, int x, t_img texture)
         line_height = (int)(WINDOW_HEIGHT / game->cfg.player.ray.distance_x);
     else
         line_height = (int)(WINDOW_HEIGHT / game->cfg.player.ray.distance_y);
-    
     tex_x = get_wall_hit(game, texture);
     tex_step = (float)texture.height / line_height;
-
-    draw_end = (WINDOW_HEIGHT / 2) + (line_height / 2);
     draw_start = (WINDOW_HEIGHT / 2) - (line_height / 2);
-    
+    draw_end = (WINDOW_HEIGHT / 2) + (line_height / 2);
     tex_y = 0;
     if (draw_start < 0)
     {
@@ -60,7 +58,8 @@ void draw_vertical_line(t_game *game, int x, t_img texture)
     }
     while (draw_start <= draw_end)
     {    
-        my_mlx_pixel_put(&game->frame, x, draw_start, get_texture_color(texture, (int)tex_y, tex_x));
+        my_mlx_pixel_put(&game->frame, x, draw_start, 
+            get_texture_color(texture, (int)tex_y, tex_x));
         tex_y += tex_step;
         draw_start++;
     }

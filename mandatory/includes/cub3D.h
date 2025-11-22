@@ -27,6 +27,8 @@
 
 #define MOVE_SPEED 0.1f
 #define ROT_SPEED 0.05f
+#define COLLISION_CONST 0.3
+
 
 
 typedef enum e_direction
@@ -138,10 +140,7 @@ unsigned int tex_get_pixel(t_img *img, int x, int y);
 
 /* textures Drawing*/
 t_img get_texture(t_game *game);
-float get_dist(t_game *game, int hit_side);
 int get_wall_hit(t_game *game, t_img texture);
-int get_drawing_start(int line_height);
-int get_drawing_end(int line_height);
 
 
 /* raycasting module functions (exported) */
@@ -151,7 +150,7 @@ void compute_ray_direction(t_game *game, int column);
 void init_dda(t_game *game, int map_y, int map_x);
 void perform_dda(t_game *game, int *map_y, int *map_x);
 void draw_vertical_line(t_game *game, int x, t_img texture);
-int mouse_move(int x, int y, void *game);
+void apply_movement(t_game *game, float new_x, float new_y);
 int handle_key(int key, t_game *game);
 int close_game(t_game *game);
 void my_mlx_pixel_put(t_img *img, int x, int y, int color);
@@ -159,7 +158,5 @@ t_img get_proper_texture(t_texture *texs, t_direction dir);
 void parser_release_config(t_config *cfg);
 void player_movement(int key, t_game *game);
 void render(t_game *game);
-int render_loop(t_game *game);
-int is_blocked(t_game *game, float x, float y);
 
-#endif 
+#endif
