@@ -81,8 +81,6 @@ typedef struct s_map {
 
 typedef struct s_hit
 {
-    float hit_x;
-    float hit_y;
     int is_hit;
     int side;
 } t_hit;
@@ -98,7 +96,7 @@ typedef struct s_ray
     int   step_y;
     float distance_x;
     float distance_y;
-    struct s_hit hit;
+    t_hit hit;
 } t_ray;
 
 typedef struct s_player {
@@ -175,6 +173,8 @@ typedef struct s_game {
     t_img     door_texture;
 } t_game;
 
+
+
 int start_game(t_game *game);
 
 /* textures API */
@@ -183,20 +183,31 @@ void texture_free_all(void *mlx, t_config *cfg);
 unsigned int tex_get_pixel(t_img *img, int x, int y);
 
 /* textures Drawing*/
-t_img get_texture(t_game *game);
+void draw_background(t_game *game, int ceil_color, int floor_color);
 int get_wall_hit(t_game *game, t_img texture);
+unsigned int get_texture_color(t_img texture, int tex_y, int tex_x);
+void my_mlx_pixel_put(t_img *img, int x, int y, int color);
+t_img get_proper_texture(t_texture *texs, t_direction dir);
+t_img get_texture(t_game *game);
+int color_to_int(t_color c);
+
+//EDIT !!! 
+void draw_vertical_line(t_game *game, int x, t_img texture, int line_height);
+float get_texture_y(int *drawing_start, float text_step);
 
 /* raycasting module functions (exported) */
-void draw_background(t_game *game, int ceil_color, int floor_color);
-int color_to_int(t_color c);
 void compute_ray_direction(t_game *game, int column);
 void init_dda(t_game *game, int map_y, int map_x);
 void perform_dda(t_game *game, int *map_y, int *map_x);
-void draw_vertical_line(t_game *game, int x, t_img texture);
+void render(t_game *game);
+
+/* evenets */
+void player_movement(int key, t_game *game);
 void apply_movement(t_game *game, float new_x, float new_y);
-int mouse_move(int x, int y, void *game);
 int handle_key(int key, t_game *game);
+int mouse_move(int x, int y, void *game);
 int close_game(t_game *game);
+void parser_release_config(t_config *cfg);
 void my_mlx_pixel_put(t_img *img, int x, int y, int color);
 t_img get_proper_texture(t_texture *texs, t_direction dir);
 void parser_release_config(t_config *cfg);
@@ -213,4 +224,4 @@ void update_sprite_animations(t_game *game);
 t_door *find_door_at(t_game *game, int x, int y);
 void toggle_door(t_game *game);
 
-#endif 
+#endif

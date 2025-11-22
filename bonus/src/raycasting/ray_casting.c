@@ -117,6 +117,7 @@ void render(t_game *game)
     int x;
     int map_x;
     int map_y;
+    int line_height;
 
     draw_background(game, color_to_int(game->cfg.ceiling_color), color_to_int(game->cfg.floor_color));
     x = 0;
@@ -128,10 +129,16 @@ void render(t_game *game)
         init_dda(game, map_y, map_x);
         perform_dda(game, &map_y, &map_x);
         if (!game->cfg.player.ray.hit.side)
+        {
             game->z_buffer[x] = game->cfg.player.ray.distance_x;
+            line_height = WINDOW_HEIGHT / game->cfg.player.ray.distance_x;
+        }
         else
+        {
             game->z_buffer[x] = game->cfg.player.ray.distance_y;
-        draw_vertical_line(game, x, get_texture(game));
+            line_height = WINDOW_HEIGHT / game->cfg.player.ray.distance_y;
+        }
+        draw_vertical_line(game, x, get_texture(game), line_height);
         x++;
     }
     draw_sprites(game);

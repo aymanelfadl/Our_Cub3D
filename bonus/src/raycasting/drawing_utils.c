@@ -22,6 +22,18 @@ int get_wall_hit(t_game *game, t_img texture)
     return (tex_x);
 }
 
+float get_texture_y(int *drawing_start, float text_step)
+{
+    float hidden_pixels;
+
+    hidden_pixels = 0;
+    if (drawing_start < 0)
+    {
+        hidden_pixels = -(*drawing_start) * text_step;
+        *drawing_start = 0;
+    }
+    return hidden_pixels;
+}
 
 t_img get_texture(t_game *game)
 {
@@ -35,11 +47,24 @@ t_img get_texture(t_game *game)
         else
             return get_proper_texture(game->cfg.textures, EA);
     }
-    else // ver
+    else
     {
         if (game->cfg.player.ray.ray_y > 0)
             return get_proper_texture(game->cfg.textures, NO);
         else
             return get_proper_texture(game->cfg.textures, SO);
     }
+}
+
+unsigned int get_texture_color(t_img texture, int tex_y, int tex_x)
+{
+    size_t offset;
+    
+    if (tex_y < 0)
+        tex_y = 0;
+    if (tex_y >= texture.height)
+        tex_y = texture.height - 1;
+    offset = (size_t)tex_y * (size_t)texture.line_len
+            + (size_t)tex_x * (texture.bpp / 8);
+    return (*(unsigned int *)(texture.addr + offset));
 }
