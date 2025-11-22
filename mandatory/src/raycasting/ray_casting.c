@@ -5,9 +5,11 @@ void render(t_game *game)
     int x;
     int map_x;
     int map_y;
+    int line_height;
 
     draw_background(game, color_to_int(game->cfg.ceiling_color), color_to_int(game->cfg.floor_color));
     x = 0;
+    line_height = 0;
     while (x < WINDOW_WIDTH)
     {
         map_x = floor(game->cfg.player.pos_x);
@@ -15,7 +17,11 @@ void render(t_game *game)
         compute_ray_direction(game, x);
         init_dda(game, map_y, map_x);
         perform_dda(game, &map_y, &map_x);
-        draw_vertical_line(game, x, get_texture(game));
+        if (!game->cfg.player.ray.hit.side)
+            line_height = WINDOW_HEIGHT / game->cfg.player.ray.distance_x;
+        else
+            line_height = WINDOW_HEIGHT / game->cfg.player.ray.distance_y;
+        draw_vertical_line(game, x, get_texture(game), line_height);
         x++;
     }
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
