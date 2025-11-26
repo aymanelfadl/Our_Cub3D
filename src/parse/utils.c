@@ -18,3 +18,4 @@ int is_valid_extension(const char *path)
         return (0);
     return (1);
 }
+

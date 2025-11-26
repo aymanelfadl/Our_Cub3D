@@ -19,7 +19,7 @@ static int	count_lines(char **lines)
 	return (i);
 }
 
-static int	ft_isspace(char c)
+int	ft_isspace(char c)
 {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
 }
@@ -144,6 +144,7 @@ int	parse_file(const char *path, t_parser *parser)
 {
 	int err;
 	int i;
+	int	map_start;
 
 	if (!path || !parser)
 		return (ERR_ARGS);
@@ -166,6 +167,10 @@ int	parse_file(const char *path, t_parser *parser)
 		!parser->game->cfg.no_texture || !parser->game->cfg.so_texture ||
 		!parser->game->cfg.we_texture || !parser->game->cfg.ea_texture)
 		return (ERR_MISSING_CONFIG);
+	map_start = find_map_start(parser->map_lines, parser->line_count);
+	if (map_start < 0)
+		return (ERR_NO_MAP);
+	err = build_map(parser, map_start);
 	return (OK);
 }
 
