@@ -3,27 +3,27 @@
 
 # include "cub3D.h"
 
-# define PARSE_OK 0
 
 typedef enum e_parse_error
 {
-    PARSE_ERR_ARG = 1,
-    PARSE_ERR_EXTENSION,
-    PARSE_ERR_OPEN_FILE,
-    PARSE_ERR_ALLOC,
-    PARSE_ERR_CONFIG_DUP,
-    PARSE_ERR_CONFIG_MISSING,
-    PARSE_ERR_TEXTURE,
-    PARSE_ERR_COLOR,
-    PARSE_ERR_MAP_MISSING,
-    PARSE_ERR_MAP_INVALID_CHAR,
-    PARSE_ERR_MAP_GAP,
-    PARSE_ERR_PLAYER_COUNT,
-    PARSE_ERR_MAP_OPEN
-}   t_parse_error;
+	OK = 0,
+	ERR_ARGS,
+	ERR_EXTENSION,
+	ERR_OPEN,
+	ERR_MALLOC,
+	ERR_DUPLICATE,
+	ERR_MISSING_CONFIG,
+	ERR_INVALID_TEXTURE,
+	ERR_INVALID_COLOR,
+	ERR_NO_MAP,
+	ERR_INVALID_CHAR,
+	ERR_NO_PLAYER,
+	ERR_MULTI_PLAYER,
+	ERR_MAP_NOT_CLOSED
+}	t_error;
 
-int         parse_cub_file(const char *path, t_game *game);
-const char  *parser_strerror(int code);
-void        parser_release_config(t_config *cfg);
+int		parse_file(const char *path, t_parser *parser);
+void	free_parser(t_parser *parser);
+char	*get_error_msg(int code);
 
 #endif

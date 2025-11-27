@@ -70,6 +70,7 @@ typedef struct s_texture {
 } t_texture;
 
 typedef struct s_map {
+    t_player	player;
     int   width;
     int   height;
     int   sprite_count;
@@ -113,17 +114,16 @@ typedef struct s_config
 {
     t_texture textures[TEXTURE_COUNT];
     char      *sprite_path;
-    t_color   floor_color;
-    t_color   ceiling_color;
+	t_color	floor;
+	t_color	ceiling;
+	int		f_set;
+	int		c_set;
     t_map     map;
     t_player  player;
-    int       have_floor;
-    int       have_ceiling;
-    int       have_sprite;
-    int       have_player;
-    int       have_resolution;
-    int       resolution_width;
-    int       resolution_height;
+	char	*no_texture;
+	char	*so_texture;
+	char	*we_texture;
+	char	*ea_texture;
 } t_config;
 
 // bonus

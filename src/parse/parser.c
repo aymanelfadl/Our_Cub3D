@@ -108,6 +108,7 @@ static int	read_file_lines(const char *path, t_parser *parser)
 	close(fd);
 	return (OK);
 }
+
 static int	parse_config_line(char *line, t_config *cfg)
 {
 	line = skip_spaces(line);
@@ -170,7 +171,18 @@ int	parse_file(const char *path, t_parser *parser)
 	map_start = find_map_start(parser->map_lines, parser->line_count);
 	if (map_start < 0)
 		return (ERR_NO_MAP);
-	err = build_map(parser, map_start);
+	err = build_map(parser, map_start); // after this the parser->map.grid has filled with the map content 
+	if (err != OK)
+		return (err);
+	err = validate_map_chars(&parser->map);
+	if (err != OK)
+		return (err);
+	err = find_player(&parser->map);
+	if (err != OK)
+		return (err);
+	err = validate_map_closed(&parser->map);
+	if (err != OK)
+		return (err);
 	return (OK);
 }
 

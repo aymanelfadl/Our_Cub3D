@@ -30,7 +30,90 @@ static int	find_map_width(char **lines, int start, int end)
 	}
 	return (max_with);
 }
+
+static int	is_player_char(char c)
+{
+	return (c == 'E' || c == 'W' || c == 'S' || c == 'N');
+}
+
+static	void set_player_direction(t_player *player, char dir)
+{
+	if (dir == 'N')
+	{
+		player->dir_x = 0.0f;
+		player->dir_y = -0.1f;
+	}
+	else if (dir == 'S')
+	{
+		player->dir_x = 0.0f;
+		player->dir_y = 1.0f;
+	}
+	else if (dir == 'E')
+	{
+		player->dir_x = 1.0f;
+		player->dir_y = 0.0f;
+	}
+	else if (dir == 'W')
+	{
+		player->dir_x = -1.0f;
+		player->dir_y = 0.0f;
+	}
+	player->plane_x = -player->dir_y * 0.66f;
+	player->plane_y = player->dir_x * 0.66f;
+}
+int	find_player(t_map *map)
+{
+	int	i;
+	int	j;
+	int	count;
+
+	count = 0;
+	i = 0;
+	while (i < map->height)
+	{
+		j = 0;
+		while (j < map->width)
+		{
+			if (is_player_char(map->grid[i][j]))
+			{
+				map->player.pos_x = (float)i + 0.5f;
+				map->player.pos_y = (float)j + 0.5f;
+				map->player.direction = map->grid[i][j];
+				
+				set_player_direction(&map->player, map->grid[i][j]);
+				count++;
+			}
+			j++;
+		}
+		i++;
+	}
+	if (count < 1)
+		return (ERR_NO_PLAYER);
+	if (count > 1)
+		return (ERR_MULTI_PLAYER);
+	return (OK);
 	
+}
+
+int	validate_map_chars(t_map *map)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < map->height)
+	{
+		j = 0;
+		while (j < map->width)
+		{
+			if (!is_map_char(map->grid[i][j]))
+				return (ERR_INVALID_CHAR);
+			j++;
+		}
+		i++;
+	}
+	return (OK);
+}
 
 int	find_map_start(char **lines, int count)
 {
@@ -49,9 +132,47 @@ int	find_map_start(char **lines, int count)
 	}
 	return (-1);
 }
+
 static char	**create_map_grid(int height, int width)
 {
-	// create a 2D array for the map grid
+	char	**grid;
+	int		i;
+	int		j;
+
+	grid = malloc(sizeof(char *) * (height + 1));
+	if (!grid)
+		return (NULL);
+	i = 0;
+	while (i < height)
+	{
+		grid[i] = malloc(width + 1);
+		if (!grid[i])
+		{
+			while (i >= 0)
+				free(grid[i--]);
+		}
+		while (grid[i][j] < width)
+			grid[i][j++] = ' ';
+		grid[i][width] = '\0';
+		i++;
+	}
+	grid[height] = NULL;
+	return (grid);
+}
+
+static	void	copy_map_line(char *grid, char *line, int width)
+{
+	int i;
+
+	i = 0;
+	while (grid[i] && grid[i] != '\n' && i < width)
+	{
+		grid[i] = line[i];
+		i++;
+	}
+	while (i < width)
+		grid[i++] = ' ';
+	grid[width] = '\0';
 }
 
 int	build_map(t_parser *parser, int start)
@@ -64,11 +185,18 @@ int	build_map(t_parser *parser, int start)
 	if (height <= 0)
 		return (ERR_NO_MAP);
 	width = find_map_width(parser->map_lines, start, parser->line_count);
-	parser->map.grid = create_map_grid(height, width);
+	parser->map.grid = create_map_grid(height, width); // empty spaces grid  
 	if (!parser->map.grid)
 		return (ERR_MALLOC);
 	parser->map.height = height;
 	parser->map.width = width;
-	// copy map lines into the grid
-	return (0);
+	i = 0;
+	while (i < height)
+	{
+		copy_map_line(parser->map.grid[i], parser->map_lines[start + i], width);
+		i++;
+	}
+	return (OK);
 }
+
+

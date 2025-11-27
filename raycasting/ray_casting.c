@@ -37,7 +37,7 @@ void render(t_game *game)
     int map_x;
     int map_y;
 
-    draw_background(game, color_to_int(game->cfg.ceiling_color), color_to_int(game->cfg.floor_color));
+    draw_background(game, color_to_int(game->cfg.ceiling), color_to_int(game->cfg.floor));
     x = 0;
     while (x < WINDOW_WIDTH)
     {
