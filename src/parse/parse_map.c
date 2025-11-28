@@ -1,5 +1,6 @@
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdio.h>
 #include "parser_internal.h"
 
 static int	is_map_char(char c)
@@ -8,7 +9,7 @@ static int	is_map_char(char c)
 			c == 'N' || c == 'S' || c == 'E' || c == 'W');
 }
 
-static int	find_map_width(char **lines, int start, int end)
+static int	find_map_width(char **lines, int end)
 {
 	int	i;
 	int	j;
@@ -27,6 +28,7 @@ static int	find_map_width(char **lines, int start, int end)
 		}
 		if (j > max_with)
 			max_with = j;
+		i++;
 	}
 	return (max_with);
 }
@@ -61,12 +63,16 @@ static	void set_player_direction(t_player *player, char dir)
 	player->plane_x = -player->dir_y * 0.66f;
 	player->plane_y = player->dir_x * 0.66f;
 }
-int	find_player(t_map *map)
+int	find_player(t_parser *parser)
 {
 	int	i;
 	int	j;
 	int	count;
+	t_map	*map;
+	t_player	*player;
 
+	map = &parser->map;
+	player = &parser->game->cfg.player;
 	count = 0;
 	i = 0;
 	while (i < map->height)
@@ -76,11 +82,11 @@ int	find_player(t_map *map)
 		{
 			if (is_player_char(map->grid[i][j]))
 			{
-				map->player.pos_x = (float)i + 0.5f;
-				map->player.pos_y = (float)j + 0.5f;
-				map->player.direction = map->grid[i][j];
+				player->pos_x = (float)j + 0.5f;
+				player->pos_y = (float)i + 0.5f;
+				player->direction = map->grid[i][j];
 				
-				set_player_direction(&map->player, map->grid[i][j]);
+				set_player_direction(player, map->grid[i][j]);
 				count++;
 			}
 			j++;
@@ -107,30 +113,32 @@ int	validate_map_chars(t_map *map)
 		while (j < map->width)
 		{
 			if (!is_map_char(map->grid[i][j]))
+			{
 				return (ERR_INVALID_CHAR);
+			}
 			j++;
 		}
 		i++;
 	}
 	return (OK);
 }
-
 int	find_map_start(char **lines, int count)
 {
-	int	i;
-	int	j;
+    int i;
+    int j;
 
-	i = 0;
-	while (i < count)
-	{
-		j = 0;
-		while (lines[i][j] && !ft_isspace(lines[i][j]))
-			j++;
-		if (lines[i][j] && is_map_char(lines[i][j]))
-				return (i);
-		i++;
-	}
-	return (-1);
+    i = 0;
+    while (i < count)
+    {
+        j = 0;
+        /* skip leading whitespace */
+        while (lines[i][j] && ft_isspace(lines[i][j]))
+            j++;
+        if (lines[i][j] && (lines[i][j] == '1' || lines[i][j] == '0'))
+            return (i);
+        i++;
+    }
+    return (-1);
 }
 
 static char	**create_map_grid(int height, int width)
@@ -148,10 +156,13 @@ static char	**create_map_grid(int height, int width)
 		grid[i] = malloc(width + 1);
 		if (!grid[i])
 		{
-			while (i >= 0)
-				free(grid[i--]);
+			while (i > 0)
+				free(grid[--i]);
+			free(grid);
+			return (NULL);
 		}
-		while (grid[i][j] < width)
+		j = 0;
+		while (j < width)
 			grid[i][j++] = ' ';
 		grid[i][width] = '\0';
 		i++;
@@ -165,7 +176,7 @@ static	void	copy_map_line(char *grid, char *line, int width)
 	int i;
 
 	i = 0;
-	while (grid[i] && grid[i] != '\n' && i < width)
+	while (line[i] && line[i] != '\n' && i < width)
 	{
 		grid[i] = line[i];
 		i++;
@@ -184,7 +195,7 @@ int	build_map(t_parser *parser, int start)
 	height = parser->line_count - start;
 	if (height <= 0)
 		return (ERR_NO_MAP);
-	width = find_map_width(parser->map_lines, start, parser->line_count);
+	width = find_map_width(parser->map_lines, parser->line_count);
 	parser->map.grid = create_map_grid(height, width); // empty spaces grid  
 	if (!parser->map.grid)
 		return (ERR_MALLOC);

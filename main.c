@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ares <ares@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ykhoussi <ykhoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 11:11:03 by aelfadl           #+#    #+#             */
-/*   Updated: 2025/11/08 17:30:48 by ares             ###   ########.fr       */
+/*   Updated: 2025/11/27 22:10:56 by ykhoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 #include "parser.h"
+#include "parser_internal.h"
+#include <unistd.h>
 
 int main(int ac, char *av[])
 {
@@ -23,30 +25,33 @@ int main(int ac, char *av[])
 
     t_game game;
     int     code;
+    t_parser parser;
 
     ft_bzero(&game, sizeof(t_game));
-    code = parse_cub_file(av[1], &game);
-    if (code != PARSE_OK)
+    ft_bzero(&parser, sizeof(t_parser));
+    parser.game = &game;
+    code = parse_file(av[1], &parser);
+    if (code != OK)
     {
-        fprintf(stderr, "Error\n%s\n", parser_strerror(code));
+        fprintf(stderr, "Error\n%s\n", get_error_msg(code));
         parser_release_config(&game.cfg);
         return (1);
     }
     /* parsed texture paths (not printed) */
     /* If parser didn't supply textures, fall back to built-in defaults (they will be loaded by start_game) */
-    {
-        const char *defaults[TEXTURE_COUNT] = {
-            "textures/wall_1.xpm",
-            "textures/wall_2.xpm",
-            "textures/wall_3.xpm",
-            "textures/wall_4.xpm"
-        };
-        for (int i = 0; i < TEXTURE_COUNT; ++i)
-        {
-            if (!game.cfg.textures[i].path)
-                game.cfg.textures[i].path = ft_strdup(defaults[i]);
-        }
-    }
+    // {
+    //     const char *defaults[TEXTURE_COUNT] = {
+    //         "textures/wall_1.xpm",
+    //         "textures/wall_2.xpm",
+    //         "textures/wall_3.xpm",
+    //         "textures/wall_4.xpm"
+    //     };
+    //     for (int i = 0; i < TEXTURE_COUNT; ++i)
+    //     {
+    //         if (!game.cfg.textures[i].path)
+    //             game.cfg.textures[i].path = ft_strdup(defaults[i]);
+    //     }
+    // }
     /* initialize MLX so we can load textures before starting the game */
     game.mlx = mlx_init();
     if (!game.mlx)

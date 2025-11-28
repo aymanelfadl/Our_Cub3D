@@ -52,6 +52,8 @@ void render(t_game *game)
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
 }
 
+/* Use explicit casts for MLX callback pointers; silence GCC cast-function-type warnings around the calls. */
+
 int start_game(t_game *game)
 {
     /* start_game: initialization */
@@ -73,12 +75,17 @@ int start_game(t_game *game)
     if (!game->cfg.textures[0].img.mlx_img)
     {
         if (!load_textures(game))
+        {
             return (fprintf(stderr, "Error: failed to load textures\n"), 0);
+        }
     }
 
     render(game);
-    mlx_hook(game->win, 2, 1L << 0, handle_key, game);
-    mlx_hook(game->win, 17, 0, close_game, game);
+    _Pragma("GCC diagnostic push")
+    _Pragma("GCC diagnostic ignored \"-Wcast-function-type\"")
+    mlx_hook(game->win, 2, 1L << 0, (int (*)())handle_key, game);
+    mlx_hook(game->win, 17, 0, (int (*)())close_game, game);
+    _Pragma("GCC diagnostic pop")
     mlx_loop(game->mlx);
     return 1;
 }
