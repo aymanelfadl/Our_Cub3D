@@ -16,12 +16,12 @@ typedef struct s_parser
 }   t_parser;
 
 int	is_valid_extension(const char *path);
-int	read_file_lines(const char *path, t_parser *parser);
+char	*skip_spaces(char *str);
 int	parse_texture(char *line, char **texture);
 int	find_map_start(char **lines, int count);
 int	ft_isspace(char c);
 int	build_map(t_parser *parser, int start);
 int	validate_map_chars(t_map *map);
-int	find_player(t_map *map);
+int	find_player(t_parser *parser);
 int	validate_map_closed(t_map *map);
 #endif

@@ -69,14 +69,6 @@ typedef struct s_texture {
     int     loaded;    /* 0/1 flag */
 } t_texture;
 
-typedef struct s_map {
-    t_player	player;
-    int   width;
-    int   height;
-    int   sprite_count;
-    char **grid;
-} t_map;
-
 typedef struct s_hit
 {
     float hit_x;
@@ -109,6 +101,13 @@ typedef struct s_player {
     t_direction direction;
     t_ray    ray;
 } t_player;
+
+typedef struct s_map {
+    int   width;
+    int   height;
+    int   sprite_count;
+    char **grid;
+} t_map;
 
 typedef struct s_config
 {

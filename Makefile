@@ -13,10 +13,12 @@ LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 
-PARSING = src/parse/parser.c src/parse/parser_process.c \
-		  src/parse/map_build.c src/parse/map_validate.c \
-		  src/parse/floodfill.c src/parse/validation_general.c \
-		  src/parse/validation_color.c src/parse/cleanup.c
+PARSING = src/parse/parser.c \
+		  src/parse/parse_map.c \
+		  src/parse/parse_texture.c \
+		  src/parse/utils.c \
+		  src/parse/valid_map.c \
+		  src/parse/Error.c
 
 # Bonus parsing sources
 PARSING_BONUS = src/parse/bonus/map_validate_bonus.c \

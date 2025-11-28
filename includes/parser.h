@@ -3,6 +3,7 @@
 
 # include "cub3D.h"
 
+typedef struct s_parser t_parser;
 
 typedef enum e_parse_error
 {

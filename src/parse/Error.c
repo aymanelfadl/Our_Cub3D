@@ -20,7 +20,7 @@ char	*get_error_msg(int code)
 		[ERR_MULTI_PLAYER] = "Multiple player spawn points",
 		[ERR_MAP_NOT_CLOSED] = "Map is not closed by walls"
 	};
-	if (code < 0 || code >= sizeof(errors) / sizeof(errors[0]))
+	if (code < 0 || (size_t)code >= sizeof(errors) / sizeof(errors[0]))
 		return ("Unknown error");
 	return (errors[code]);
 }

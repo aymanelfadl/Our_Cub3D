@@ -6,7 +6,7 @@
 /*   By: ykhoussi <ykhoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 17:50:25 by Yoares            #+#    #+#             */
-/*   Updated: 2025/11/18 19:07:27 by ykhoussi         ###   ########.fr       */
+/*   Updated: 2025/11/28 17:29:06 by ykhoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,42 @@
 # define PARSER_BONUS_H
 
 # include "parser.h"
+# include "cub3D.h"
 
-// Define bonus characters
-#define CHAR_DOOR 'D'
-#define CHAR_SPRITE '2'
-
-// Door position structure
-typedef struct s_door_pos
+/* Bonus error codes (extend the enum from parser.h) */
+typedef enum e_bonus_error
 {
-    int x;
-    int y;
-}   t_door_pos;
+    ERR_INVALID_DOOR = 20,
+    ERR_INVALID_SPRITE,
+    ERR_DOOR_TEXTURE,
+    ERR_SPRITE_TEXTURE,
+    ERR_BONUS_CONFIG
+} t_bonus_error;
 
-// Sprite position structure  
-typedef struct s_sprite_pos
+/* Extended parser structure for bonus */
+typedef struct s_parser_bonus
 {
-    float x;  // Use float for center positioning (x + 0.5)
-    float y;  // Use float for center positioning (y + 0.5)
-}   t_sprite_pos;
+    t_parser    base;           /* Reuse mandatory parser */
+    int         door_count;
+    int         sprite_count;
+    char        *door_texture;
+    char        **sprite_textures;
+    int         sprite_texture_count;
+}   t_parser_bonus;
 
-// Extended config (inherits from t_config)
-typedef struct s_config_bonus
-{
-    t_config        base;               // All mandatory fields
-    t_door_pos      *door_positions;    // Array of door positions
-    int             door_count;         // Number of doors
-    t_sprite_pos    *sprite_positions;  // Array of sprite positions
-    int             sprite_count;       // Number of sprites
-}   t_config_bonus;
-
-// Function prototypes
-int parser_validate_map_chars_bonus(const char *line);
-int parser_collect_doors(t_config *cfg);
-int parser_collect_sprites(t_config *cfg);
-int parse_cub_file_bonus(const char *path, t_game *game);
+/* Bonus validation helpers */
+int     is_bonus_char(char c);
+int     is_door_char(char c);
+int     is_sprite_char(char c);
+int     validate_door_placement(t_map *map, int x, int y);
+int     validate_sprite_placement(t_map *map, int x, int y);
+/* Bonus parsing functions */
+int     parse_file_bonus(const char *path, t_parser *parser);
+int     parse_bonus_config(char *line, t_config *cfg);
+int     validate_bonus_chars(t_map *map);
+int     detect_doors(t_parser *parser);
+int     detect_sprites(t_parser *parser);
+int     build_bonus_entities(t_parser *parser);
+char    *get_bonus_error_msg(int code);
 
 #endif
