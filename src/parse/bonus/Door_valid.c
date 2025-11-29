@@ -21,9 +21,10 @@ int validate_door_placement(t_map *map, int j, int i)
     int     open_count;
 
 	if (j <= 0 || i <= 0 || j >= map->width - 1 || i >= map->height - 1)
-    return (ERR_INVALID_DOOR);
+        return (ERR_INVALID_DOOR);
 	
     wall_count = 0;
+    open_count = 0;
     up = map->grid[i - 1][j];
     down = map->grid[i + 1][j];
     left = map->grid[i][j - 1];
