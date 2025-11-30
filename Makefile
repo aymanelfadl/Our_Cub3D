@@ -13,24 +13,28 @@ LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 
-PARSING = src/parse/parser.c \
-		  src/parse/parse_map.c \
-		  src/parse/parse_texture.c \
-		  src/parse/utils.c \
-		  src/parse/valid_map.c \
-		  src/parse/Error.c
+PARSING = $(wildcard src/parse/mandatory/*.c)
+COMMON = $(wildcard src/parse/common/*.c)
 
 # Bonus parsing sources
-PARSING_BONUS = src/parse/bonus/map_validate_bonus.c \
-				src/parse/bonus/collect_doors.c \
-				src/parse/bonus/collect_sprites.c \
-				src/parse/bonus/parser_bonus.c
+PARSING_BONUS = $(wildcard src/parse/bonus/*.c)
 
 RAYCASTING = raycasting/dda_algo.c raycasting/drawing.c raycasting/events.c \
 			 raycasting/player_movement.c raycasting/ray_casting.c raycasting/utils.c
 TEXTURES = src/textures/loader.c 
 
-SRC = $(PARSING) $(RAYCASTING) $(TEXTURES) main.c
+SRC = $(PARSING) $(COMMON) $(RAYCASTING) $(TEXTURES) main.c
+
+# Bonus build sources
+# For the bonus binary we use mandatory helpers for Error/parse_texture
+# and replace core parse components with the bonus variants to avoid symbol
+# duplication.
+SRC_BONUS = \
+	src/parse/mandatory/Error.c \
+	src/parse/mandatory/parse_texture.c \
+	$(COMMON) \
+	$(wildcard src/parse/bonus/*.c) \
+	$(RAYCASTING) $(TEXTURES) main_bonus.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -38,7 +42,8 @@ PARSER_OBJS = $(PARSING:.c=.o)
 PARSER_TEST_OBJ = tests/parser_main.o
 
 # Bonus parser objects
-PARSER_BONUS_OBJS = $(PARSING:.c=.o) $(PARSING_BONUS:.c=.o)
+PARSER_BONUS_OBJS = src/parse/mandatory/Error.o src/parse/mandatory/parse_texture.o $(COMMON:.c=.o) $(PARSING_BONUS:.c=.o)
+OBJ_BONUS = $(SRC_BONUS:.c=.o)
 PARSER_BONUS_TEST_OBJ = tests/parser_bonus_test.o
 
 all: $(NAME)
@@ -51,11 +56,11 @@ $(LIBFT):
 	@make -C $(LIBFT_DIR)
 
 clean:
-	rm -f $(OBJ) $(PARSER_TEST_OBJ) $(PARSER_BONUS_TEST_OBJ)
+	rm -f $(OBJ) $(OBJ_BONUS) $(PARSER_TEST_OBJ) $(PARSER_BONUS_TEST_OBJ)
 	@make -C $(LIBFT_DIR) clean
 
 fclean: clean
-	rm -f $(NAME) parser_tester parser_bonus_tester
+	rm -f $(NAME) cub3D_bonus parser_tester parser_bonus_tester
 	@make -C $(LIBFT_DIR) fclean
 
 re: fclean all
@@ -67,5 +72,13 @@ parser_tester: $(PARSER_OBJS) $(PARSER_TEST_OBJ) $(LIBFT)
 parser_bonus_tester: $(PARSER_BONUS_OBJS) $(PARSER_BONUS_TEST_OBJ) $(LIBFT)
 	$(CC) $(CFLAGS) $(PARSER_BONUS_OBJS) $(PARSER_BONUS_TEST_OBJ) $(LIBFT) -o parser_bonus_tester
 	@echo "✅ Parser bonus tester compiled!"
+
+cub3D_bonus: $(OBJ_BONUS) $(LIBFT)
+	@make -C minilibx-linux
+	$(CC)  $(CFLAGS) $(OBJ_BONUS)  $(LIBFT) $(MLX_FLAGS) $(LDFLAGS) -o cub3D_bonus
+
+.PHONY: bonus
+bonus: cub3D_bonus
+	@echo "✅ Built cub3D_bonus"
 
 .PHONY: all clean fclean re

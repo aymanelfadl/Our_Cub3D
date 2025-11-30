@@ -2,12 +2,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include "parser_internal.h"
-
-/* Bonus character set helper: doors and sprites */
-int	is_bonus_char(char c)
-{
-	return (c == 'D' || c == '2');
-}
+#include "bonus.h"
 
 static int	is_map_char(char c)
 {

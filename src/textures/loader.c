@@ -60,6 +60,44 @@ int texture_load_all(void *mlx, t_config *cfg)
         }
         ++i;
     }
+    /* Load optional sprite texture if provided */
+    if (cfg->sprite_path)
+    {
+        cfg->sprite_texture.path = cfg->sprite_path;
+        if (load_texture(mlx, &cfg->sprite_texture) != 0)
+        {
+            /* free already loaded textures */
+            int j = 0;
+            while (j < TEXTURE_COUNT)
+            {
+                if (cfg->textures[j].loaded && cfg->textures[j].img.mlx_img)
+                    mlx_destroy_image(mlx, cfg->textures[j].img.mlx_img);
+                cfg->textures[j].loaded = 0;
+                ++j;
+            }
+            return (-1);
+        }
+    }
+    /* Load optional door texture if provided */
+    if (cfg->door_texture_path)
+    {
+        cfg->door_texture.path = cfg->door_texture_path;
+        if (load_texture(mlx, &cfg->door_texture) != 0)
+        {
+            int j = 0;
+            while (j < TEXTURE_COUNT)
+            {
+                if (cfg->textures[j].loaded && cfg->textures[j].img.mlx_img)
+                    mlx_destroy_image(mlx, cfg->textures[j].img.mlx_img);
+                cfg->textures[j].loaded = 0;
+                ++j;
+            }
+            if (cfg->sprite_texture.loaded && cfg->sprite_texture.img.mlx_img)
+                mlx_destroy_image(mlx, cfg->sprite_texture.img.mlx_img);
+            cfg->sprite_texture.loaded = 0;
+            return (-1);
+        }
+    }
     return (0);
 }
 

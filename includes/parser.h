@@ -23,8 +23,8 @@ typedef enum e_parse_error
 	ERR_MAP_NOT_CLOSED
 }	t_error;
 
-int		parse_file(const char *path, t_parser *parser);
+int	parse_file(const char *path, t_parser *parser);
 // void	free_parser(t_parser *parser);
-// char	*get_error_msg(int code);
+char	*get_error_msg(int code);
 
 #endif

@@ -24,4 +24,9 @@ int	build_map(t_parser *parser, int start);
 int	validate_map_chars(t_map *map);
 int	find_player(t_parser *parser);
 int	validate_map_closed(t_map *map);
+/* Common/shared implementations (prefix common_) */
+char    *common_skip_spaces(char *str);
+int     common_is_valid_extension(const char *path);
+void    common_parser_release_config(t_config *cfg);
+int     common_ft_isspace(char c);
 #endif
