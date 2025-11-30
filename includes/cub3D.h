@@ -106,8 +106,56 @@ typedef struct s_map {
     int   width;
     int   height;
     int   sprite_count;
+    // int   door_count;
     char **grid;
 } t_map;
+
+/* bonus  bonus*/
+typedef struct s_sprite
+{
+    float x;
+    float y;
+    float distance;
+    int current_frame;     // Current animation frame (0, 1, 2, ...)
+    int frame_count;       // Total number of frames
+    float frame_timer;     // Time accumulator for frame switching
+    float frame_duration;  // Time per frame (lower = faster animation)
+} t_sprite;
+
+typedef struct s_sprite_render
+{
+    int sprite_height;
+    int sprite_width;
+    int sprite_screen_x;
+    int draw_start_x;
+    int draw_end_x;
+    int draw_start_y;
+    int draw_end_y;
+} t_sprite_render;
+
+typedef struct s_door
+{
+    int map_x;
+    int map_y;
+    int is_open;    // 0 = closed, 1 = open
+} t_door;
+
+typedef struct s_game {
+    void     *mlx;
+    void     *win;
+    t_img    frame;
+    t_img    minimap;
+    t_config cfg;
+    t_sprite *sprites;
+    int       sprite_count;
+    float     z_buffer[WINDOW_WIDTH];
+    t_img     sprite_textures[4];  // Array for animation frames (4 frames max)
+    int       sprite_frame_count;   // How many frames loaded
+    t_door   *doors;
+    int       door_count;
+    t_img     door_texture;
+} t_game;
+/* bonus  bonus*/
 
 typedef struct s_config
 {
