@@ -44,7 +44,7 @@ static	void set_player_direction(t_player *player, char dir)
 	if (dir == 'N')
 	{
 		player->dir_x = 0.0f;
-		player->dir_y = -0.1f;
+		player->dir_y = -1.0f;
 	}
 	else if (dir == 'S')
 	{
@@ -61,8 +61,9 @@ static	void set_player_direction(t_player *player, char dir)
 		player->dir_x = -1.0f;
 		player->dir_y = 0.0f;
 	}
-	player->plane_x = -player->dir_y * 0.66f;
-	player->plane_y = player->dir_x * 0.66f;
+	float plane_length = tanf((FOV_PLANE * M_PI / 180.0f) / 2.0f);
+	player->plane_x = -player->dir_y * plane_length;
+	player->plane_y = player->dir_x * plane_length;
 }
 int	find_player(t_parser *parser)
 {

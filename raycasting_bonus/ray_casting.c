@@ -121,6 +121,7 @@ void render(t_game *game)
 
     draw_background(game, color_to_int(game->cfg.ceiling), color_to_int(game->cfg.floor));
     x = 0;
+    print_player_state(game);
     while (x < WINDOW_WIDTH)
     {
         map_x = floor(game->cfg.player.pos_x);
@@ -138,7 +139,6 @@ void render(t_game *game)
             game->z_buffer[x] = game->cfg.player.ray.distance_y;
             line_height = WINDOW_HEIGHT / game->cfg.player.ray.distance_y;
         }
-        draw_vertical_line(game, x, get_texture(game), line_height);
         x++;
     }
     draw_sprites(game);
@@ -167,7 +167,8 @@ int start_game(t_game *game)
         return (fprintf(stderr, "Error\nFailed to load textures\n"), 0);
 
     render(game);
-    mlx_loop_hook(game->mlx, render_loop, game);  // Keep rendering continuously for animation
+
+    mlx_loop_hook(game->mlx, render_loop, game);
     mlx_hook(game->win, 2, 1L << 0, handle_key, game);
     mlx_hook(game->win, 6,  1L<<6, mouse_move, game);
     mlx_hook(game->win, 17, 0, close_game, game);

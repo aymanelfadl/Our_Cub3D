@@ -3,11 +3,12 @@
 static void rotate_player(t_game *game, double angle)
 {
     double old_dir_x = game->cfg.player.dir_x;
+    double old_dir_y = game->cfg.player.dir_y;
     double old_plane_x = game->cfg.player.plane_x;
 
     // rotate direction vector
-    game->cfg.player.dir_x = game->cfg.player.dir_x * cos(angle) - game->cfg.player.dir_y * sin(angle);
-    game->cfg.player.dir_y = old_dir_x * sin(angle) + game->cfg.player.dir_y * cos(angle);
+    game->cfg.player.dir_x = old_dir_x * cos(angle) - old_dir_y * sin(angle);
+    game->cfg.player.dir_y = old_dir_x * sin(angle) + old_dir_y * cos(angle);
 
     // rotate camera plane
     game->cfg.player.plane_x = game->cfg.player.plane_x * cos(angle) - game->cfg.player.plane_y * sin(angle);

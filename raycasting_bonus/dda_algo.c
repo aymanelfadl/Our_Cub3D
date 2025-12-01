@@ -56,7 +56,7 @@ void perform_dda(t_game *game, int *map_y, int *map_x)
         {
             game->cfg.player.ray.distance_x += game->cfg.player.ray.next_cell_x;
             (*map_x) += game->cfg.player.ray.step_x;
-            game->cfg.player.ray.hit.side = 0; // vertical wall
+            game->cfg.player.ray.hit.side = 0;
         }
         else
         {

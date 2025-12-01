@@ -2,6 +2,7 @@
 # define PARSER_INTERNAL_H
 
 # include "parser.h"
+# include "cub3D.h"
 
 typedef struct s_parser
 {
