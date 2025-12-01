@@ -35,160 +35,151 @@
 # define MOVE_SPEED 0.08f
 # define ROT_SPEED 0.05f
 # define TILE_SIZE 10
-# define RADIUS 5 
-
+# define RADIUS 5
 
 typedef enum e_direction
 {
-    NO = 0,
-    SO,
-    WE,
-    EA
-} t_direction;
+	NO = 0,
+	SO,
+	WE,
+	EA
+}   t_direction;
 
 typedef struct s_color
 {
-    int red;
-    int green;
-    int blue;
-} t_color;
+	int red;
+	int green;
+	int blue;
+}   t_color;
 
 typedef struct s_img
 {
-    void    *mlx_img;
-    char    *addr;
-    int     bpp;
-    int     line_len;
-    int     endian;
-    int     width;
-    int     height;
-} t_img;
+	void    *mlx_img;
+	char    *addr;
+	int     bpp;
+	int     line_len;
+	int     endian;
+	int     width;
+	int     height;
+}   t_img;
 
 typedef struct s_texture
 {
-    t_direction id;
-    char *path;        /* path set by parser */
-    t_img   img;       /* MLX image + addr/bpp/line_len/endian */
-    int     width;
-    int     height;
-    int     loaded;    /* 0/1 flag */
-} t_texture;
+	t_direction id;
+	char        *path;
+	t_img       img;
+	int         width;
+	int         height;
+	int         loaded;
+}   t_texture;
 
 typedef struct s_hit
 {
-    float hit_x;
-    float hit_y;
-    int is_hit;
-    int side;
-} t_hit;
+	float   hit_x;
+	float   hit_y;
+	int     is_hit;
+	int     side;
+}   t_hit;
 
 typedef struct s_ray
 {
-    float camera_x;
-    float ray_x;
-    float ray_y;
-    float next_cell_x;
-    float next_cell_y;
-    int   step_x;
-    int   step_y;
-    float distance_x;
-    float distance_y;
-    struct s_hit hit;
-} t_ray;
+	float           camera_x;
+	float           ray_x;
+	float           ray_y;
+	float           next_cell_x;
+	float           next_cell_y;
+	int             step_x;
+	int             step_y;
+	float           distance_x;
+	float           distance_y;
+	struct s_hit    hit;
+}   t_ray;
 
 typedef struct s_player
 {
-    float pos_x;
-    float pos_y;
-    float dir_x;
-    float dir_y;
-    float plane_x;
-    float plane_y;
-    t_direction direction;
-    t_ray    ray;
-} t_player;
+	float       pos_x;
+	float       pos_y;
+	float       dir_x;
+	float       dir_y;
+	float       plane_x;
+	float       plane_y;
+	t_direction direction;
+	t_ray       ray;
+}   t_player;
 
 typedef struct s_map
 {
-    int   width;
-    int   height;
-    int   sprite_count;
-    char **grid;
-} t_map;
+	int     width;
+	int     height;
+	char    **grid;
+}   t_map;
 
 typedef struct s_sprite
 {
-    float x;
-    float y;
-    float distance;
-    int current_frame;     /* Current animation frame */
-    int frame_count;       /* Total number of frames */
-    float frame_timer;     /* Time accumulator for frame switching */
-    float frame_duration;  /* Time per frame */
-} t_sprite;
+	float   x;
+	float   y;
+	float   distance;
+	int     current_frame;
+	int     frame_count;
+	float   frame_timer;
+	float   frame_duration;
+}   t_sprite;
 
 typedef struct s_sprite_render
 {
-    int sprite_height;
-    int sprite_width;
-    int sprite_screen_x;
-    int draw_start_x;
-    int draw_end_x;
-    int draw_start_y;
-    int draw_end_y;
-} t_sprite_render;
+	int sprite_height;
+	int sprite_width;
+	int sprite_screen_x;
+	int draw_start_x;
+	int draw_end_x;
+	int draw_start_y;
+	int draw_end_y;
+}   t_sprite_render;
 
 typedef struct s_door
 {
-    int map_x;
-    int map_y;
-    int is_open;    /* 0 = closed, 1 = open */
-} t_door;
+	int map_x;
+	int map_y;
+	int is_open;
+}   t_door;
 
 typedef struct s_config
 {
-    t_texture textures[TEXTURE_COUNT];
-    char      *sprite_path;
-    char      *door_texture_path;
-    t_texture  sprite_texture;
-    t_texture  door_texture;
-    t_color   floor;
-    t_color   ceiling;
-    int       f_set;
-    int       c_set;
-    t_map     map;
-    t_player  player;
-    char      *no_texture;
-    char      *so_texture;
-    char      *we_texture;
-    char      *ea_texture;
-} t_config;
+	t_texture   textures[TEXTURE_COUNT];
+	t_texture   sprite_texture;
+	t_texture   door_texture;
+	char        *sprite_path;
+	char        *door_texture_path;
+	t_color     floor;
+	t_color     ceiling;
+	int         f_set;
+	int         c_set;
+	t_map       map;
+	t_player    player;
+}   t_config;
 
 typedef struct s_game
 {
-    void     *mlx;
-    void     *win;
-    t_img    frame;
-    t_img    minimap;
-    t_config cfg;
-    t_sprite *sprites;
-    int       sprite_count;
-    float     z_buffer[WINDOW_WIDTH];
-    t_img     sprite_textures[4];  /* Array for animation frames */
-    int       sprite_frame_count;  /* How many frames loaded */
-    t_door   *doors;
-    int       door_count;
-    t_img     door_texture;
-} t_game;
+	void        *mlx;
+	void        *win;
+	t_img       frame;
+	t_img       minimap;
+	t_config    cfg;
+	t_sprite    *sprites;
+	int         sprite_count;
+	float       z_buffer[WINDOW_WIDTH];
+	t_img       sprite_textures[4];
+	int         sprite_frame_count;
+	t_door      *doors;
+	int         door_count;
+}   t_game;
 
 int start_game(t_game *game);
 
-/* textures API */
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
 t_img get_texture(t_game *game);
 
-/* raycasting module functions (exported) */
 void draw_background(t_game *game, int ceil_color, int floor_color);
 int color_to_int(t_color c);
 void compute_ray_direction(t_game *game, int column);
@@ -207,8 +198,6 @@ void parser_release_config(t_config *cfg);
 void player_movement(int key, t_game *game);
 void render(t_game *game);
 
-
-// bonus 
 int mouse_move(int x, int y, void *game);
 t_door *find_door_at(t_game *game, int x, int y);
 void toggle_door(t_game *game);
@@ -222,4 +211,4 @@ void calculate_sprite_distances(t_game *game);
 int is_transparent(unsigned int color);
 unsigned int get_sprite_pixel(t_img *texture, int x, int y);
 
-#endif /* CUB3D_H */
+#endif
