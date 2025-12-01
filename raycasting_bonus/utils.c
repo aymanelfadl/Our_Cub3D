@@ -42,20 +42,14 @@ void apply_movement(t_game *game, float new_x, float new_y)
 
 int	color_to_int(t_color c)
 {
-    int color;
-
-    color = 0;
-    color |= c.red << 16;
-    color |= c.green << 8;
-    color |= c.blue;;
-
-    return (color);
+	return ((c.red << 16) | (c.green << 8) | c.blue);
 }
 
 void my_mlx_pixel_put(t_img *img, int x, int y, int color)
 {
     if (x < 0 || x >= WINDOW_WIDTH || y < 0 || y >= WINDOW_HEIGHT)
         return;
+
     char *pixel = img->addr + (y * img->line_len + x * (img->bpp / 8));
     *(unsigned int *)pixel = color;
 }

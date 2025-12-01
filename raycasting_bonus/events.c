@@ -14,6 +14,27 @@ static void rotate_player(t_game *game, double angle)
     game->cfg.player.plane_y = old_plane_x * sin(angle) + game->cfg.player.plane_y * cos(angle);
 }
 
+int mouse_move(int x, int y, void *game)
+{
+    t_game *g;
+    int new_x;
+    static int  old_x;
+    (void)y;
+
+    g = (t_game *)game;
+    new_x = x - old_x;
+    old_x = x;
+    if (new_x > 0)
+        rotate_player(g, (ROT_SPEED - 0.02f));
+    else
+        rotate_player(g, -(ROT_SPEED - 0.02f));
+    mlx_destroy_image(g->mlx, g->frame.mlx_img);
+    g->frame.mlx_img = mlx_new_image(g->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+    g->frame.addr = mlx_get_data_addr(g->frame.mlx_img, &g->frame.bpp, &g->frame.line_len, &g->frame.endian);
+    render(game);
+    return (0);
+}
+
 int close_game(t_game *game)
 {
     if (game && game->mlx)
@@ -29,11 +50,13 @@ int close_game(t_game *game)
 int handle_key(int key, t_game *game)
 {
     player_movement(key, game);
-    if (key == KEY_RIGHT)
+    if (key == 65363)
         rotate_player(game, ROT_SPEED);
-    if (key == KEY_LEFT)
+    if (key == 65361)
         rotate_player(game, -ROT_SPEED);
-    if (key == KEY_ESC)
+    if (key == KEY_E)
+        toggle_door(game);
+    if (key == 65307)
         close_game(game);
     mlx_destroy_image(game->mlx, game->frame.mlx_img);
     game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);

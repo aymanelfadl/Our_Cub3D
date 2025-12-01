@@ -46,6 +46,8 @@ void init_dda(t_game *game, int map_y, int map_x)
 
 void perform_dda(t_game *game, int *map_y, int *map_x)
 {
+    t_door *door;
+
     game->cfg.player.ray.hit.is_hit = 0;
 
     while (!game->cfg.player.ray.hit.is_hit)
@@ -60,7 +62,7 @@ void perform_dda(t_game *game, int *map_y, int *map_x)
         {
             game->cfg.player.ray.distance_y += game->cfg.player.ray.next_cell_y;
             (*map_y) += game->cfg.player.ray.step_y;
-            game->cfg.player.ray.hit.side = 1; // horizontal wall
+            game->cfg.player.ray.hit.side = 1;
         }
 
         if (game->cfg.map.grid[*map_y][*map_x] == '1')
@@ -69,5 +71,9 @@ void perform_dda(t_game *game, int *map_y, int *map_x)
             game->cfg.player.ray.distance_y -= game->cfg.player.ray.next_cell_y;
             game->cfg.player.ray.hit.is_hit = 1;
         }
+        
+        door = find_door_at(game, *map_x, *map_y);
+        if (door != NULL && !door->is_open)
+            game->cfg.player.ray.hit.is_hit = 1;
     }
 }

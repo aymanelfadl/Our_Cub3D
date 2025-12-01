@@ -1,84 +1,100 @@
 CC = cc
 
-CFLAGS = -Iincludes/ -Iminilibx-linux -Wall -Wextra -Werror 
+CFLAGS = -Iincludes/ -Iminilibx-linux -Wall -Wextra -Werror
 
 LDFLAGS = -no-pie
 
 MLX_FLAGS = -Lminilibx-linux -lmlx -lXext -lX11 -lm
 
 NAME = cub3D
+BONUS_NAME = cub3D_bonus
 
 LIBFT_DIR = libft
-
 LIBFT = $(LIBFT_DIR)/libft.a
 
-
-PARSING = $(wildcard src/parse/mandatory/*.c)
-COMMON = $(wildcard src/parse/common/*.c)
-
-# Bonus parsing sources
-PARSING_BONUS = $(wildcard src/parse/bonus/*.c)
-
-RAYCASTING = raycasting/dda_algo.c raycasting/drawing.c raycasting/events.c \
-			 raycasting/player_movement.c raycasting/ray_casting.c raycasting/utils.c
-TEXTURES = src/textures/loader.c 
-
-SRC = $(PARSING) $(COMMON) $(RAYCASTING) $(TEXTURES) main.c
-
-# Bonus build sources
-# For the bonus binary we use mandatory helpers for Error/parse_texture
-# and replace core parse components with the bonus variants to avoid symbol
-# duplication.
-SRC_BONUS = \
+# Explicit mandatory parsing sources
+PARSING_MANDATORY = \
 	src/parse/mandatory/Error.c \
 	src/parse/mandatory/parse_texture.c \
-	$(COMMON) \
-	$(wildcard src/parse/bonus/*.c) \
-	$(RAYCASTING) $(TEXTURES) main_bonus.c
+	src/parse/mandatory/valid_map.c \
+	src/parse/mandatory/parser.c \
+	src/parse/mandatory/parse_map.c \
+	src/parse/mandatory/utils.c
+
+# Common parse helpers
+PARSE_COMMON = src/parse/common/common_utils.c
+
+# Explicit bonus parsing sources (extra bonus-only files)
+PARSING_BONUS_EXTRA = \
+	src/parse/bonus/bonus_helpers.c \
+	src/parse/bonus/err_bonus.c \
+	src/parse/bonus/parser_bonus.c \
+	src/parse/bonus/parse_map_bonus.c \
+	src/parse/bonus/utils_bonus.c \
+	src/parse/bonus/parser_flow_bonus.c \
+	src/parse/bonus/Door_valid_bonus.c \
+	src/parse/bonus/sprite_valid_bonus.c \
+	src/parse/bonus/valid_map_bonus.c
+
+# Raycasting and rendering sources
+RAYCASTING = \
+	raycasting/dda_algo.c \
+	raycasting/drawing.c \
+	raycasting/events.c \
+	raycasting/player_movement.c \
+	raycasting/ray_casting.c \
+	raycasting/utils.c \
+	raycasting/drawing_utils.c
+
+# Raycasting bonus sources (explicit list from raycasting_bonus/)
+RAYCASTING_BONUS = \
+	raycasting_bonus/dda_algo.c \
+	raycasting_bonus/door_bonus.c \
+	raycasting_bonus/drawing.c \
+	raycasting_bonus/drawing_utils.c \
+	raycasting_bonus/events.c \
+	raycasting_bonus/player_movement.c \
+	raycasting_bonus/ray_casting.c \
+	raycasting_bonus/sprite_bonus.c \
+	raycasting_bonus/utils.c
+
+# Textures loader
+TEXTURES = src/textures/loader.c
+
+# Application entry points
+MAIN = main.c
+MAIN_BONUS = main_bonus.c
+
+# Mandatory build sources (explicit)
+SRC = $(PARSING_MANDATORY) $(PARSE_COMMON) $(RAYCASTING) $(TEXTURES) $(MAIN)
+
+# Bonus build sources: include mandatory Error/parse_texture helpers plus bonus parsing extras
+SRC_BONUS = src/parse/mandatory/Error.c src/parse/mandatory/parse_texture.c $(PARSE_COMMON) $(PARSING_BONUS_EXTRA) $(RAYCASTING_BONUS) $(TEXTURES) $(MAIN_BONUS)
 
 OBJ = $(SRC:.c=.o)
-
-PARSER_OBJS = $(PARSING:.c=.o)
-PARSER_TEST_OBJ = tests/parser_main.o
-
-# Bonus parser objects
-PARSER_BONUS_OBJS = src/parse/mandatory/Error.o src/parse/mandatory/parse_texture.o $(COMMON:.c=.o) $(PARSING_BONUS:.c=.o)
 OBJ_BONUS = $(SRC_BONUS:.c=.o)
-PARSER_BONUS_TEST_OBJ = tests/parser_bonus_test.o
 
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT)
 	@make -C minilibx-linux
-	$(CC)  $(CFLAGS) $(OBJ)  $(LIBFT) $(MLX_FLAGS) $(LDFLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(MLX_FLAGS) $(LDFLAGS) -o $(NAME)
 
 $(LIBFT):
 	@make -C $(LIBFT_DIR)
 
 clean:
-	rm -f $(OBJ) $(OBJ_BONUS) $(PARSER_TEST_OBJ) $(PARSER_BONUS_TEST_OBJ)
+	rm -f $(OBJ) $(OBJ_BONUS)
 	@make -C $(LIBFT_DIR) clean
 
 fclean: clean
-	rm -f $(NAME) cub3D_bonus parser_tester parser_bonus_tester
+	rm -f $(NAME) $(BONUS_NAME) parser_tester parser_bonus_tester
 	@make -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
-parser_tester: $(PARSER_OBJS) $(PARSER_TEST_OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) $(PARSER_OBJS) $(PARSER_TEST_OBJ) $(LIBFT) -o parser_tester
-
-# Parser bonus tester
-parser_bonus_tester: $(PARSER_BONUS_OBJS) $(PARSER_BONUS_TEST_OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) $(PARSER_BONUS_OBJS) $(PARSER_BONUS_TEST_OBJ) $(LIBFT) -o parser_bonus_tester
-	@echo "✅ Parser bonus tester compiled!"
-
-cub3D_bonus: $(OBJ_BONUS) $(LIBFT)
+bonus: $(OBJ_BONUS) $(LIBFT)
 	@make -C minilibx-linux
-	$(CC)  $(CFLAGS) $(OBJ_BONUS)  $(LIBFT) $(MLX_FLAGS) $(LDFLAGS) -o cub3D_bonus
+	$(CC) $(CFLAGS) $(OBJ_BONUS) $(LIBFT) $(MLX_FLAGS) $(LDFLAGS) -o $(BONUS_NAME)
 
-.PHONY: bonus
-bonus: cub3D_bonus
-	@echo "✅ Built cub3D_bonus"
-
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus

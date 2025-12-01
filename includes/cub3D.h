@@ -14,8 +14,8 @@
 #  define M_PI 3.14159265358979323846
 # endif
 
-# define WINDOW_WIDTH 1000
-# define WINDOW_HEIGHT 800
+# define WINDOW_WIDTH 800
+# define WINDOW_HEIGHT 600
 
 # define EVENT_KEY_PRESS 2
 # define EVENT_DESTROY 17
@@ -31,8 +31,12 @@
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
 
+# define COLLISION_CONST 0.3
 # define MOVE_SPEED 0.08f
 # define ROT_SPEED 0.05f
+# define TILE_SIZE 10
+# define RADIUS 5 
+
 
 typedef enum e_direction
 {
@@ -182,6 +186,7 @@ int start_game(t_game *game);
 /* textures API */
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
+t_img get_texture(t_game *game);
 
 /* raycasting module functions (exported) */
 void draw_background(t_game *game, int ceil_color, int floor_color);
@@ -189,7 +194,11 @@ int color_to_int(t_color c);
 void compute_ray_direction(t_game *game, int column);
 void init_dda(t_game *game, int map_y, int map_x);
 void perform_dda(t_game *game, int *map_y, int *map_x);
-void draw_vertical_line(t_game *game, int x);
+void draw_vertical_line(t_game *game, int x, t_img texture, int line_height);
+float get_texture_y(int *drawing_start, float text_step);
+int get_wall_hit(t_game *game, t_img texture);
+unsigned int get_texture_color(t_img texture, int tex_y, int tex_x);
+void apply_movement(t_game *game, float new_x, float new_y);
 int handle_key(int key, t_game *game);
 int close_game(t_game *game);
 void my_mlx_pixel_put(t_img *img, int x, int y, int color);
@@ -197,5 +206,20 @@ t_img get_proper_texture(t_texture *texs, t_direction dir);
 void parser_release_config(t_config *cfg);
 void player_movement(int key, t_game *game);
 void render(t_game *game);
+
+
+// bonus 
+int mouse_move(int x, int y, void *game);
+t_door *find_door_at(t_game *game, int x, int y);
+void toggle_door(t_game *game);
+void draw_sprite(t_game *game, t_sprite *sprite);
+void draw_sprite_column(t_game *game, t_sprite *sprite, t_sprite_render *render, int x);
+void draw_sprite_pixel(t_game *game, t_sprite *sprite, t_sprite_render *render, int x, int y);
+void init_sprite_render(t_sprite_render *render, float transform_x, float transform_y);
+void update_sprite_animations(t_game *game);
+void sort_sprites(t_sprite *sprites, int count);
+void calculate_sprite_distances(t_game *game);
+int is_transparent(unsigned int color);
+unsigned int get_sprite_pixel(t_img *texture, int x, int y);
 
 #endif /* CUB3D_H */
