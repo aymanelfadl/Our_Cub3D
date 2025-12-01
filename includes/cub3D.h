@@ -146,6 +146,10 @@ typedef struct s_door
 typedef struct s_config
 {
 	t_texture   textures[TEXTURE_COUNT];
+    char      *no_texture;
+    char      *so_texture;
+    char      *we_texture;
+    char      *ea_texture;
 	t_texture   sprite_texture;
 	t_texture   door_texture;
 	char        *sprite_path;
