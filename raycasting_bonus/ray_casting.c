@@ -87,7 +87,6 @@ void draw_minimap(t_game *game)
     draw_player(game);
 }
 
-// Animation loop function for continuous rendering
 int render_loop(t_game *game)
 {
     render(game);
