@@ -81,11 +81,15 @@ int start_game(t_game *game)
     }
 
     render(game);
-    _Pragma("GCC diagnostic push")
-    _Pragma("GCC diagnostic ignored \"-Wcast-function-type\"")
+#if defined(__GNUC__) && !defined(__clang__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
     mlx_hook(game->win, 2, 1L << 0, (int (*)())handle_key, game);
     mlx_hook(game->win, 17, 0, (int (*)())close_game, game);
-    _Pragma("GCC diagnostic pop")
+#if defined(__GNUC__) && !defined(__clang__)
+# pragma GCC diagnostic pop
+#endif
     mlx_loop(game->mlx);
     return 1;
 }

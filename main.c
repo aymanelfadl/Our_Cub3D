@@ -15,6 +15,8 @@
 #include "parser_internal.h"
 #include <unistd.h>
 
+char	*get_error_msg(int code);
+
 int main(int ac, char *av[])
 {
     if (ac != 2)
@@ -33,7 +35,7 @@ int main(int ac, char *av[])
     code = parse_file(av[1], &parser);
     if (code != OK)
     {
-        // fprintf(stderr, "Error\n%s\n", get_error_msg(code));
+            fprintf(stderr, "Error\n%s\n", get_error_msg(code));
         parser_release_config(&game.cfg);
         return (1);
     }
