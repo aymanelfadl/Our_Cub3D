@@ -25,7 +25,8 @@ void toggle_door(t_game *game)
     door = find_door_at(game, check_x, check_y);
     if (door != NULL)
     {
-        door->is_open = !door->is_open;        
+        // TODO:: Problem if we have a door is open and we go inside it, when we close it we have probem in movement !! 
+        door->is_open = !door->is_open;       
         render(game);
     }
 }

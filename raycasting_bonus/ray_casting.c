@@ -36,6 +36,8 @@ int get_tile_color(t_game *game, int map_x, int map_y)
             color = 0x565757;
         else if (game->cfg.map.grid[map_y][map_x] == '0')
             color = color_to_int(game->cfg.floor);
+        else if (game->cfg.map.grid[map_y][map_x] == 'D')
+            color = 0x00FF00;
     }
     return (color);
 }

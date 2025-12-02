@@ -214,5 +214,7 @@ void sort_sprites(t_sprite *sprites, int count);
 void calculate_sprite_distances(t_game *game);
 int is_transparent(unsigned int color);
 unsigned int get_sprite_pixel(t_img *texture, int x, int y);
+int check_door(t_game *game, float x, float y);
+
 
 #endif
