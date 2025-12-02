@@ -1,5 +1,25 @@
 #include "cub3D.h"
 
+
+int check_door(t_game *game, float x, float y)
+{
+    t_door *door;
+
+    door = find_door_at(game, (int)(x - COLLISION_CONST), (int)(y - COLLISION_CONST));
+    if (door != NULL && !door->is_open)
+        return (1);
+    door = find_door_at(game, (int)(x + COLLISION_CONST), (int)(y - COLLISION_CONST));
+    if (door != NULL && !door->is_open)
+        return (1);
+    door = find_door_at(game, (int)(x - COLLISION_CONST), (int)(y + COLLISION_CONST));
+    if (door != NULL && !door->is_open)
+        return (1);
+    door = find_door_at(game, (int)(x + COLLISION_CONST), (int)(y + COLLISION_CONST));
+    if (door != NULL && !door->is_open)
+        return (1);
+    return (0);
+}
+
 static int is_blocked(t_game *game, float x, float y)
 {
     if (game->cfg.map.grid[(int)(y - COLLISION_CONST)][(int)(x - COLLISION_CONST)] == '1')
@@ -10,7 +30,9 @@ static int is_blocked(t_game *game, float x, float y)
         return (1);
     if (game->cfg.map.grid[(int)(y + COLLISION_CONST)][(int)(x + COLLISION_CONST)] == '1')
         return (1);
-    
+    if (check_door(game, x, y))
+        return (1);
+
     return (0);
 }
 
