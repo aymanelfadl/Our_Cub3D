@@ -17,6 +17,7 @@ int check_door(t_game *game, float x, float y)
     door = find_door_at(game, (int)(x + COLLISION_CONST), (int)(y + COLLISION_CONST));
     if (door != NULL && !door->is_open)
         return (1);
+
     return (0);
 }
 
