@@ -54,7 +54,21 @@ t_img get_texture(t_game *game)
                 return get_proper_texture(game->cfg.textures, SO);
         }
     }
-    return game->cfg.door_texture.img;    
+    else if (game->cfg.player.ray.hit.is_hit == 2 && game->cfg.door_texture.loaded)
+        return game->cfg.door_texture.img;
+    else
+    {
+        game->cfg.door_texture.img.mlx_img = mlx_xpm_file_to_image(game->mlx, "textures/wood.xpm",
+                 &game->cfg.door_texture.img.width, &game->cfg.door_texture.img.height); 
+        if (!game->cfg.door_texture.img.mlx_img)
+        {
+            fprintf(stderr, "DOOR !! Error: failed to load texture ");
+            return game->cfg.door_texture.img;
+        }
+        game->cfg.door_texture.img.addr = mlx_get_data_addr(game->cfg.door_texture.img.mlx_img, &game->cfg.door_texture.img.bpp, &game->cfg.door_texture.img.line_len, &game->cfg.door_texture.img.endian);
+        game->cfg.door_texture.loaded = 1;
+        return game->cfg.door_texture.img;
+    }
 }
 
 unsigned int get_texture_color(t_img texture, int tex_y, int tex_x)
