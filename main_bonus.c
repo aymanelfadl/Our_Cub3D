@@ -40,8 +40,17 @@ int main(int ac, char *av[])
         parser_release_config(&game.cfg);
         return (1);
     }
-
-    start_game(&game);
-
+    int i = game.door_count;
+    while (--i >= 0)
+    {
+        printf("%d, %d ? %d and loaded %d\n", game.doors[i].map_x,
+                 game.doors[i].map_y, game.doors[i].is_open, game.cfg.door_texture.loaded);
+    }
+    if (!start_game(&game))
+    {
+        parser_release_config(&game.cfg);
+        return (1);
+    }
+    
     return (0);
 }

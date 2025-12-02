@@ -120,7 +120,6 @@ void render(t_game *game)
 
     draw_background(game, color_to_int(game->cfg.ceiling), color_to_int(game->cfg.floor));
     x = 0;
-    print_player_state(game);
     while (x < WINDOW_WIDTH)
     {
         map_x = floor(game->cfg.player.pos_x);
@@ -138,9 +137,10 @@ void render(t_game *game)
             game->z_buffer[x] = game->cfg.player.ray.distance_y;
             line_height = WINDOW_HEIGHT / game->cfg.player.ray.distance_y;
         }
+        draw_vertical_line(game, x, get_texture(game), line_height);
         x++;
     }
-    draw_sprites(game);
+    // draw_sprites(game);
     draw_minimap(game);
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
     mlx_put_image_to_window(game->mlx, game->win, game->minimap.mlx_img, 10, 10);

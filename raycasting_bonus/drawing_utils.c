@@ -37,23 +37,24 @@ float get_texture_y(int *drawing_start, float text_step)
 
 t_img get_texture(t_game *game)
 {
-    int hit_side;
-
-    hit_side = game->cfg.player.ray.hit.side;
-    if (!hit_side)
+    if (game->cfg.player.ray.hit.is_hit == 1)
     {
-        if (game->cfg.player.ray.ray_x > 0)
-            return  get_proper_texture(game->cfg.textures, WE);
+        if (!game->cfg.player.ray.hit.side)
+        {
+            if (game->cfg.player.ray.ray_x > 0)
+                return  get_proper_texture(game->cfg.textures, WE);
+            else
+                return get_proper_texture(game->cfg.textures, EA);
+        }
         else
-            return get_proper_texture(game->cfg.textures, EA);
+        {
+            if (game->cfg.player.ray.ray_y > 0)
+                return get_proper_texture(game->cfg.textures, NO);
+            else
+                return get_proper_texture(game->cfg.textures, SO);
+        }
     }
-    else
-    {
-        if (game->cfg.player.ray.ray_y > 0)
-            return get_proper_texture(game->cfg.textures, NO);
-        else
-            return get_proper_texture(game->cfg.textures, SO);
-    }
+    return game->cfg.door_texture.img;    
 }
 
 unsigned int get_texture_color(t_img texture, int tex_y, int tex_x)
