@@ -1,6 +1,13 @@
 #include "cub3D.h"
 #include "parser_bonus.h"
 
+void print_spite(t_sprite s)
+{
+        printf ("s(%.2f, %.2f)\n distance: %.2f\ncurrent frame: %d\nframe count: %d\nframe timer: %.2f\nframe duration: %.2f\n", 
+                s.x, s.y, s.distance, s.current_frame, s.frame_count, s.frame_timer, s.frame_duration);
+}
+
+
 int main(int ac, char *av[])
 {
     t_game game;
@@ -40,11 +47,11 @@ int main(int ac, char *av[])
         parser_release_config(&game.cfg);
         return (1);
     }
-    int i = game.door_count;
+    int i = game.sprite_count;
     while (--i >= 0)
     {
-        printf("%d, %d ? %d and loaded %d\n", game.doors[i].map_x,
-                 game.doors[i].map_y, game.doors[i].is_open, game.cfg.door_texture.loaded);
+        printf("id %d\n", i);
+        print_spite(game.sprites[i]);
     }
     if (!start_game(&game))
     {

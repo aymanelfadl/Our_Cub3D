@@ -89,30 +89,6 @@ void draw_minimap(t_game *game)
     draw_player(game);
 }
 
-int render_loop(t_game *game)
-{
-    render(game);
-    return (0);
-}
-
-void draw_sprites(t_game *game)
-{
-    int i;
-    
-    if (game->sprite_count > 0)
-    {
-        update_sprite_animations(game);
-        calculate_sprite_distances(game);
-        sort_sprites(game->sprites, game->sprite_count);
-        i = 0;
-        while (i < game->sprite_count)
-        {
-            draw_sprite(game, &game->sprites[i]);
-            i++;
-        }
-    }
-}
-
 void render(t_game *game)
 {
     int x;
@@ -142,7 +118,6 @@ void render(t_game *game)
         draw_vertical_line(game, x, get_texture(game), line_height);
         x++;
     }
-    // draw_sprites(game);
     draw_minimap(game);
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
     mlx_put_image_to_window(game->mlx, game->win, game->minimap.mlx_img, 10, 10);
@@ -169,7 +144,6 @@ int start_game(t_game *game)
 
     render(game);
 
-    mlx_loop_hook(game->mlx, render_loop, game);
     mlx_hook(game->win, 2, 1L << 0, handle_key, game);
     mlx_hook(game->win, 6,  1L<<6, mouse_move, game);
     mlx_hook(game->win, 17, 0, close_game, game);
