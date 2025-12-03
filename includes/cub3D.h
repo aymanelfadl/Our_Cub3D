@@ -21,6 +21,7 @@
 # define EVENT_DESTROY 17
 # define MASK_KEY_PRESS (1L << 0)
 
+<<<<<<< HEAD
 # define KEY_ESC 65307
 # define KEY_W 119
 # define KEY_S 115
@@ -30,6 +31,10 @@
 # define KEY_E 101
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
+=======
+#define WINDOW_HEIGHT 1080
+#define WINDOW_WIDTH 1920  
+>>>>>>> d99ac4e (refactor(parser): add error handling for invalid characters and update configuration parsing)
 
 # define MOVE_SPEED 0.08f
 # define ROT_SPEED 0.05f

@@ -16,6 +16,7 @@ char	*get_error_msg(int code)
 		[ERR_INVALID_COLOR] = "Invalid color format (R,G,B 0-255)",
 		[ERR_NO_MAP] = "Map not found",
 		[ERR_INVALID_CHAR] = "Invalid character in map",
+		[ERR_INVALID_CHARACTHER] = "Invalid character",
 		[ERR_NO_PLAYER] = "No player spawn point",
 		[ERR_MULTI_PLAYER] = "Multiple player spawn points",
 		[ERR_MAP_NOT_CLOSED] = "Map is not closed by walls"

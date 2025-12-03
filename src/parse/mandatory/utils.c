@@ -4,7 +4,13 @@
 
 char	*skip_spaces(char *str)
 {
+<<<<<<< HEAD
     return (common_skip_spaces(str));
+=======
+	while (*str && ft_isspace(*str) )
+		str++;
+	return (str);
+>>>>>>> d99ac4e (refactor(parser): add error handling for invalid characters and update configuration parsing)
 }
 
 int is_valid_extension(const char *path)
