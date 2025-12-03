@@ -31,7 +31,7 @@
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
 
-# define COLLISION_CONST 0.3
+# define COLLISION_CONST 0.1
 # define MOVE_SPEED 0.08f
 # define ROT_SPEED 0.05f
 # define TILE_SIZE 10

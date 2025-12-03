@@ -20,13 +20,12 @@ void toggle_door(t_game *game)
     int check_y;
     t_door *door;
 
-    check_x = (int)(game->cfg.player.pos_x + game->cfg.player.dir_x * 1.0f);
-    check_y = (int)(game->cfg.player.pos_y + game->cfg.player.dir_y * 1.0f);
+    check_x = (int)(game->cfg.player.pos_x + game->cfg.player.dir_x * 1.5f);
+    check_y = (int)(game->cfg.player.pos_y + game->cfg.player.dir_y * 1.5f);
     door = find_door_at(game, check_x, check_y);
     if (door != NULL)
     {
-        // TODO:: Problem if we have a door is open and we go inside it, when we close it we have probem in movement !! 
-        door->is_open = !door->is_open;       
+        door->is_open = !door->is_open;
         render(game);
     }
 }
