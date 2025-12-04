@@ -27,10 +27,12 @@ int	parse_texture(char *line, char **texture)
 	char	*path;
 	char	*start;
 	char	*end;
+	char 	**split;
 
 	if (*texture)
 		return (ERR_DUPLICATE);
 	line = skip_spaces(line);
+	split = ft_split(line, " \t\n");
 	start = line;
 	while (*line && !ft_isspace(*line))
 		line++;
@@ -38,7 +40,7 @@ int	parse_texture(char *line, char **texture)
 	if (start == end)
 		return (ERR_INVALID_TEXTURE);
 	*end = '\0';
-	if (!is_valid_texture(start))
+	if (!is_valid_texture(start) || split[1] != NULL)
 		return (ERR_INVALID_TEXTURE);
 	path = ft_strdup(start);
 	if (!path)
