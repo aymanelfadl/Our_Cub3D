@@ -125,17 +125,6 @@ typedef struct s_sprite
 	float   frame_duration;
 }   t_sprite;
 
-typedef struct s_sprite_render
-{
-	int sprite_height;
-	int sprite_width;
-	int sprite_screen_x;
-	int draw_start_x;
-	int draw_end_x;
-	int draw_start_y;
-	int draw_end_y;
-}   t_sprite_render;
-
 typedef struct s_door
 {
 	int map_x;
@@ -205,16 +194,15 @@ void render(t_game *game);
 int mouse_move(int x, int y, void *game);
 t_door *find_door_at(t_game *game, int x, int y);
 void toggle_door(t_game *game);
-void draw_sprite(t_game *game, t_sprite *sprite);
-void draw_sprite_column(t_game *game, t_sprite *sprite, t_sprite_render *render, int x);
-void draw_sprite_pixel(t_game *game, t_sprite *sprite, t_sprite_render *render, int x, int y);
-void init_sprite_render(t_sprite_render *render, float transform_x, float transform_y);
-void update_sprite_animations(t_game *game);
+void draw_sprites(t_game *game);
 void sort_sprites(t_sprite *sprites, int count);
 void calculate_sprite_distances(t_game *game);
-int is_transparent(unsigned int color);
 unsigned int get_sprite_pixel(t_img *texture, int x, int y);
 int check_door(t_game *game, float x, float y);
+void draw_sprites(t_game *game);
 
+
+
+// void print_spite(t_sprite s);
 
 #endif

@@ -55,7 +55,8 @@ RAYCASTING_BONUS = \
 	raycasting_bonus/events.c \
 	raycasting_bonus/player_movement.c \
 	raycasting_bonus/ray_casting.c \
-	raycasting_bonus/utils.c
+	raycasting_bonus/utils.c \
+	raycasting_bonus/sprites_bonus.c
 
 # Textures loader
 TEXTURES = src/textures/loader.c

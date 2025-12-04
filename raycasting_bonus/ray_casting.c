@@ -118,6 +118,8 @@ void render(t_game *game)
         draw_vertical_line(game, x, get_texture(game), line_height);
         x++;
     }
+    draw_sprites(game);
+
     draw_minimap(game);
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
     mlx_put_image_to_window(game->mlx, game->win, game->minimap.mlx_img, 10, 10);
