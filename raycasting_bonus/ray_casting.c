@@ -23,6 +23,11 @@ void draw_player(t_game *game)
         py++;
     }
 }
+static int is_player(char c)
+{
+    return (c == 'E' || c == 'W'|| c == 'S'|| c == 'N');
+}
+
 
 int get_tile_color(t_game *game, int map_x, int map_y)
 {
@@ -34,7 +39,7 @@ int get_tile_color(t_game *game, int map_x, int map_y)
     {
         if (game->cfg.map.grid[map_y][map_x] == '1')
             color = 0x565757;
-        else if (game->cfg.map.grid[map_y][map_x] == '0')
+        else if (game->cfg.map.grid[map_y][map_x] == '0' || is_player(game->cfg.map.grid[map_y][map_x]))
             color = color_to_int(game->cfg.floor);
         else if (game->cfg.map.grid[map_y][map_x] == 'D')
             color = 0x00FF00;
