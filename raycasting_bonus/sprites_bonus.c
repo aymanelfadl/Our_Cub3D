@@ -46,19 +46,21 @@ void transform_to_camera_space(t_game *game, t_sprite *sprite)
     float sprite_y;
     float det;
     float inv_det;
-    float cam_x;
+    float side;
 
     sprite_x = sprite->x - game->cfg.player.pos_x;
     sprite_y = sprite->y - game->cfg.player.pos_y;
+
     det = (game->cfg.player.plane_x * game->cfg.player.dir_y) - 
           (game->cfg.player.dir_x * game->cfg.player.plane_y);
     inv_det = 1.0 / det;
-    cam_x = inv_det * (game->cfg.player.dir_y * sprite_x - 
-                       game->cfg.player.dir_x * sprite_y);
+    
+    side = inv_det * (game->cfg.player.dir_y * sprite_x - game->cfg.player.dir_x * sprite_y);
+    
     sprite->render.depth = inv_det * (-game->cfg.player.plane_y * sprite_x + 
                                       game->cfg.player.plane_x * sprite_y);
-    sprite->render.screen_x = (int)((WINDOW_WIDTH / 2) * 
-                              (1 + cam_x / sprite->render.depth));
+    
+    sprite->render.screen_x = (int)((WINDOW_WIDTH / 2) * (1 + side / sprite->render.depth));
     sprite->render.sprite_width = abs((int)(WINDOW_HEIGHT / sprite->render.depth));
 }
 
