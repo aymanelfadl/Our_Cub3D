@@ -114,15 +114,28 @@ typedef struct s_map
 	char    **grid;
 }   t_map;
 
+typedef struct s_sprite_render
+{
+	int     screen_x;
+	int     sprite_width;
+	int     sprite_left;
+	int     start_x;
+	int     end_x;
+	int     start_y;
+	int     end_y;
+	float   depth;
+}   t_sprite_render;
+
 typedef struct s_sprite
 {
-	float   x;
-	float   y;
-	float   distance;
-	int     current_frame;
-	int     frame_count;
-	float   frame_timer;
-	float   frame_duration;
+	float               x;
+	float               y;
+	float               distance;
+	int                 current_frame;
+	int                 frame_count;
+	float               frame_timer;
+	float               frame_duration;
+	t_sprite_render     render;
 }   t_sprite;
 
 typedef struct s_door
