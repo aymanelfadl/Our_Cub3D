@@ -121,6 +121,8 @@ typedef struct s_sprite_render
 	int     sprite_left;
 	int     start_x;
 	int     end_x;
+	float	tex_step_x;
+	int		tex_x;
 	int     start_y;
 	int     end_y;
 	float   depth;

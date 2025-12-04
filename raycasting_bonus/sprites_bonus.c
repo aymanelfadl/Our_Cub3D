@@ -85,29 +85,26 @@ void calculate_horizontal_bounds(t_sprite_render *render)
         render->end_x = WINDOW_WIDTH - 1;
 }
 
-void draw_sprite_stripe(t_game *game, int x, t_sprite_render *render,
-                       t_img texture, int tex_x)
+void draw_sprite_stripe(t_game *game, int x, t_sprite_render *render, t_img texture)
 {
     float tex_step;
     float tex_pos;
-    int y;
     unsigned int color;
 
     if (render->depth > game->z_buffer[x])
         return;
+
     tex_step = (float)texture.height / (render->end_y - render->start_y);
     tex_pos = 0;
+
     if (render->start_y < 0)
-    {
-        tex_pos = -render->start_y * tex_step;
         render->start_y = 0;
-    }
-    if (render->end_y >= WINDOW_HEIGHT)
-        render->end_y = WINDOW_HEIGHT - 1;
-    y = render->start_y;
-    while (y < render->end_y)
+    if (render->start_y >= WINDOW_HEIGHT)
+        render->start_y = WINDOW_HEIGHT - 1;
+    int y =render->start_y; 
+    while ( y < render->end_y)
     {
-        color = get_texture_color(texture, (int)tex_pos, tex_x);
+        color = get_texture_color(texture, (int)tex_pos, render->tex_x);
         if (color != 0x000000)
             my_mlx_pixel_put(&game->frame, x, y, color);
         tex_pos += tex_step;
@@ -119,21 +116,22 @@ void draw_sprite_columns(t_game *game, t_sprite_render *render, t_img texture)
 {
     int x;
     int offset_x;
-    int tex_x;
-    float tex_step_x;
-
-    tex_step_x = (float)texture.width / render->sprite_width;
+    
+    render->tex_step_x = (float)texture.width / render->sprite_width;
     x = render->start_x;
     while (x < render->end_x)
     {
         offset_x = x - render->sprite_left;
-        tex_x = (int)(offset_x * tex_step_x);
-        if (tex_x >= texture.width)
-            tex_x = texture.width - 1;
-        draw_sprite_stripe(game, x, render, texture, tex_x);
+        render->tex_x = (int)(offset_x * render->tex_step_x);
+        
+        if (render->tex_x >= texture.width)
+            render->tex_x = texture.width - 1;
+
+        draw_sprite_stripe(game, x, render, texture);
         x++;
     }
 }
+
 
 void render_sprite(t_game *game, int sprite_index)
 {
