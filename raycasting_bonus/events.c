@@ -29,10 +29,10 @@ int mouse_move(int x, int y, void *game)
         rotate_player(g, (ROT_SPEED - 0.02f));
     else
         rotate_player(g, -(ROT_SPEED - 0.02f));
-    mlx_destroy_image(g->mlx, g->frame.mlx_img);
-    g->frame.mlx_img = mlx_new_image(g->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
-    g->frame.addr = mlx_get_data_addr(g->frame.mlx_img, &g->frame.bpp, &g->frame.line_len, &g->frame.endian);
-    render(game);
+    // mlx_destroy_image(g->mlx, g->frame.mlx_img);
+    // g->frame.mlx_img = mlx_new_image(g->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+    // g->frame.addr = mlx_get_data_addr(g->frame.mlx_img, &g->frame.bpp, &g->frame.line_len, &g->frame.endian);
+    // render(game);
     return (0);
 }
 
@@ -59,9 +59,6 @@ int handle_key(int key, t_game *game)
         toggle_door(game);
     if (key == 65307)
         close_game(game);
-    mlx_destroy_image(game->mlx, game->frame.mlx_img);
-    game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
-    game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
-    render(game);
+
     return (0);
 }

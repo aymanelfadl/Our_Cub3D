@@ -132,6 +132,25 @@ void draw_sprite_columns(t_game *game, t_sprite_render *render, t_img texture)
     }
 }
 
+void update_animations(t_game *game)
+{
+    static int frame_counter;
+    int i;
+    
+    frame_counter++;
+    if (frame_counter >= 50)
+    {
+        frame_counter = 0;
+        i = 0;
+        while (i < game->sprite_count)
+        {
+            game->sprites[i].current_frame++;
+            if (game->sprites[i].current_frame == 4)
+                game->sprites[i].current_frame = 0;
+            i++;
+        }
+    }
+}
 
 void render_sprite(t_game *game, int sprite_index)
 {
@@ -144,7 +163,7 @@ void render_sprite(t_game *game, int sprite_index)
         return;
     calculate_vertical_bounds(&sprite->render);
     calculate_horizontal_bounds(&sprite->render);
-    texture = game->cfg.sprite_texture.img;
+    texture = game->sprite_textures[sprite->current_frame];
     draw_sprite_columns(game, &sprite->render, texture);
 }
 
@@ -160,4 +179,18 @@ void draw_sprites(t_game *game)
         render_sprite(game, i);
         i++;
     }
+}
+
+int game_loop(void *param)
+{
+    t_game *game = (t_game *)param;
+    
+    update_animations(game);
+    
+    mlx_destroy_image(game->mlx, game->frame.mlx_img);
+    game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+    game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, 
+                       &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
+    render(game);
+    return (0);
 }

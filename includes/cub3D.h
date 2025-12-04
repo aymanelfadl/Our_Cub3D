@@ -2,11 +2,11 @@
 # define CUB3D_H
 
 # include <unistd.h>
-# include "../libft/libft.h"
 # include <stdio.h>
 # include <stdlib.h>
-# include "../minilibx-linux/mlx.h"
 # include <math.h>
+# include "../libft/libft.h"
+# include "../minilibx-linux/mlx.h"
 
 # define TEXTURE_COUNT 4
 # define FOV_PLANE 60
@@ -186,6 +186,7 @@ int start_game(t_game *game);
 
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
+int  load_sprite_frames(void *mlx, t_game *game);
 t_img get_texture(t_game *game);
 
 void draw_background(t_game *game, int ceil_color, int floor_color);
@@ -215,6 +216,8 @@ void calculate_sprite_distances(t_game *game);
 unsigned int get_sprite_pixel(t_img *texture, int x, int y);
 int check_door(t_game *game, float x, float y);
 void draw_sprites(t_game *game);
+
+int game_loop(void *param);
 
 
 

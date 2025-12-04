@@ -149,8 +149,10 @@ int start_game(t_game *game)
     if (texture_load_all(game->mlx, &game->cfg) != 0)
         return (fprintf(stderr, "Error\nFailed to load textures\n"), 0);
 
-    render(game);
+    if (load_sprite_frames(game->mlx, game) != 0)
+        fprintf(stderr, "Warning: Failed to load sprite frames\n");
 
+    mlx_loop_hook(game->mlx, game_loop, game);
     mlx_hook(game->win, 2, 1L << 0, handle_key, game);
     mlx_hook(game->win, 6,  1L<<6, mouse_move, game);
     mlx_hook(game->win, 17, 0, close_game, game);
