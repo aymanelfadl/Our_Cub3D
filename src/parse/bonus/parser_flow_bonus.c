@@ -105,15 +105,15 @@ static int	parse_config_line(char *line, t_config *cfg)
 	if (line[0] == 'E' && line[1] == 'A' && ft_isspace(line[2]))
 		return (parse_texture(line + 3, &cfg->ea_texture));
 	/* Bonus directives: sprite texture (single 'S') and door texture ('DO') */
-	if (line[0] == 'S' && ft_isspace(line[1]))
-	{
-		/* store sprite texture path in config */
-		return (parse_texture(line + 1, &cfg->sprite_path));
-	}
-	if (line[0] == 'D' && line[1] == 'O' && ft_isspace(line[2]))
-	{
-		return (parse_texture(line + 3, &cfg->door_texture_path));
-	}
+	// if (line[0] == 'S' && ft_isspace(line[1]))
+	// {
+	// 	/* store sprite texture path in config */
+	// 	return (parse_texture(line + 1, &cfg->sprite_path));
+	// }
+	// if (line[0] == 'D' && line[1] == 'O' && ft_isspace(line[2]))
+	// {
+	// 	return (parse_texture(line + 3, &cfg->door_texture_path));
+	// }
 	if (line[0] == 'F' && ft_isspace(line[1]))
 	{
 		if (cfg->f_set)
