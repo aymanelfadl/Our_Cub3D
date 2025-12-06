@@ -1,6 +1,39 @@
 #include "cub3D.h"
 #include <stdio.h>
 
+int load_sprite_textures(t_game *game)
+{
+    char *texture_path[4];
+    int i;
+
+    texture_path[0] = "textures/wall_1.xpm";
+    texture_path[1] = "textures/wall_2.xpm";
+    texture_path[2] = "textures/wall_3.xpm";
+    texture_path[3] = "textures/wall_4.xpm";
+
+    i = 0;
+    while (i < game->sprite_count)
+    {
+        int j = 0;
+        while (j < 4)
+        {
+            game->sprites[i].sprite_textures[j].path = texture_path[j];
+            if (load_texture(game->mlx, &game->sprites[i].sprite_textures[j]) != 0)
+            {
+                // shoudl clean it if we fail
+                // while (--i > -1)
+                //     while (--j > -1)
+                //         mlx_destroy_image(game->mlx, game->sprites[i].sprite_textures[j].img.mlx_img);
+                return (1);
+            }
+            j++;
+        }
+        i++;
+    }
+    return (0);
+}
+
+
 int load_texture(void *mlx, t_texture *tex)
 {
     int w = 0;
@@ -60,80 +93,9 @@ int texture_load_all(void *mlx, t_config *cfg)
         }
         ++i;
     }
-    /* Load optional sprite texture if provided */
-    if (cfg->sprite_path)
-    {
-        cfg->sprite_texture.path = cfg->sprite_path;
-        if (load_texture(mlx, &cfg->sprite_texture) != 0)
-        {
-            /* free already loaded textures */
-            int j = 0;
-            while (j < TEXTURE_COUNT)
-            {
-                if (cfg->textures[j].loaded && cfg->textures[j].img.mlx_img)
-                    mlx_destroy_image(mlx, cfg->textures[j].img.mlx_img);
-                cfg->textures[j].loaded = 0;
-                ++j;
-            }
-            return (-1);
-        }
-    }
-    /* Load optional door texture if provided */
-    if (cfg->door_texture_path)
-    {
-        cfg->door_texture.path = cfg->door_texture_path;
-        if (load_texture(mlx, &cfg->door_texture) != 0)
-        {
-            int j = 0;
-            while (j < TEXTURE_COUNT)
-            {
-                if (cfg->textures[j].loaded && cfg->textures[j].img.mlx_img)
-                    mlx_destroy_image(mlx, cfg->textures[j].img.mlx_img);
-                cfg->textures[j].loaded = 0;
-                ++j;
-            }
-            if (cfg->sprite_texture.loaded && cfg->sprite_texture.img.mlx_img)
-                mlx_destroy_image(mlx, cfg->sprite_texture.img.mlx_img);
-            cfg->sprite_texture.loaded = 0;
-            return (-1);
-        }
-    }
     return (0);
 }
 
-int load_sprite_frames(void *mlx, t_game *game)
-{
-    char *sprite_paths[4];
-    int i;
-    int w, h;
-    
-    sprite_paths[0] = "textures/sprite_1.xpm";
-    sprite_paths[1] = "textures/sprite_2.xpm";
-    sprite_paths[2] = "textures/sprite_3.xpm";
-    sprite_paths[3] = "textures/eagle.xpm"; // Reuse first frame for 4th
-    
-    i = 0;
-    while (i < 4)
-    {
-        game->sprite_textures[i].mlx_img = mlx_xpm_file_to_image(mlx, sprite_paths[i], &w, &h);
-        if (!game->sprite_textures[i].mlx_img)
-        {
-            fprintf(stderr, "Error: failed to load sprite frame '%s'\n", sprite_paths[i]);
-            return (-1);
-        }
-        game->sprite_textures[i].addr = mlx_get_data_addr(
-            game->sprite_textures[i].mlx_img,
-            &game->sprite_textures[i].bpp,
-            &game->sprite_textures[i].line_len,
-            &game->sprite_textures[i].endian
-        );
-        game->sprite_textures[i].width = w;
-        game->sprite_textures[i].height = h;
-        i++;
-    }
-    game->sprite_frame_count = 4;
-    return (0);
-}
 
 void texture_free_all(void *mlx, t_config *cfg)
 {

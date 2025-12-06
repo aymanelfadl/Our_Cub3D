@@ -156,7 +156,7 @@ void render_sprite(t_game *game, int sprite_index)
         return;
     calculate_vertical_bounds(&sprite->render);
     calculate_horizontal_bounds(&sprite->render);
-    texture = game->sprite_textures[sprite->current_frame];
+    texture = sprite->sprite_textures[sprite->current_frame].img;
     draw_sprite_columns(game, &sprite->render, texture);
 }
 

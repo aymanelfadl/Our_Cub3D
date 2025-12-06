@@ -138,6 +138,7 @@ typedef struct s_sprite
 	int                 frame_count;
 	float               frame_timer;
 	float               frame_duration;
+	t_texture       	sprite_textures[4];
 	t_sprite_render     render;
 }   t_sprite;
 
@@ -157,8 +158,8 @@ typedef struct s_config
     char      *ea_texture;
 	t_texture   sprite_texture;
 	t_texture   door_texture;
-	char        *sprite_path;
-	char        *door_texture_path;
+	char        *sprite_path; // should be removed from the parsing
+	char        *door_texture_path; // should be removed from parsing
 	t_color     floor;
 	t_color     ceiling;
 	int         f_set;
@@ -187,7 +188,6 @@ int start_game(t_game *game);
 
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
-int  load_sprite_frames(void *mlx, t_game *game);
 t_img get_texture(t_game *game);
 
 void draw_background(t_game *game, int ceil_color, int floor_color);
@@ -220,6 +220,9 @@ void draw_sprites(t_game *game);
 
 int game_loop(void *param);
 
+
+int load_texture(void *mlx, t_texture *tex);
+int load_sprite_textures(t_game *game);
 
 
 // void print_spite(t_sprite s);
