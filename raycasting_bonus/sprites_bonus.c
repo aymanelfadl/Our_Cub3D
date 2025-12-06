@@ -97,38 +97,31 @@ void draw_sprite_stripe(t_game *game, int x, t_sprite_render *render, t_img text
     tex_step = (float)texture.height / (render->end_y - render->start_y);
     tex_pos = 0;
 
-    if (render->start_y < 0)
-        render->start_y = 0;
-    if (render->start_y >= WINDOW_HEIGHT)
-        render->start_y = WINDOW_HEIGHT - 1;
-    int y =render->start_y; 
-    while ( y < render->end_y)
+    while (render->start_y < render->end_y)
     {
         color = get_texture_color(texture, (int)tex_pos, render->tex_x);
         if (color != 0x000000)
-            my_mlx_pixel_put(&game->frame, x, y, color);
+            my_mlx_pixel_put(&game->frame, x, render->start_y, color);
         tex_pos += tex_step;
-        y++;
+        render->start_y++;
     }
 }
 
 void draw_sprite_columns(t_game *game, t_sprite_render *render, t_img texture)
 {
-    int x;
     int offset_x;
     
     render->tex_step_x = (float)texture.width / render->sprite_width;
-    x = render->start_x;
-    while (x < render->end_x)
+    while (render->start_x < render->end_x)
     {
-        offset_x = x - render->sprite_left;
+        offset_x = render->start_x - render->sprite_left;
         render->tex_x = (int)(offset_x * render->tex_step_x);
         
         if (render->tex_x >= texture.width)
             render->tex_x = texture.width - 1;
 
-        draw_sprite_stripe(game, x, render, texture);
-        x++;
+        draw_sprite_stripe(game, render->start_x, render, texture);
+        render->start_x++;
     }
 }
 
@@ -183,8 +176,10 @@ void draw_sprites(t_game *game)
 
 int game_loop(void *param)
 {
-    t_game *game = (t_game *)param;
+    t_game *game;
     
+    game = (t_game *)param;
+
     update_animations(game);
     
     mlx_destroy_image(game->mlx, game->frame.mlx_img);
