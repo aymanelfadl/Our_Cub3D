@@ -135,8 +135,8 @@ typedef struct s_sprite
 	float               y;
 	float               distance;
 	int                 current_frame;
-	float               frame_timer; // should be removed
-	float               frame_duration; // should be removed
+	float               frame_timer; // should be removed from parsing 
+	float               frame_duration; // should be removed from parsing 
 	t_texture       	sprite_textures[4];
 	t_sprite_render     render;
 }   t_sprite;
