@@ -1,9 +1,9 @@
 F 255,0,0
 C 0,0,0
 
-NO textures/main_tex/s.xpm
-SO textures/main_tex/w.xpm
-WE textures/main_tex/n.xpm
+NO textures/main_tex/n.xpm
+SO textures/main_tex/s.xpm
+WE textures/main_tex/w.xpm
 EA textures/main_tex/e.xpm
 
 1111111111111111111

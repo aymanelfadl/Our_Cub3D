@@ -112,40 +112,6 @@ int texture_load_all(void *mlx, t_config *cfg)
     return (0);
 }
 
-int load_sprite_frames(void *mlx, t_game *game)
-{
-    char *sprite_paths[4];
-    int i;
-    int w, h;
-    
-    sprite_paths[0] = "textures/sprite_1.xpm";
-    sprite_paths[1] = "textures/sprite_2.xpm";
-    sprite_paths[2] = "textures/sprite_3.xpm";
-    sprite_paths[3] = "textures/eagle.xpm"; // Reuse first frame for 4th
-    
-    i = 0;
-    while (i < 4)
-    {
-        game->sprite_textures[i].mlx_img = mlx_xpm_file_to_image(mlx, sprite_paths[i], &w, &h);
-        if (!game->sprite_textures[i].mlx_img)
-        {
-            fprintf(stderr, "Error: failed to load sprite frame '%s'\n", sprite_paths[i]);
-            return (-1);
-        }
-        game->sprite_textures[i].addr = mlx_get_data_addr(
-            game->sprite_textures[i].mlx_img,
-            &game->sprite_textures[i].bpp,
-            &game->sprite_textures[i].line_len,
-            &game->sprite_textures[i].endian
-        );
-        game->sprite_textures[i].width = w;
-        game->sprite_textures[i].height = h;
-        i++;
-    }
-    game->sprite_frame_count = 4;
-    return (0);
-}
-
 void texture_free_all(void *mlx, t_config *cfg)
 {
     int i;

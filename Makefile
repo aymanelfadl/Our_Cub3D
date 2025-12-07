@@ -82,7 +82,7 @@ all: $(NAME)
 
 
 $(NAME): $(OBJ) $(LIBFT)
-	@make -C minilibx-linux
+	# @make -C minilibx-linux
 	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(MLX_FLAGS) $(LDFLAGS) -o $(NAME)
 
 $(LIBFT):
@@ -99,7 +99,7 @@ fclean: clean
 re: fclean all
 
 bonus: $(OBJ_BONUS) $(LIBFT)
-	@make -C minilibx-linux
+	# @make -C minilibx-linux
 	$(CC) $(CFLAGS) $(OBJ_BONUS) $(LIBFT) $(MLX_FLAGS) $(LDFLAGS) -o $(BONUS_NAME)
 
 .PHONY: all clean fclean re bonus
