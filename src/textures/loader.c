@@ -21,10 +21,10 @@ int load_sprite_textures(t_game *game)
 
     if (game->sprite_count > 0)
     {
-        texture_path[0] = "textures/wall_1.xpm";
-        texture_path[1] = "textures/wall_2.xpm";
-        texture_path[2] = "textures/wall_3.xpm";
-        texture_path[3] = "textures/wall_4.xpm";
+        texture_path[0] = "textures/enemy/1.xpm";
+        texture_path[1] = "textures/enemy/2.xpm";
+        texture_path[2] = "textures/enemy/3.xpm";
+        texture_path[3] = "textures/enemy/4.xpm";
 
         i = 0;
         while (i < game->sprite_count)
