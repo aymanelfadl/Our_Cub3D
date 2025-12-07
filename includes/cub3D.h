@@ -135,6 +135,7 @@ typedef struct s_sprite
 	float               y;
 	float               distance;
 	int                 current_frame;
+	int					frame_count;
 	float               frame_timer; // should be removed from parsing 
 	float               frame_duration; // should be removed from parsing 
 	t_texture       	sprite_textures[4];
@@ -205,7 +206,6 @@ void my_mlx_pixel_put(t_img *img, int x, int y, int color);
 t_img get_proper_texture(t_texture *texs, t_direction dir);
 void parser_release_config(t_config *cfg);
 void player_movement(int key, t_game *game);
-void render(t_game *game);
 
 int mouse_move(int x, int y, void *game);
 t_door *find_door_at(t_game *game, int x, int y);
@@ -213,17 +213,15 @@ void toggle_door(t_game *game);
 void draw_sprites(t_game *game);
 void sort_sprites(t_sprite *sprites, int count);
 void calculate_sprite_distances(t_game *game);
-unsigned int get_sprite_pixel(t_img *texture, int x, int y);
 int check_door(t_game *game, float x, float y);
 void draw_sprites(t_game *game);
 
 int game_loop(void *param);
-
-
+int load_door_texture(t_game *game);
+void draw_minimap(t_game *game);
 int load_texture(void *mlx, t_texture *tex);
 int load_sprite_textures(t_game *game);
-
-
-// void print_spite(t_sprite s);
+void	update_animations(t_game *game);
+int	check_door(t_game *game, float x, float y);
 
 #endif

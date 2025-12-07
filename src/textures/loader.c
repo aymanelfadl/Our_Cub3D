@@ -1,38 +1,54 @@
 #include "cub3D.h"
-#include <stdio.h>
+
+int load_door_texture(t_game *game)
+{
+	t_texture tex;
+
+	if (game->door_count > 0)
+	{
+		tex.path = "textures/main_tex/d.xpm";
+		if (load_texture(game->mlx, &tex) != 0)
+			return (0);
+		game->cfg.door_texture = tex;
+	}
+	return (1);
+}
 
 int load_sprite_textures(t_game *game)
 {
     char *texture_path[4];
     int i;
 
-    texture_path[0] = "textures/wall_1.xpm";
-    texture_path[1] = "textures/wall_2.xpm";
-    texture_path[2] = "textures/wall_3.xpm";
-    texture_path[3] = "textures/wall_4.xpm";
-
-    i = 0;
-    while (i < game->sprite_count)
+    if (game->sprite_count > 0)
     {
-        int j = 0;
-        while (j < 4)
+        texture_path[0] = "textures/wall_1.xpm";
+        texture_path[1] = "textures/wall_2.xpm";
+        texture_path[2] = "textures/wall_3.xpm";
+        texture_path[3] = "textures/wall_4.xpm";
+
+        i = 0;
+        while (i < game->sprite_count)
         {
-            game->sprites[i].sprite_textures[j].path = texture_path[j];
-            if (load_texture(game->mlx, &game->sprites[i].sprite_textures[j]) != 0)
+            int j = 0;
+            while (j < 4)
             {
-                // shoudl clean it if we fail
-                // while (--i > -1)
-                //     while (--j > -1)
-                //         mlx_destroy_image(game->mlx, game->sprites[i].sprite_textures[j].img.mlx_img);
-                return (1);
+                game->sprites[i].sprite_textures[j].path = texture_path[j];
+                if (load_texture(game->mlx, &game->sprites[i].sprite_textures[j]) != 0)
+                {
+                    // shoudl clean it if we fail
+                    // while (--i > -1)
+                    //     while (--j > -1)
+                    //         mlx_destroy_image(game->mlx, game->sprites[i].sprite_textures[j].img.mlx_img);
+                    return (1);
+                }
+                j++;
             }
-            j++;
+            i++;
         }
-        i++;
     }
+
     return (0);
 }
-
 
 int load_texture(void *mlx, t_texture *tex)
 {
@@ -95,7 +111,6 @@ int texture_load_all(void *mlx, t_config *cfg)
     }
     return (0);
 }
-
 
 void texture_free_all(void *mlx, t_config *cfg)
 {
