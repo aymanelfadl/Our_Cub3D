@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   drawing_utils.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/07 22:00:11 by aelfadl           #+#    #+#             */
+/*   Updated: 2025/12/07 22:00:11 by aelfadl          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3D.h"
 
 int	get_wall_hit(t_game *game, t_img texture)
@@ -58,7 +70,7 @@ t_img	get_texture(t_game *game)
 
 unsigned int	get_texture_color(t_img texture, int tex_y, int tex_x)
 {
-	size_t offset;
+	size_t	offset;
 
 	if (tex_y < 0)
 		tex_y = 0;

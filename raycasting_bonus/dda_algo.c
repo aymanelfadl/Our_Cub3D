@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dda_algo.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/07 22:00:11 by aelfadl           #+#    #+#             */
+/*   Updated: 2025/12/07 22:00:11 by aelfadl          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3D.h"
 
 static void	init_dda(t_game *game, int map_y, int map_x)
@@ -34,7 +46,8 @@ static int	check_hit(t_game *game, int map_x, int map_y)
 
 	if (game->cfg.map.grid[map_y][map_x] == '1')
 		return (1);
-	if ((door = find_door_at(game, map_x, map_y)) && !door->is_open)
+	door = find_door_at(game, map_x, map_y);
+	if (door != NULL && !door->is_open)
 		return (2);
 	return (0);
 }
