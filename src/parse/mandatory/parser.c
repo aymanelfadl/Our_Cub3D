@@ -93,18 +93,33 @@ static int	read_file_lines(const char *path, t_parser *parser)
 	return (OK);
 }
 
+
+int is_not_valid(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i] && (str[i] != '\n'))
+	{
+		if (str[i] != ' ' || str[i] == '\t')
+			return 1;
+		i++;
+	}
+	return 0;
+}
+
 static int	parse_config_line(char *line, t_config *cfg)
 {
 	line = skip_spaces(line);
 	if (line[0] == 'N' && line[1] == 'O' && ft_isspace(line[2]))
 		return (parse_texture(line + 3, &cfg->no_texture));
-	if (line[0] == 'S' && line[1] == 'O' && ft_isspace(line[2]))
+	else if (line[0] == 'S' && line[1] == 'O' && ft_isspace(line[2]))
 		return (parse_texture(line + 3, &cfg->so_texture));
-	if (line[0] == 'W' && line[1] == 'E' && ft_isspace(line[2]))
+	else if (line[0] == 'W' && line[1] == 'E' && ft_isspace(line[2]))
 		return (parse_texture(line + 3, &cfg->we_texture));
-	if (line[0] == 'E' && line[1] == 'A' && ft_isspace(line[2]))
+	else if (line[0] == 'E' && line[1] == 'A' && ft_isspace(line[2]))
 		return (parse_texture(line + 3, &cfg->ea_texture));
-	if (line[0] == 'F' && ft_isspace(line[1]))
+	else if (line[0] == 'F' && ft_isspace(line[1]))
 	{
 		if (cfg->f_set)
 			return (ERR_DUPLICATE);
@@ -113,7 +128,7 @@ static int	parse_config_line(char *line, t_config *cfg)
 		cfg->f_set = 1;
 		return (OK);
 	}
-	if (line[0] == 'C' && ft_isspace(line[1]))
+	else if (line[0] == 'C' && ft_isspace(line[1]))
 	{
 		if (cfg->c_set)
 			return (ERR_DUPLICATE);
@@ -121,8 +136,10 @@ static int	parse_config_line(char *line, t_config *cfg)
 			return (ERR_INVALID_COLOR);
 		cfg->c_set = 1;
 		return (OK);
-	}
-	return (-1);
+	} 
+	else if (is_not_valid(line))
+		return (ERR_INVALID_CHARACTHER);
+	return (OK);
 }
 
 int	parse_file(const char *path, t_parser *parser)

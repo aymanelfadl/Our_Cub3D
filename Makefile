@@ -56,7 +56,9 @@ RAYCASTING_BONUS = \
 	raycasting_bonus/player_movement.c \
 	raycasting_bonus/ray_casting.c \
 	raycasting_bonus/utils.c \
-	raycasting_bonus/sprites_bonus.c
+	raycasting_bonus/sprites_bonus.c \
+	raycasting_bonus/mini_map.c \
+	raycasting_bonus/movement_utils.c 
 
 # Textures loader
 TEXTURES = src/textures/loader.c
@@ -75,6 +77,9 @@ OBJ = $(SRC:.c=.o)
 OBJ_BONUS = $(SRC_BONUS:.c=.o)
 
 all: $(NAME)
+
+
+
 
 $(NAME): $(OBJ) $(LIBFT)
 	@make -C minilibx-linux

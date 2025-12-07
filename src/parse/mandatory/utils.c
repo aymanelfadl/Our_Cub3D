@@ -4,7 +4,9 @@
 
 char	*skip_spaces(char *str)
 {
-    return (common_skip_spaces(str));
+	while (*str && ft_isspace(*str) )
+		str++;
+	return (str);
 }
 
 int is_valid_extension(const char *path)

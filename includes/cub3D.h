@@ -6,7 +6,8 @@
 # include <stdlib.h>
 # include <math.h>
 # include "../libft/libft.h"
-# include "../minilibx-linux/mlx.h"
+// # include "../minilibx-linux/mlx.h"
+# include <mlx.h>
 
 # define TEXTURE_COUNT 4
 # define FOV_PLANE 60
@@ -17,16 +18,11 @@
 # define WINDOW_WIDTH 800
 # define WINDOW_HEIGHT 600
 
-# define EVENT_KEY_PRESS 2
-# define EVENT_DESTROY 17
-# define MASK_KEY_PRESS (1L << 0)
-
 # define KEY_ESC 65307
 # define KEY_W 119
 # define KEY_S 115
 # define KEY_A 97
 # define KEY_D 100
-# define KEY_Q 113
 # define KEY_E 101
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
@@ -134,9 +130,7 @@ typedef struct s_sprite
 	float               y;
 	float               distance;
 	int                 current_frame;
-	int                 frame_count;
-	float               frame_timer;
-	float               frame_duration;
+	t_texture       	sprite_textures[4];
 	t_sprite_render     render;
 }   t_sprite;
 
@@ -154,10 +148,7 @@ typedef struct s_config
     char      *so_texture;
     char      *we_texture;
     char      *ea_texture;
-	t_texture   sprite_texture;
 	t_texture   door_texture;
-	char        *sprite_path;
-	char        *door_texture_path;
 	t_color     floor;
 	t_color     ceiling;
 	int         f_set;
@@ -176,24 +167,21 @@ typedef struct s_game
 	t_sprite    *sprites;
 	int         sprite_count;
 	float       z_buffer[WINDOW_WIDTH];
-	t_img       sprite_textures[4];
-	int         sprite_frame_count;
 	t_door      *doors;
 	int         door_count;
 }   t_game;
 
 int start_game(t_game *game);
+int game_loop(void *param);
+int start_dda(t_game *game);
 
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
-int  load_sprite_frames(void *mlx, t_game *game);
 t_img get_texture(t_game *game);
 
 void draw_background(t_game *game, int ceil_color, int floor_color);
 int color_to_int(t_color c);
-void compute_ray_direction(t_game *game, int column);
-void init_dda(t_game *game, int map_y, int map_x);
-void perform_dda(t_game *game, int *map_y, int *map_x);
+
 void draw_vertical_line(t_game *game, int x, t_img texture, int line_height);
 float get_texture_y(int *drawing_start, float text_step);
 int get_wall_hit(t_game *game, t_img texture);
@@ -205,22 +193,19 @@ void my_mlx_pixel_put(t_img *img, int x, int y, int color);
 t_img get_proper_texture(t_texture *texs, t_direction dir);
 void parser_release_config(t_config *cfg);
 void player_movement(int key, t_game *game);
-void render(t_game *game);
 
 int mouse_move(int x, int y, void *game);
 t_door *find_door_at(t_game *game, int x, int y);
 void toggle_door(t_game *game);
-void draw_sprites(t_game *game);
 void sort_sprites(t_sprite *sprites, int count);
 void calculate_sprite_distances(t_game *game);
-unsigned int get_sprite_pixel(t_img *texture, int x, int y);
-int check_door(t_game *game, float x, float y);
 void draw_sprites(t_game *game);
 
-int game_loop(void *param);
-
-
-
-// void print_spite(t_sprite s);
+int load_door_texture(t_game *game);
+void draw_minimap(t_game *game);
+int load_texture(void *mlx, t_texture *tex);
+int load_sprite_textures(t_game *game);
+void	update_animations(t_game *game);
+int	check_door(t_game *game, float x, float y);
 
 #endif

@@ -1,13 +1,10 @@
 F 255,0,0
-C 0,0,255
+C 0,0,0
 
-NO textures/wall_1.xpm
-SO textures/wall_2.xpm
-WE textures/wall_3.xpm
-EA textures/wall_4.xpm
-
-S textures/sprite_3.xpm
-
+NO textures/main_tex/s.xpm
+SO textures/main_tex/w.xpm
+WE textures/main_tex/n.xpm
+EA textures/main_tex/e.xpm
 
 1111111111111111111
 10S1001001001000001
