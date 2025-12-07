@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/07 21:57:28 by aelfadl           #+#    #+#             */
+/*   Updated: 2025/12/07 21:57:28 by aelfadl          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3D.h"
 
 static int	is_blocked(t_game *game, float x, float y)
@@ -59,8 +71,8 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 
 t_img	get_proper_texture(t_texture *texs, t_direction dir)
 {
-	int i;
-	t_img rst;
+	int		i;
+	t_img	rst;
 
 	rst.addr = NULL;
 	i = 0;

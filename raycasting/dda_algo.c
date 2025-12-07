@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dda_algo.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/07 21:57:28 by aelfadl           #+#    #+#             */
+/*   Updated: 2025/12/07 21:57:28 by aelfadl          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3D.h"
 
 static void	init_dda(t_game *game, int map_y, int map_x)
@@ -34,6 +46,7 @@ static int	check_hit(t_game *game, int map_x, int map_y)
 		return (1);
 	return (0);
 }
+
 static void	advance_ray(t_game *game, int *map_x, int *map_y)
 {
 	if (game->cfg.player.ray.distance_x < game->cfg.player.ray.distance_y)
