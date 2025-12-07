@@ -6,8 +6,8 @@
 # include <stdlib.h>
 # include <math.h>
 # include "../libft/libft.h"
-// # include "../minilibx-linux/mlx.h"
-# include <mlx.h>
+# include "../minilibx-linux/mlx.h"
+// # include <mlx.h>
 
 # define TEXTURE_COUNT 4
 # define FOV_PLANE 60
@@ -135,9 +135,8 @@ typedef struct s_sprite
 	float               y;
 	float               distance;
 	int                 current_frame;
-	int                 frame_count;
-	float               frame_timer;
-	float               frame_duration;
+	float               frame_timer; // should be removed
+	float               frame_duration; // should be removed
 	t_texture       	sprite_textures[4];
 	t_sprite_render     render;
 }   t_sprite;

@@ -57,11 +57,10 @@ void transform_to_camera_space(t_game *game, t_sprite *sprite)
     
     side = inv_det * (game->cfg.player.dir_y * sprite_x - game->cfg.player.dir_x * sprite_y);
     
-    sprite->render.depth = inv_det * (-game->cfg.player.plane_y * sprite_x + 
-                                      game->cfg.player.plane_x * sprite_y);
+    sprite->render.depth = inv_det * (-game->cfg.player.plane_y * sprite_x + game->cfg.player.plane_x * sprite_y);
     
     sprite->render.screen_x = (int)((WINDOW_WIDTH / 2) * (1 + side / sprite->render.depth));
-    sprite->render.sprite_width = abs((int)(WINDOW_HEIGHT / sprite->render.depth));
+    sprite->render.sprite_width = (int)(WINDOW_HEIGHT / sprite->render.depth);
 }
 
 void calculate_vertical_bounds(t_sprite_render *render)
@@ -77,33 +76,36 @@ void calculate_vertical_bounds(t_sprite_render *render)
 void calculate_horizontal_bounds(t_sprite_render *render)
 {
     render->sprite_left = render->screen_x - render->sprite_width / 2;
-    render->start_x = render->sprite_left;
+
     render->end_x = render->screen_x + render->sprite_width / 2;
+    render->start_x = render->sprite_left;
     if (render->start_x < 0)
         render->start_x = 0;
     if (render->end_x >= WINDOW_WIDTH)
         render->end_x = WINDOW_WIDTH - 1;
 }
 
+
 void draw_sprite_stripe(t_game *game, int x, t_sprite_render *render, t_img texture)
 {
     float tex_step;
     float tex_pos;
     unsigned int color;
+    int y;
 
     if (render->depth > game->z_buffer[x])
         return;
-
-    tex_step = (float)texture.height / (render->end_y - render->start_y);
+    
+    tex_step = (float)texture.height / render->sprite_width;
     tex_pos = 0;
-
-    while (render->start_y < render->end_y)
+    y = render->start_y;
+    while (y < render->end_y)
     {
         color = get_texture_color(texture, (int)tex_pos, render->tex_x);
         if (color != 0x000000)
-            my_mlx_pixel_put(&game->frame, x, render->start_y, color);
+            my_mlx_pixel_put(&game->frame, x, y, color);
         tex_pos += tex_step;
-        render->start_y++;
+        y++;
     }
 }
 
@@ -115,8 +117,8 @@ void draw_sprite_columns(t_game *game, t_sprite_render *render, t_img texture)
     while (render->start_x < render->end_x)
     {
         offset_x = render->start_x - render->sprite_left;
+
         render->tex_x = (int)(offset_x * render->tex_step_x);
-        
         if (render->tex_x >= texture.width)
             render->tex_x = texture.width - 1;
 
