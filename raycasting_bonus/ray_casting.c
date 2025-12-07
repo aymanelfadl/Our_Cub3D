@@ -9,11 +9,11 @@ static void	init_img(t_game *game, t_img *img, int width, int height)
 			&img->endian);
 }
 
+
+
 static void	render(t_game *game)
 {
 	int	x;
-	int	map_x;
-	int	map_y;
 	int	line_height;
 
 	draw_background(game, color_to_int(game->cfg.ceiling),
@@ -21,21 +21,12 @@ static void	render(t_game *game)
 	x = 0;
 	while (x < WINDOW_WIDTH)
 	{
-		map_x = floor(game->cfg.player.pos_x);
-		map_y = floor(game->cfg.player.pos_y);
 		compute_ray_direction(game, x);
-		init_dda(game, map_y, map_x);
-		perform_dda(game, map_x, map_y);
+		line_height =  start_dda(game);
 		if (!game->cfg.player.ray.hit.side)
-		{
 			game->z_buffer[x] = game->cfg.player.ray.distance_x;
-			line_height = WINDOW_HEIGHT / game->cfg.player.ray.distance_x;
-		}
 		else
-		{
 			game->z_buffer[x] = game->cfg.player.ray.distance_y;
-			line_height = WINDOW_HEIGHT / game->cfg.player.ray.distance_y;
-		}
 		draw_vertical_line(game, x, get_texture(game), line_height);
 		x++;
 	}

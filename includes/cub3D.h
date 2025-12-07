@@ -186,6 +186,8 @@ typedef struct s_game
 
 int start_game(t_game *game);
 
+
+int start_dda(t_game *game);
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
 t_img get_texture(t_game *game);

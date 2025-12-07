@@ -81,3 +81,18 @@ void	perform_dda(t_game *game, int map_x, int map_y)
 		}
 	}
 }
+
+int start_dda(t_game *game)
+{
+	int	map_x;
+	int	map_y;
+
+	map_x = floor(game->cfg.player.pos_x);
+	map_y = floor(game->cfg.player.pos_y);
+	init_dda(game, map_y, map_x);
+	perform_dda(game, map_x, map_y);
+
+	if (!game->cfg.player.ray.hit.side)
+		return (WINDOW_HEIGHT / game->cfg.player.ray.distance_x);
+	return (WINDOW_HEIGHT / game->cfg.player.ray.distance_y);
+}
