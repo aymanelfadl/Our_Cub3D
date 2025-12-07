@@ -16,14 +16,13 @@
 
 int main(int ac, char *av[])
 {
+    t_game      game;
+    int         code;
+    t_parser    parser;
+
     if (ac != 2)
-    {
-        printf("Usage: %s <file.cub>\n", av[0]);
-        return 1;
-    }
-    t_game game;
-    int     code;
-    t_parser parser;
+        return (printf("Usage: %s <file.cub>\n", av[0]),1);
+
     ft_bzero(&game, sizeof(t_game));
     ft_bzero(&parser, sizeof(t_parser));
     parser.game = &game;
@@ -34,20 +33,9 @@ int main(int ac, char *av[])
         parser_release_config(&game.cfg);
         return (1);
     }
-    game.mlx = mlx_init();
-    if (!game.mlx)
-    {
-        fprintf(stderr, "Error\nFailed to initialize MLX\n");
-        parser_release_config(&game.cfg);
-        return (1);
-    }
-    if (texture_load_all(game.mlx, &game.cfg) != 0)
-    {
-        fprintf(stderr, "Error\nFailed to load textures\n");
-        parser_release_config(&game.cfg);
-        return (1);
-    }
-    start_game(&game);
+    if (start_game(&game) != 0)
+        return (parser_release_config(&game.cfg), 1);
+
     parser_release_config(&game.cfg);
     return (0);
 }
