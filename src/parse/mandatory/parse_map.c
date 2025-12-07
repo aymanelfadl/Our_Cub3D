@@ -43,7 +43,7 @@ static	void set_player_direction(t_player *player, char dir)
 	if (dir == 'N')
 	{
 		player->dir_x = 0.0f;
-		player->dir_y = -0.1f;
+		player->dir_y = -1.0f;
 	}
 	else if (dir == 'S')
 	{

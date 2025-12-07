@@ -112,10 +112,6 @@ int     build_bonus_entities(t_parser_bonus *parser)
 				parser->base.game->sprites[sprite_idx].x = (float)j + 0.5f;
 				parser->base.game->sprites[sprite_idx].y = (float)i + 0.5f;
 				parser->base.game->sprites[sprite_idx].distance = 0.0f;
-                parser->base.game->sprites[sprite_idx].current_frame = 0;
-                parser->base.game->sprites[sprite_idx].frame_count = 4;
-                parser->base.game->sprites[sprite_idx].frame_timer = 0.0f;
-                parser->base.game->sprites[sprite_idx].frame_duration = 0.2f;
 				sprite_idx++;
 			}
 			j++;
