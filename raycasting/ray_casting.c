@@ -9,7 +9,6 @@ void render(t_game *game)
 
     draw_background(game, color_to_int(game->cfg.ceiling), color_to_int(game->cfg.floor));
     x = 0;
-    line_height = 0;
     while (x < WINDOW_WIDTH)
     {
         map_x = floor(game->cfg.player.pos_x);
@@ -27,26 +26,46 @@ void render(t_game *game)
     mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
 }
 
-int start_game(t_game *game)
+int game_loop(void *param)
 {
+    t_game *game;
+    
+    game = (t_game *)param;
+
+    mlx_destroy_image(game->mlx, game->frame.mlx_img);
+    game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+    game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, 
+                       &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
+    render(game);
+    return (0);
+}
+
+
+int start_game(t_game *game)
+{    
+    game->mlx = mlx_init();
     if (!game->mlx)
-        game->mlx = mlx_init();
-    if (!game->mlx)
-        return (fprintf(stderr, "Error\nFailed to initialize MLX\n"), 0);
+    {
+        fprintf(stderr, "Error\nFailed to initialize MLX\n");
+        parser_release_config(&game->cfg);
+        return (1);
+    }
+
+    if (texture_load_all(game->mlx, &game->cfg) != 0)
+        return (fprintf(stderr, "Error\nFailed to load textures\n"), 0);
+
     game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
     if (!game->win)
         return (fprintf(stderr, "mlx_new_window failed\n"), 0);
+
     game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
     if (!game->frame.mlx_img)
         return (fprintf(stderr, "mlx_new_image failed\n"), 0);
     game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
-    if (texture_load_all(game->mlx, &game->cfg) != 0)
-        return (fprintf(stderr, "Error\nFailed to load textures\n"), 0);
-    
-    render(game);
+
+    mlx_loop_hook(game->mlx, game_loop, game);
     mlx_hook(game->win, 2, 1L << 0, handle_key, game);
     mlx_hook(game->win, 17, 0, close_game, game);
-    mlx_mouse_hide(game->mlx,game->win);
     mlx_loop(game->mlx);
     return 1;
 }

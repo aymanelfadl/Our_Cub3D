@@ -30,15 +30,12 @@ int close_game(t_game *game)
 int handle_key(int key, t_game *game)
 {
     player_movement(key, game);
-    if (key == KEY_RIGHT)
+    if (key == 65363)
         rotate_player(game, ROT_SPEED);
-    if (key == KEY_LEFT)
+    if (key == 65361)
         rotate_player(game, -ROT_SPEED);
-    if (key == KEY_ESC)
+    if (key == 65307)
         close_game(game);
-    mlx_destroy_image(game->mlx, game->frame.mlx_img);
-    game->frame.mlx_img = mlx_new_image(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
-    game->frame.addr = mlx_get_data_addr(game->frame.mlx_img, &game->frame.bpp, &game->frame.line_len, &game->frame.endian);
-    render(game);
+
     return (0);
 }
