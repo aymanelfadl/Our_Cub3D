@@ -18,16 +18,11 @@
 # define WINDOW_WIDTH 800
 # define WINDOW_HEIGHT 600
 
-# define EVENT_KEY_PRESS 2
-# define EVENT_DESTROY 17
-# define MASK_KEY_PRESS (1L << 0)
-
 # define KEY_ESC 65307
 # define KEY_W 119
 # define KEY_S 115
 # define KEY_A 97
 # define KEY_D 100
-# define KEY_Q 113
 # define KEY_E 101
 # define KEY_LEFT 65361
 # define KEY_RIGHT 65363
@@ -185,8 +180,7 @@ typedef struct s_game
 }   t_game;
 
 int start_game(t_game *game);
-
-
+int game_loop(void *param);
 int start_dda(t_game *game);
 
 int  texture_load_all(void *mlx, t_config *cfg);
@@ -217,7 +211,6 @@ void calculate_sprite_distances(t_game *game);
 int check_door(t_game *game, float x, float y);
 void draw_sprites(t_game *game);
 
-int game_loop(void *param);
 int load_door_texture(t_game *game);
 void draw_minimap(t_game *game);
 int load_texture(void *mlx, t_texture *tex);
