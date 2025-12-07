@@ -188,7 +188,6 @@ int start_game(t_game *game);
 
 
 int start_dda(t_game *game);
-void compute_ray_direction(t_game *game, int column);
 
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
