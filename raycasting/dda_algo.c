@@ -47,7 +47,7 @@ void	init_dda(t_game *game, int map_y, int map_x)
 	}
 }
 
-void	perform_dda(t_game *game, int *map_y, int *map_x)
+void	perform_dda(t_game *game, int map_y, int map_x)
 {
 	game->cfg.player.ray.hit.is_hit = 0;
 
@@ -56,17 +56,17 @@ void	perform_dda(t_game *game, int *map_y, int *map_x)
 		if (game->cfg.player.ray.distance_x < game->cfg.player.ray.distance_y)
 		{
 			game->cfg.player.ray.distance_x += game->cfg.player.ray.next_cell_x;
-			(*map_x) += game->cfg.player.ray.step_x;
+			map_x += game->cfg.player.ray.step_x;
 			game->cfg.player.ray.hit.side = 0;
 		}
 		else
 		{
 			game->cfg.player.ray.distance_y += game->cfg.player.ray.next_cell_y;
-			(*map_y) += game->cfg.player.ray.step_y;
+			map_y += game->cfg.player.ray.step_y;
 			game->cfg.player.ray.hit.side = 1;
 		}
 
-		if (game->cfg.map.grid[*map_y][*map_x] == '1')
+		if (game->cfg.map.grid[map_y][map_x] == '1')
 		{
 			game->cfg.player.ray.distance_x -= game->cfg.player.ray.next_cell_x;
 			game->cfg.player.ray.distance_y -= game->cfg.player.ray.next_cell_y;

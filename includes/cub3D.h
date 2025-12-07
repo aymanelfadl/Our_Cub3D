@@ -194,7 +194,7 @@ void draw_background(t_game *game, int ceil_color, int floor_color);
 int color_to_int(t_color c);
 void compute_ray_direction(t_game *game, int column);
 void init_dda(t_game *game, int map_y, int map_x);
-void perform_dda(t_game *game, int *map_y, int *map_x);
+void perform_dda(t_game *game, int map_x, int map_y);
 void draw_vertical_line(t_game *game, int x, t_img texture, int line_height);
 float get_texture_y(int *drawing_start, float text_step);
 int get_wall_hit(t_game *game, t_img texture);

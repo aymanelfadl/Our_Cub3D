@@ -25,7 +25,7 @@ static void	render(t_game *game)
 		map_y = floor(game->cfg.player.pos_y);
 		compute_ray_direction(game, x);
 		init_dda(game, map_y, map_x);
-		perform_dda(game, &map_y, &map_x);
+		perform_dda(game, map_x, map_y);
 		if (!game->cfg.player.ray.hit.side)
 		{
 			game->z_buffer[x] = game->cfg.player.ray.distance_x;

@@ -16,7 +16,7 @@ void	render(t_game *game)
 		map_y = floor(game->cfg.player.pos_y);
 		compute_ray_direction(game, x);
 		init_dda(game, map_y, map_x);
-		perform_dda(game, &map_y, &map_x);
+		perform_dda(game, map_y, map_x);
 		if (!game->cfg.player.ray.hit.side)
 			line_height = WINDOW_HEIGHT / game->cfg.player.ray.distance_x;
 		else
