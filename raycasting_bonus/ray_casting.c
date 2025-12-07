@@ -9,7 +9,24 @@ static void	init_img(t_game *game, t_img *img, int width, int height)
 			&img->endian);
 }
 
-
+static void	compute_ray_direction(t_game *game, int column)
+{
+	game->cfg.player.ray.camera_x = 2.0f * column / (float)WINDOW_WIDTH - 1.0f;
+	game->cfg.player.ray.ray_x = game->cfg.player.dir_x
+		+ game->cfg.player.ray.camera_x * game->cfg.player.plane_x;
+	game->cfg.player.ray.ray_y = game->cfg.player.dir_y
+		+ game->cfg.player.ray.camera_x * game->cfg.player.plane_y;
+	if (game->cfg.player.ray.ray_x != 0)
+		game->cfg.player.ray.next_cell_x = fabsf(1.0f
+				/ game->cfg.player.ray.ray_x);
+	else
+		game->cfg.player.ray.next_cell_x = 1e30f;
+	if (game->cfg.player.ray.ray_y != 0)
+		game->cfg.player.ray.next_cell_y = fabsf(1.0f
+				/ game->cfg.player.ray.ray_y);
+	else
+		game->cfg.player.ray.next_cell_y = 1e30f;
+}
 
 static void	render(t_game *game)
 {
@@ -22,7 +39,7 @@ static void	render(t_game *game)
 	while (x < WINDOW_WIDTH)
 	{
 		compute_ray_direction(game, x);
-		line_height =  start_dda(game);
+		line_height = start_dda(game);
 		if (!game->cfg.player.ray.hit.side)
 			game->z_buffer[x] = game->cfg.player.ray.distance_x;
 		else

@@ -21,8 +21,8 @@ static int	is_blocked(t_game *game, float x, float y)
 
 void	apply_movement(t_game *game, float new_x, float new_y)
 {
-	float old_x;
-	float old_y;
+	float	old_x;
+	float	old_y;
 
 	old_x = game->cfg.player.pos_x;
 	old_y = game->cfg.player.pos_y;
