@@ -18,12 +18,12 @@ int	get_wall_hit(t_game *game, t_img texture)
 	int		tex_x;
 
 	if (!game->cfg.player.ray.hit.side)
-		wall_x = game->cfg.player.pos_y + game->cfg.player.ray.distance_x
-			* game->cfg.player.ray.ray_y;
+		wall_x = game->cfg.player.pos_y + game->cfg.player.ray.distance_x * game->cfg.player.ray.ray_y;
 	else
-		wall_x = game->cfg.player.pos_x + game->cfg.player.ray.distance_y
-			* game->cfg.player.ray.ray_x;
+		wall_x = game->cfg.player.pos_x + game->cfg.player.ray.distance_y * game->cfg.player.ray.ray_x;
+		
 	wall_x -= floor(wall_x);
+	
 	tex_x = (int)(wall_x * texture.width);
 	if (tex_x < 0)
 		tex_x = 0;
