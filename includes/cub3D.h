@@ -197,8 +197,7 @@ void player_movement(int key, t_game *game);
 int mouse_move(int x, int y, void *game);
 t_door *find_door_at(t_game *game, int x, int y);
 void toggle_door(t_game *game);
-void sort_sprites(t_sprite *sprites, int count);
-void calculate_sprite_distances(t_game *game);
+void	render_sprite(t_game *game, int sprite_index);
 void draw_sprites(t_game *game);
 
 int load_door_texture(t_game *game);
@@ -207,5 +206,8 @@ int load_texture(void *mlx, t_texture *tex);
 int load_sprite_textures(t_game *game);
 void	update_animations(t_game *game);
 int	check_door(t_game *game, float x, float y);
+
+
+void	transform_to_camera_space(t_game *game, t_sprite *sprite);
 
 #endif
