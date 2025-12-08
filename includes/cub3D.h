@@ -12,7 +12,7 @@
 # define TEXTURE_COUNT 4
 # define FOV_PLANE 60
 # ifndef M_PI
-#  define M_PI 3.14159265358979323846
+# define M_PI 3.14159265358979323846
 # endif
 
 # define WINDOW_WIDTH 800
@@ -35,7 +35,7 @@
 
 typedef enum e_direction
 {
-	NO = 0,
+	NO,
 	SO,
 	WE,
 	EA
@@ -174,40 +174,39 @@ typedef struct s_game
 int start_game(t_game *game);
 int game_loop(void *param);
 int start_dda(t_game *game);
+void	transform_to_camera_space(t_game *game, t_sprite *sprite);
+void	update_animations(t_game *game);
 
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
+int load_texture(void *mlx, t_texture *tex);
+int load_sprite_textures(t_game *game);
+int load_door_texture(t_game *game);
 t_img get_texture(t_game *game);
-
-void draw_background(t_game *game, int ceil_color, int floor_color);
-int color_to_int(t_color c);
-
-void draw_vertical_line(t_game *game, int x, t_img texture, int line_height);
+t_img get_proper_texture(t_texture *texs, t_direction dir);
 float get_texture_y(int *drawing_start, float text_step);
 int get_wall_hit(t_game *game, t_img texture);
 unsigned int get_texture_color(t_img texture, int tex_y, int tex_x);
-void apply_movement(t_game *game, float new_x, float new_y);
-int handle_key(int key, t_game *game);
-int close_game(t_game *game);
-void my_mlx_pixel_put(t_img *img, int x, int y, int color);
-t_img get_proper_texture(t_texture *texs, t_direction dir);
-void parser_release_config(t_config *cfg);
-void player_movement(int key, t_game *game);
 
+void draw_background(t_game *game, int ceil_color, int floor_color);
+void draw_minimap(t_game *game);
+void draw_sprites(t_game *game);
+void	render_sprite(t_game *game, int sprite_index);
+void draw_vertical_line(t_game *game, int x, t_img texture, int line_height);
+void my_mlx_pixel_put(t_img *img, int x, int y, int color);
+int color_to_int(t_color c);
+
+int handle_key(int key, t_game *game);
+void player_movement(int key, t_game *game);
 int mouse_move(int x, int y, void *game);
+void apply_movement(t_game *game, float new_x, float new_y);
+int close_game(t_game *game);
+
+void parser_release_config(t_config *cfg);
+
 t_door *find_door_at(t_game *game, int x, int y);
 void toggle_door(t_game *game);
-void	render_sprite(t_game *game, int sprite_index);
-void draw_sprites(t_game *game);
-
-int load_door_texture(t_game *game);
-void draw_minimap(t_game *game);
-int load_texture(void *mlx, t_texture *tex);
-int load_sprite_textures(t_game *game);
-void	update_animations(t_game *game);
 int	check_door(t_game *game, float x, float y);
 
-
-void	transform_to_camera_space(t_game *game, t_sprite *sprite);
 
 #endif
