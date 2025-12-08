@@ -12,8 +12,6 @@
 
 #include "cub3D.h"
 #include "parser.h"
-#include "parser_internal.h"
-#include <unistd.h>
 
 char	*get_error_msg(int code);
 

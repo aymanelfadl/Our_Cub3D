@@ -1,6 +1,7 @@
 CC = cc
 
-CFLAGS = -Iincludes/ -Iminilibx-linux -Wall -Wextra -Werror
+CFLAGS = -Iincludes/ -Iminilibx-linux -Wall -Wextra -Werror 
+#-fsanitize=address
 
 LDFLAGS = -no-pie
 
