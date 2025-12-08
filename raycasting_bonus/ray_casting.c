@@ -72,7 +72,7 @@ int	game_loop(void *param)
 
 	game = (t_game *)param;
 	update_animations(game);
-	init_img(game, &game->frame, WINDOW_WIDTH, WINDOW_HEIGHT);
+	init_img(game, &game->frame, WINDOW_WIDTH, WINDOW_HEIGHT);	
 	render(game);
 	return (0);
 }
@@ -92,7 +92,6 @@ int	start_game(t_game *game)
 	game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
 	if (!game->win)
 		return (fprintf(stderr, "mlx_new_window failed\n"), 1);
-	init_img(game, &game->frame, WINDOW_WIDTH, WINDOW_HEIGHT);
 	init_img(game, &game->minimap, 100, 100);
 	mlx_loop_hook(game->mlx, game_loop, game);
 	mlx_hook(game->win, 2, 1L << 0, handle_key, game);

@@ -78,7 +78,6 @@ int	start_game(t_game *game)
 	game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
 	if (!game->win)
 		return (fprintf(stderr, "mlx_new_window failed\n"), 1);
-	init_img(game, &game->frame, WINDOW_WIDTH, WINDOW_HEIGHT);
 	mlx_loop_hook(game->mlx, game_loop, game);
 	mlx_hook(game->win, 2, (1L << 0), handle_key, game);
 	mlx_hook(game->win, 17, 0, close_game, game);
