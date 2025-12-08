@@ -26,6 +26,7 @@ static void	init_dda(t_game *game, int map_y, int map_x)
 		game->cfg.player.ray.distance_x = (map_x + 1.0f
 				- game->cfg.player.pos_x) * game->cfg.player.ray.next_cell_x;
 	}
+	
 	if (game->cfg.player.ray.ray_y < 0)
 	{
 		game->cfg.player.ray.step_y = -1;
