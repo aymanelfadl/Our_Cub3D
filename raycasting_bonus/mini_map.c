@@ -12,35 +12,9 @@
 
 #include "cub3D.h"
 
-static int	is_player(char c)
+static int	is_obj(char c)
 {
-	return (c == 'E' || c == 'W' || c == 'S' || c == 'N');
-}
-
-static void	draw_player(t_game *game)
-{
-	int	player_radius;
-	int	py;
-	int	center_x;
-	int	center_y;
-	int	px;
-
-	player_radius = 4;
-	center_x = RADIUS * TILE_SIZE;
-	center_y = RADIUS * TILE_SIZE;
-	py = -player_radius;
-	while (py <= player_radius)
-	{
-		px = -player_radius;
-		while (px <= player_radius)
-		{
-			if (px * px + py * py <= player_radius * player_radius)
-				my_mlx_pixel_put(&game->minimap, center_x + px, center_y + py,
-					0xFF0000);
-			px++;
-		}
-		py++;
-	}
+	return (c == 'E' || c == 'W' || c == 'S' || c == 'N' || c == '2');
 }
 
 static int	get_tile_color(t_game *game, int map_x, int map_y)
@@ -54,10 +28,10 @@ static int	get_tile_color(t_game *game, int map_x, int map_y)
 		if (game->cfg.map.grid[map_y][map_x] == '1')
 			color = 0x565757;
 		else if (game->cfg.map.grid[map_y][map_x] == '0'
-			|| is_player(game->cfg.map.grid[map_y][map_x]))
+			|| is_obj(game->cfg.map.grid[map_y][map_x]))
 			color = color_to_int(game->cfg.floor);
 		else if (game->cfg.map.grid[map_y][map_x] == 'D')
-			color = 0x00FF00;
+			color = 0x000000;
 	}
 	return (color);
 }
@@ -107,5 +81,4 @@ void	draw_minimap(t_game *game)
 		map_y++;
 		screen_y++;
 	}
-	draw_player(game);
 }
