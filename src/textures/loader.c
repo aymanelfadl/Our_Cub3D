@@ -34,7 +34,6 @@ int load_hand_texture(t_game *game)
             return 0;
         game->hand_texture[i] = tex;
         i++;
-        printf ("%d -> with pth => %s get laoded\n", i, tex.path);
     }
     return 1;
 }
