@@ -51,6 +51,7 @@ static int	parse_color(char *line, t_color *color)
 	color->blue = rgb[2];
 	return (1);
 }
+
 static int	read_file_lines(const char *path, t_parser *parser)
 {
 	int		fd;
@@ -92,7 +93,6 @@ static int	read_file_lines(const char *path, t_parser *parser)
 	close(fd);
 	return (OK);
 }
-
 
 int is_not_valid(char *str)
 {
