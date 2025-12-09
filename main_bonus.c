@@ -16,7 +16,7 @@ int main(int ac, char *av[])
     code = parse_file_bonus(av[1], &parser);
     if (code != OK)
     {
-        fprintf(stderr, "Error\n%s\n", get_error_msg(code));
+        fprintf(stderr, "Error (code: %d)\n%s\n", code, get_error_msg(code));
         parser_release_config(&game.cfg);
         return (1);
     }

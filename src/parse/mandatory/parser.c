@@ -51,6 +51,7 @@ static int	parse_color(char *line, t_color *color)
 	color->blue = rgb[2];
 	return (1);
 }
+
 static int	read_file_lines(const char *path, t_parser *parser)
 {
 	int		fd;
@@ -92,7 +93,6 @@ static int	read_file_lines(const char *path, t_parser *parser)
 	close(fd);
 	return (OK);
 }
-
 
 int is_not_valid(char *str)
 {
@@ -142,6 +142,22 @@ static int	parse_config_line(char *line, t_config *cfg)
 	return (OK);
 }
 
+static void	free_parser_lines(t_parser *parser)
+{
+	int	i;
+
+	if (!parser->map_lines)
+		return ;
+	i = 0;
+	while (i < parser->line_count)
+	{
+		free(parser->map_lines[i]);
+		i++;
+	}
+	free(parser->map_lines);
+	parser->map_lines = NULL;
+}
+
 int	parse_file(const char *path, t_parser *parser)
 {
 	int err;
@@ -168,28 +184,49 @@ int	parse_file(const char *path, t_parser *parser)
 			break;
 		err = parse_config_line(parser->map_lines[i], &parser->game->cfg);
 		if (err > 0)
+		{
+			free_parser_lines(parser);
 			return (err);
+		}
 		i++;
 	}
 	if (!parser->game->cfg.f_set || !parser->game->cfg.c_set ||
 		!parser->game->cfg.no_texture || !parser->game->cfg.so_texture ||
 		!parser->game->cfg.we_texture || !parser->game->cfg.ea_texture)
+	{
+		free_parser_lines(parser);
 		return (ERR_MISSING_CONFIG);
+	}
 	map_start = find_map_start(parser->map_lines, parser->line_count);
 	if (map_start < 0)
+	{
+		free_parser_lines(parser);
 		return (ERR_NO_MAP);
-	err = build_map(parser, map_start); // after this the parser->map.grid has filled with the map content 
+	}
+	err = build_map(parser, map_start);
 	if (err != OK)
+	{
+		free_parser_lines(parser);
 		return (err);
+	}
 	err = validate_map_chars(&parser->map);
 	if (err != OK)
+	{
+		free_parser_lines(parser);
 		return (err);
+	}
 	err = find_player(parser);
 	if (err != OK)
+	{
+		free_parser_lines(parser);
 		return (err);
+	}
 	err = validate_map_closed(&parser->map);
 	if (err != OK)
+	{
+		free_parser_lines(parser);
 		return (err);
+	}
 	parser->game->cfg.map = parser->map;
 	parser->game->cfg.textures[NO].path = parser->game->cfg.no_texture;
 	parser->game->cfg.textures[SO].path = parser->game->cfg.so_texture;
@@ -199,6 +236,7 @@ int	parse_file(const char *path, t_parser *parser)
 	parser->game->cfg.textures[SO].id = SO;
 	parser->game->cfg.textures[WE].id = WE;
 	parser->game->cfg.textures[EA].id = EA;
+	free_parser_lines(parser);
 	return (OK);
 }
 

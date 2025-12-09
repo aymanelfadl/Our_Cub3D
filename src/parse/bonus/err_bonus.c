@@ -9,10 +9,8 @@ char *get_bonus_error_msg(int code)
         [ERR_SPRITE_TEXTURE] = "Invalid sprite texture file",
         [ERR_BONUS_CONFIG] = "Invalid bonus configuration"
     };
-    
     if (code >= ERR_INVALID_DOOR && code <= ERR_BONUS_CONFIG)
         return (bonus_errors[code - ERR_INVALID_DOOR]);
-    
     /* Fall back to mandatory errors */
     return (get_error_msg(code));
 }

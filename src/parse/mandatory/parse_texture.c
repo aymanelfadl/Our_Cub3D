@@ -22,29 +22,49 @@ static int	is_valid_texture(const char *path)
 	return (1);
 }
 
+static void	free_split(char **split)
+{
+    int	i;
+
+    i = 0;
+    while (split && split[i])
+        free(split[i++]);
+    ft_free((void **)&split);
+}
+
+static int	validate_texture_line(char *start, char *end, char **split)
+{
+    if (start == end)
+        return (ERR_INVALID_TEXTURE);
+    *end = '\0';
+    if (!is_valid_texture(start) || split[1] != NULL)
+        return (ERR_INVALID_TEXTURE);
+    return (OK);
+}
+
 int	parse_texture(char *line, char **texture)
 {
-	char	*path;
-	char	*start;
-	char	*end;
-	char 	**split;
+    char	*path;
+    char	*start;
+    char	*end;
+    char	**split;
+    int		result;
 
-	if (*texture)
-		return (ERR_DUPLICATE);
-	line = skip_spaces(line);
-	split = ft_split(line, " \t\n");
-	start = line;
-	while (*line && !ft_isspace(*line))
-		line++;
-	end = line;
-	if (start == end)
-		return (ERR_INVALID_TEXTURE);
-	*end = '\0';
-	if (!is_valid_texture(start) || split[1] != NULL)
-		return (ERR_INVALID_TEXTURE);
-	path = ft_strdup(start);
-	if (!path)
-		return (ERR_MALLOC);
-	*texture = path;
-	return (OK);
+    if (*texture)
+        return (ERR_DUPLICATE);
+    line = skip_spaces(line);
+    split = ft_split(line, " \t\n");
+    start = line;
+    while (*line && !ft_isspace(*line))
+        line++;
+    end = line;
+    result = validate_texture_line(start, end, split);
+    if (result != OK)
+        return (free_split(split), result);
+    path = ft_strdup(start);
+    free_split(split);
+    if (!path)
+        return (ERR_MALLOC);
+    *texture = path;
+    return (OK);
 }

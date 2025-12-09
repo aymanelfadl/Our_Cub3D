@@ -65,14 +65,12 @@ static	void set_player_direction(t_player *player, char dir)
 	player->plane_x = -player->dir_y * plane_length;
 	player->plane_y = player->dir_x * plane_length;
 }
+
 int	find_player(t_parser *parser)
 {
-	int	i;
-	int	j;
-	int	count;
-	t_map	*map;
+	t_map		*map;
 	t_player	*player;
-
+	int	(i), (j), (count);
 	map = &parser->map;
 	player = &parser->game->cfg.player;
 	count = 0;
@@ -87,7 +85,6 @@ int	find_player(t_parser *parser)
 				player->pos_x = (float)j + 0.5f;
 				player->pos_y = (float)i + 0.5f;
 				player->direction = map->grid[i][j];
-				
 				set_player_direction(player, map->grid[i][j]);
 				count++;
 			}
@@ -100,7 +97,6 @@ int	find_player(t_parser *parser)
 	if (count > 1)
 		return (ERR_MULTI_PLAYER);
 	return (OK);
-	
 }
 
 int	validate_map_chars(t_map *map)
@@ -146,9 +142,7 @@ int	find_map_start(char **lines, int count)
 static char	**create_map_grid(int height, int width)
 {
 	char	**grid;
-	int		i;
-	int		j;
-
+	int		(i), (j);
 	grid = malloc(sizeof(char *) * (height + 1));
 	if (!grid)
 		return (NULL);
