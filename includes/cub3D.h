@@ -6,7 +6,6 @@
 # include <stdlib.h>
 # include <math.h>
 # include "../libft/libft.h"
-// # include "../minilibx-linux/mlx.h"
 # include <mlx.h>
 
 # define TEXTURE_COUNT 4

@@ -30,17 +30,20 @@ static void	rotate_player(t_game *game, double angle)
 int	mouse_move(int x, int y, void *game)
 {
 	t_game		*g;
-	int			new_x;
-	static int	old_x;
+	int 		delta_x;
+	int 		center_x;
 
 	(void)y;
 	g = (t_game *)game;
-	new_x = x - old_x;
-	old_x = x;
-	if (new_x > 0)
-		rotate_player(g, (ROT_SPEED - 0.02f));
-	else
-		rotate_player(g, -(ROT_SPEED - 0.02f));
+	center_x = WINDOW_WIDTH / 2;
+	delta_x = x - center_x;
+	 if (delta_x > 0)
+        rotate_player(g, ROT_SPEED);
+    else if (delta_x < 0)
+	{
+        rotate_player(g, -ROT_SPEED);
+	}
+	mlx_mouse_move(g->mlx, g->win, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 	return (0);
 }
 
@@ -61,9 +64,9 @@ int	close_game(t_game *game)
 int	handle_key(int key, t_game *game)
 {
 	player_movement(key, game);
-	if (key == 65363)
+	if (key == KEY_RIGHT)
 		rotate_player(game, ROT_SPEED);
-	if (key == 65361)
+	if (key == KEY_LEFT)
 		rotate_player(game, -ROT_SPEED);
 	if (key == KEY_E)
 		toggle_door(game);
