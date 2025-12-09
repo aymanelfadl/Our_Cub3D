@@ -90,7 +90,8 @@ int     build_bonus_entities(t_parser_bonus *parser)
 	{
 		parser->base.game->sprites = malloc(sizeof(t_sprite) * parser->base.game->sprite_count);
 		if (!parser->base.game->sprites)
-        	return (ERR_MALLOC);
+			return (ERR_MALLOC);
+		ft_bzero(parser->base.game->sprites, sizeof(t_sprite) * parser->base.game->sprite_count);
 	}
 	i = 0;
 	door_idx = 0;
