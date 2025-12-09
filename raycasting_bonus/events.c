@@ -50,6 +50,8 @@ int	close_game(t_game *game)
 		texture_free_all(game->mlx, &game->cfg);
 	if (game && game->frame.mlx_img)
 		mlx_destroy_image(game->mlx, game->frame.mlx_img);
+	if (game && game->cfg.door_texture.img.mlx_img)
+		mlx_destroy_image(game->mlx, game->cfg.door_texture.img.mlx_img);
 	if (game && game->win)
 		mlx_destroy_window(game->mlx, game->win);
 	parser_release_config(&game->cfg);

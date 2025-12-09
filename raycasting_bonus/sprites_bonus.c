@@ -79,7 +79,7 @@ void	update_animations(t_game *game)
 	static int	frame_counter;
 	int			i;
 
-	frame_counter++;
+	frame_counter = frame_counter + 1;
 	if (frame_counter >= 60)
 	{
 		frame_counter = 0;

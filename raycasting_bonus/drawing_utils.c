@@ -49,19 +49,19 @@ t_img	get_texture(t_game *game)
 {
 	if (game->cfg.player.ray.hit.is_hit == 1)
 	{
-		if (!game->cfg.player.ray.hit.side)
+		if (!game->cfg.player.ray.hit.side)  // Vertical wall (X-axis) 
 		{
 			if (game->cfg.player.ray.ray_x > 0)
-				return (get_proper_texture(game->cfg.textures, WE));
-			else
 				return (get_proper_texture(game->cfg.textures, EA));
+			else
+				return (get_proper_texture(game->cfg.textures, WE));
 		}
 		else
 		{
 			if (game->cfg.player.ray.ray_y > 0)
-				return (get_proper_texture(game->cfg.textures, NO));
-			else
 				return (get_proper_texture(game->cfg.textures, SO));
+			else
+				return (get_proper_texture(game->cfg.textures, NO));
 		}
 	}
 	else

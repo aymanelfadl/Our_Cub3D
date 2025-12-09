@@ -96,7 +96,6 @@ int texture_load_all(void *mlx, t_config *cfg)
         }
         if (load_texture(mlx, &cfg->textures[i]) != 0)
         {
-            /* free previously loaded textures */
             int j = 0;
             while (j < i)
             {

@@ -71,6 +71,7 @@ int	game_loop(void *param)
 	t_game	*game;
 
 	game = (t_game *)param;
+	update_sprites(game);
 	update_animations(game);
 	init_img(game, &game->frame, WINDOW_WIDTH, WINDOW_HEIGHT);	
 	render(game);
