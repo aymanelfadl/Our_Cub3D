@@ -209,7 +209,7 @@ t_door *find_door_at(t_game *game, int x, int y);
 void toggle_door(t_game *game);
 int	check_door(t_game *game, float x, float y);
 int is_player_cell(char c);
-
+void draw_hand(t_game *game);
 int load_hand_texture(t_game *game);
 
 #endif

@@ -43,3 +43,25 @@ void	update_sprites(t_game *game)
         i++;
     }
 }
+
+void draw_hand(t_game *game)
+{
+    int x;
+	int y;
+	int color;
+
+	y = 0;
+    while ( y < game->hand_texture[game->sprites->current_frame].height)
+    {
+		x = 0;
+        while (x < game->hand_texture[game->sprites->current_frame].width)
+        {
+			color = get_texture_color(game->hand_texture[game->sprites->current_frame].img, y, x);
+            if (color != 0x000000)
+                my_mlx_pixel_put(&game->frame, (WINDOW_WIDTH - game->hand_texture[game->sprites->current_frame].width)/2 + x, 
+                                 WINDOW_HEIGHT - game->hand_texture[game->sprites->current_frame].height + y, color);
+			x++;
+		}
+		y++;
+    }
+}

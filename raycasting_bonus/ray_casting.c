@@ -39,24 +39,6 @@ static void	compute_ray_direction(t_game *game, int column)
 	else
 		game->cfg.player.ray.next_cell_y = 1e30f;
 }
-void draw_hand(t_game *game)
-{
-    int x;
-	int y;
-
-	x = 0;
-    for (y = 0; y < game->hand_texture[game->sprites->current_frame].height; y++)
-    {
-        for (x = 0; x < game->hand_texture[game->sprites->current_frame].width; x++)
-        {
-			int color = get_texture_color(game->hand_texture[game->sprites->current_frame].img, y, x);
-            if (color != 0x000000)
-                my_mlx_pixel_put(&game->frame, (WINDOW_WIDTH - game->hand_texture[game->sprites->current_frame].width)/2 + x, 
-                                 WINDOW_HEIGHT - game->hand_texture[game->sprites->current_frame].height + y, color);
-        }
-    }
-}
-
 
 static void	render(t_game *game)
 {
