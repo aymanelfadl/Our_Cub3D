@@ -62,6 +62,7 @@ void	transform_to_camera_space(t_game *game, t_sprite *sprite)
 
 	sprite_x = sprite->x - game->cfg.player.pos_x;
 	sprite_y = sprite->y - game->cfg.player.pos_y;
+	
 	det = (game->cfg.player.plane_x * game->cfg.player.dir_y)
 		- (game->cfg.player.dir_x * game->cfg.player.plane_y);
 	inv_det = 1.0 / det;
@@ -80,7 +81,7 @@ void	update_animations(t_game *game)
 	int			i;
 
 	frame_counter = frame_counter + 1;
-	if (frame_counter >= 60)
+	if (frame_counter >= 30)
 	{
 		frame_counter = 0;
 		i = 0;

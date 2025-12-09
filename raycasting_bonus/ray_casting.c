@@ -39,6 +39,24 @@ static void	compute_ray_direction(t_game *game, int column)
 	else
 		game->cfg.player.ray.next_cell_y = 1e30f;
 }
+void draw_hand(t_game *game)
+{
+    int x;
+	int y;
+
+	x = 0;
+    for (y = 0; y < game->hand_texture[game->sprites->current_frame].height; y++)
+    {
+        for (x = 0; x < game->hand_texture[game->sprites->current_frame].width; x++)
+        {
+			int color = get_texture_color(game->hand_texture[game->sprites->current_frame].img, y, x);
+            if (color != 0x000000)
+                my_mlx_pixel_put(&game->frame, (WINDOW_WIDTH - game->hand_texture[game->sprites->current_frame].width)/2 + x, 
+                                 WINDOW_HEIGHT - game->hand_texture[game->sprites->current_frame].height + y, color);
+        }
+    }
+}
+
 
 static void	render(t_game *game)
 {
@@ -59,6 +77,7 @@ static void	render(t_game *game)
 		draw_vertical_line(game, x, get_texture(game), line_height);
 		x++;
 	}
+	draw_hand(game);
 	draw_sprites(game);
 	draw_minimap(game);
 	mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
@@ -90,9 +109,13 @@ int	start_game(t_game *game)
 			1);
 	if (load_sprite_textures(game) != 0)
 		return (fprintf(stderr, "Warning: Failed to load sprite frames\n"), 1);
+	if (!load_hand_texture(game))
+		return (fprintf(stderr, "Warning: Failed to load hand frames\n"), 1);
+
 	game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
 	if (!game->win)
 		return (fprintf(stderr, "mlx_new_window failed\n"), 1);
+	
 	init_img(game, &game->minimap, 100, 100);
 	mlx_loop_hook(game->mlx, game_loop, game);
 	mlx_hook(game->win, 2, 1L << 0, handle_key, game);

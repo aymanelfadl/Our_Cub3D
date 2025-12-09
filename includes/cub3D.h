@@ -14,8 +14,8 @@
 # define M_PI 3.14159265358979323846
 # endif
 
-# define WINDOW_WIDTH 800
-# define WINDOW_HEIGHT 600
+# define WINDOW_WIDTH 1800
+# define WINDOW_HEIGHT 1000
 
 # define KEY_ESC 65307
 # define KEY_W 119
@@ -167,6 +167,7 @@ typedef struct s_game
 	int         sprite_count;
 	float       z_buffer[WINDOW_WIDTH];
 	t_door      *doors;
+	t_texture	hand_texture[4];
 	int         door_count;
 }   t_game;
 
@@ -208,5 +209,7 @@ t_door *find_door_at(t_game *game, int x, int y);
 void toggle_door(t_game *game);
 int	check_door(t_game *game, float x, float y);
 int is_player_cell(char c);
+
+int load_hand_texture(t_game *game);
 
 #endif

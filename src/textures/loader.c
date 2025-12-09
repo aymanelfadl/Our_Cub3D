@@ -14,6 +14,31 @@ int load_door_texture(t_game *game)
 	return (1);
 }
 
+
+int load_hand_texture(t_game *game)
+{
+    t_texture tex;
+    int       i;
+    char *texture_path[4];
+    
+    texture_path[3] = "textures/hand/1.xpm";
+    texture_path[2] = "textures/hand/2.xpm";
+    texture_path[1] = "textures/hand/3.xpm";
+    texture_path[0] = "textures/hand/4.xpm";
+
+    i = 0;
+    while (i < 4)
+    {
+        tex.path = texture_path[i];
+        if (load_texture(game->mlx, &tex) != 0)
+            return 0;
+        game->hand_texture[i] = tex;
+        i++;
+        printf ("%d -> with pth => %s get laoded\n", i, tex.path);
+    }
+    return 1;
+}
+
 int load_sprite_textures(t_game *game)
 {
     char *texture_path[4];
