@@ -19,7 +19,12 @@ char	*get_error_msg(int code)
 		[ERR_INVALID_CHARACTHER] = "Invalid character",
 		[ERR_NO_PLAYER] = "No player spawn point",
 		[ERR_MULTI_PLAYER] = "Multiple player spawn points",
-		[ERR_MAP_NOT_CLOSED] = "Map is not closed by walls"
+		[ERR_MAP_NOT_CLOSED] = "Map is not closed by walls",
+		[20] = "Invalid door placement (must be between walls and adjacent to walkable space)",
+		[21] = "Invalid sprite placement",
+		[22] = "Door texture not found or invalid",
+		[23] = "Sprite texture not found or invalid",
+		[24] = "Bonus configuration error"
 	};
 	if (code < 0 || (size_t)code >= sizeof(errors) / sizeof(errors[0]))
 		return ("Unknown error");

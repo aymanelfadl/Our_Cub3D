@@ -40,6 +40,10 @@ int validate_door_placement(t_map *map, int j, int i)
     if (up == ' ' || down == ' ' || left == ' ' || right == ' ')
         return (ERR_INVALID_DOOR);
     
+    // Doors cannot be adjacent to sprites (sprites are obstacles)
+    if (up == '2' || down == '2' || left == '2' || right == '2')
+        return (ERR_INVALID_DOOR);
+    
     if (is_wall_or_door(up) && is_wall_or_door(down) &&
     is_walkable(left) && is_walkable(right)) // vertical door
         return (OK);
