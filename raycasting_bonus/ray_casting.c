@@ -40,37 +40,36 @@ static void	compute_ray_direction(t_game *game, int column)
 		game->cfg.player.ray.next_cell_y = 1e30f;
 }
 
-static void	render(t_game *game)
+static void render(t_game *game)
 {
-	int	x;
-	int	line_height;
-
-	draw_background(game, color_to_int(game->cfg.ceiling),
-		color_to_int(game->cfg.floor));
-	x = 0;
-	while (x < WINDOW_WIDTH)
-	{
-		compute_ray_direction(game, x);
-		line_height = start_dda(game);
-		draw_vertical_line(game, x, get_texture(game), line_height);
-		x++;
-	}
-	draw_hand(game);
-	draw_minimap(game);
-	mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
-	mlx_put_image_to_window(game->mlx, game->win, game->minimap.mlx_img, 10,
-		10);
+    int x;
+    int line_height;
+    
+    draw_background(game, color_to_int(game->cfg.ceiling),
+        color_to_int(game->cfg.floor));
+    x = 0;
+    while (x < WINDOW_WIDTH)
+    {
+        compute_ray_direction(game, x);
+        line_height = start_dda(game);
+        draw_vertical_line(game, x, get_texture(game), line_height);
+        x++;
+    }
+	draw_hand(game, game->hand_texture[game->current_frame]);
+    draw_minimap(game);
+    mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
+    mlx_put_image_to_window(game->mlx, game->win, game->minimap.mlx_img, 10, 10);
 }
 
-int	game_loop(void *param)
+int game_loop(void *param)
 {
-	t_game	*game;
-
-	game = (t_game *)param;
-	update_animations(game);
-	init_img(game, &game->frame, WINDOW_WIDTH, WINDOW_HEIGHT);	
-	render(game);
-	return (0);
+    t_game *game;
+    
+    game = (t_game *)param;
+    init_img(game, &game->frame, WINDOW_WIDTH, WINDOW_HEIGHT);
+    update_animations(game);
+    render(game);
+    return (0);
 }
 
 int	start_game(t_game *game)
@@ -95,6 +94,7 @@ int	start_game(t_game *game)
 	mlx_hook(game->win, 2, 1L << 0, handle_key, game);
 	mlx_hook(game->win, 6, 1L << 6, mouse_move, game);
 	mlx_hook(game->win, 17, 0, close_game, game);
+	mlx_mouse_hook(game->win, shoot, game);
 	mlx_mouse_hide(game->mlx, game->win);
 	mlx_loop(game->mlx);
 	return (0);

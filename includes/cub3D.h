@@ -163,26 +163,21 @@ typedef struct s_game
 	t_img       frame;
 	t_img       minimap;
 	t_config    cfg;
-	// t_sprite    *sprites;
-	// int         sprite_count;
-	// float       z_buffer[WINDOW_WIDTH];
 	t_door      *doors;
 	t_texture	hand_texture[4];
-	int			current_frame;
 	int         door_count;
+	int			shoot;
+	int			current_frame;
 }   t_game;
 
 int start_game(t_game *game);
 int game_loop(void *param);
 int start_dda(t_game *game);
-// void	transform_to_camera_space(t_game *game, t_sprite *sprite);
 void	update_animations(t_game *game);
-// void	update_sprites(t_game *game);
 
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
 int load_texture(void *mlx, t_texture *tex);
-int load_sprite_textures(t_game *game);
 int load_door_texture(t_game *game);
 t_img get_texture(t_game *game);
 t_img get_proper_texture(t_texture *texs, t_direction dir);
@@ -192,8 +187,6 @@ unsigned int get_texture_color(t_img texture, int tex_y, int tex_x);
 
 void draw_background(t_game *game, int ceil_color, int floor_color);
 void draw_minimap(t_game *game);
-// void draw_sprites(t_game *game);
-void render_sprite(t_game *game, int sprite_index);
 void draw_vertical_line(t_game *game, int x, t_img texture, int line_height);
 void my_mlx_pixel_put(t_img *img, int x, int y, int color);
 int color_to_int(t_color c);
@@ -202,6 +195,7 @@ int handle_key(int key, t_game *game);
 void player_movement(int key, t_game *game);
 int mouse_move(int x, int y, void *game);
 void apply_movement(t_game *game, float new_x, float new_y);
+int shoot(int button, int x, int y, void *param);
 int close_game(t_game *game);
 
 void parser_release_config(t_config *cfg);
@@ -209,8 +203,7 @@ void parser_release_config(t_config *cfg);
 t_door *find_door_at(t_game *game, int x, int y);
 void toggle_door(t_game *game);
 int	check_door(t_game *game, float x, float y);
-int is_player_cell(char c);
-void draw_hand(t_game *game);
+void draw_hand(t_game *game, t_texture tex);
 int load_hand_texture(t_game *game);
 
 #endif

@@ -61,6 +61,25 @@ int	close_game(t_game *game)
 	exit(EXIT_SUCCESS);
 }
 
+int shoot(int button, int x, int y, void *param)
+{
+	t_game *g;
+
+	g = (t_game*)param;
+	(void)x;
+	(void)y;
+	
+	printf("key %d\n", button);
+    
+	if (button == 1)
+	{
+		g->shoot = 1;
+		printf("we shoot\n");
+	}
+
+	return 0;
+}
+
 int	handle_key(int key, t_game *game)
 {
 	player_movement(key, game);
