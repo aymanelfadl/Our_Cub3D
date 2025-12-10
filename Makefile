@@ -58,8 +58,6 @@ RAYCASTING_BONUS = \
 	raycasting_bonus/sprites_bonus.c \
 	raycasting_bonus/mini_map.c \
 	raycasting_bonus/movement_utils.c \
-	raycasting_bonus/draw_sprite.c \
-	raycasting_bonus/sprites_bonus2.c \
 
 # Textures loader
 TEXTURES = src/textures/loader.c

@@ -1,6 +1,3 @@
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdio.h>
 #include "parser_internal.h"
 #include "bonus.h"
 
@@ -9,6 +6,7 @@ static int	is_map_char(char c)
 	return (c == '0' || c == '1' || c == ' ' ||
 			c == 'N' || c == 'S' || c == 'E' || c == 'W');
 }
+
 
 static int	find_map_width(char **lines, int end)
 {
