@@ -32,7 +32,6 @@ PARSING_BONUS_EXTRA = \
 	src/parse/bonus/utils_bonus.c \
 	src/parse/bonus/parser_flow_bonus.c \
 	src/parse/bonus/Door_valid_bonus.c \
-	src/parse/bonus/sprite_valid_bonus.c \
 	src/parse/bonus/valid_map_bonus.c
 
 # Raycasting and rendering sources

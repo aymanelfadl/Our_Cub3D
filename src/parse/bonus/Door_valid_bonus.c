@@ -36,8 +36,6 @@ int	validate_door_placement(t_map *map, int j, int i)
     right = map->grid[i][j + 1];
     if (up == ' ' || down == ' ' || left == ' ' || right == ' ')
         return (ERR_INVALID_DOOR);
-    if (up == '2' || down == '2' || left == '2' || right == '2')
-        return (ERR_INVALID_DOOR);
     if (is_wall_or_door(up) && is_wall_or_door(down) &&
         is_walkable(left) && is_walkable(right))
         return (OK);

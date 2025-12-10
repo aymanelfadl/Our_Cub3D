@@ -15,5 +15,5 @@
 /* Common bonus char helper */
 int is_bonus_char(char c)
 {
-    return (c == 'D' || c == '2');
+    return (c == 'D');
 }

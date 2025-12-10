@@ -158,6 +158,19 @@ static void	free_parser_lines(t_parser *parser)
 	parser->map_lines = NULL;
 }
 
+static void	free_map_grid(t_map *map)
+{
+	int	i;
+
+	if (!map || !map->grid)
+		return ;
+	i = 0;
+	while (i < map->height && map->grid[i])
+		free(map->grid[i++]);
+	free(map->grid);
+	map->grid = NULL;
+}
+
 int	parse_file(const char *path, t_parser *parser)
 {
 	int err;
@@ -213,18 +226,21 @@ int	parse_file(const char *path, t_parser *parser)
 	if (err != OK)
 	{
 		free_parser_lines(parser);
+		free_map_grid(&parser->map);
 		return (err);
 	}
 	err = find_player(parser);
 	if (err != OK)
 	{
 		free_parser_lines(parser);
+		free_map_grid(&parser->map);
 		return (err);
 	}
 	err = validate_map_closed(&parser->map);
 	if (err != OK)
 	{
 		free_parser_lines(parser);
+		free_map_grid(&parser->map);
 		return (err);
 	}
 	parser->game->cfg.map = parser->map;
