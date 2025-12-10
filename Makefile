@@ -18,7 +18,13 @@ PARSING_MANDATORY = \
 	src/parse/mandatory/valid_map.c \
 	src/parse/mandatory/parser.c \
 	src/parse/mandatory/parse_map.c \
-	src/parse/mandatory/utils.c
+	src/parse/mandatory/utils.c \
+	src/parse/mandatory/parser_colors.c \
+	src/parse/mandatory/free.c \
+	src/parse/mandatory/parse_lines.c \
+	src/parse/mandatory/playerhandel.c \
+	src/parse/mandatory/read_file.c \
+	src/parse/mandatory/util_2.c
 
 # Common parse helpers
 PARSE_COMMON = src/parse/common/common_utils.c

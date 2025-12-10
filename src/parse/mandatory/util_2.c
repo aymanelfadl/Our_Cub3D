@@ -1,49 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   util_2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ykhoussi <ykhoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/10 14:07:45 by ykhoussi          #+#    #+#             */
-/*   Updated: 2025/12/10 15:01:32 by ykhoussi         ###   ########.fr       */
+/*   Created: 2025/12/10 14:07:37 by ykhoussi          #+#    #+#             */
+/*   Updated: 2025/12/10 15:02:14 by ykhoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser_internal.h"
 
-char	*skip_spaces(char *str)
+int	is_map_char(char c)
 {
-	while (*str && ft_isspace(*str))
-		str++;
-	return (str);
+	return (c == '0' || c == '1' || c == ' '
+		|| c == 'N' || c == 'S' || c == 'E' || c == 'W');
 }
 
-int	is_valid_extension(const char *path)
+int	is_player_char(char c)
 {
-	return (common_is_valid_extension(path));
+	return (c == 'E' || c == 'W' || c == 'S' || c == 'N');
 }
 
-int	ft_isspace(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
-}
-
-int	is_not_valid(char *str)
+void	copy_map_line(char *grid, char *line, int width)
 {
 	int	i;
 
 	i = 0;
-	while (str[i] && (str[i] != '\n'))
+	while (line[i] && line[i] != '\n' && i < width)
 	{
-		if (str[i] != ' ' || str[i] == '\t')
-			return (1);
+		grid[i] = line[i];
 		i++;
 	}
-	return (0);
-}
-
-void	parser_release_config(t_config *cfg)
-{
-	common_parser_release_config(cfg);
+	while (i < width)
+		grid[i++] = ' ';
+	grid[width] = '\0';
 }

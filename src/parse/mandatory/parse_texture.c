@@ -1,10 +1,20 @@
-#include <fcntl.h>
-#include <unistd.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_texture.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykhoussi <ykhoussi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 14:27:58 by ykhoussi          #+#    #+#             */
+/*   Updated: 2025/12/10 14:50:54 by ykhoussi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser_internal.h"
 
 static int	is_valid_texture(const char *path)
 {
-	int fd;
+	int	fd;
 	int	len;
 
 	if (!path)
@@ -12,9 +22,9 @@ static int	is_valid_texture(const char *path)
 	len = 0;
 	while (path[len])
 		len++;
-	if (len < 4 || path[len - 4] != '.' || path[len - 3] != 'x' ||
-		path[len - 2] != 'p' || path[len - 1] != 'm')
-			return (0);
+	if (len < 4 || path[len - 4] != '.' || path[len - 3] != 'x'
+		|| path[len - 2] != 'p' || path[len - 1] != 'm')
+		return (0);
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 		return (0);
