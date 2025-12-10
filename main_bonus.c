@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ykhoussi <ykhoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 16:34:12 by aelfadl           #+#    #+#             */
-/*   Updated: 2025/12/10 16:34:12 by aelfadl          ###   ########.fr       */
+/*   Updated: 2025/12/10 19:03:28 by ykhoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	main(int ac, char *av[])
 	code = parse_file_bonus(av[1], &parser);
 	if (code != OK)
 	{
-		fprintf(stderr, "Error (code: %d)\n%s\n", code, get_error_msg(code));
+		fprintf(stderr, "Error : %s\n", get_error_msg(code));
 		parser_release_config(&game.cfg);
 		return (1);
 	}
