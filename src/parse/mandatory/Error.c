@@ -6,7 +6,11 @@
 /*   By: ykhoussi <ykhoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 14:27:46 by ykhoussi          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/12/10 16:32:05 by aelfadl          ###   ########.fr       */
+=======
+/*   Updated: 2025/12/10 18:42:21 by ykhoussi         ###   ########.fr       */
+>>>>>>> fdfda8f (fix textures)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +77,19 @@ char	*get_error_msg(int code)
 	if (msg)
 		return (msg);
 	return ("Unknown error");
+}
+
+int	err_msg(char *msg, char *detail)
+{
+	ft_putstr_fd("Error: ", 2);
+	if (msg)
+		ft_putstr_fd(msg, 2);
+	if (detail)
+	{
+		ft_putstr_fd(" '", 2);
+		ft_putstr_fd(detail, 2);
+		ft_putstr_fd("'", 2);
+	}
+	ft_putstr_fd("\n", 2);
+	return (-1);
 }
