@@ -26,7 +26,7 @@
 #  define M_PI 3.14159265358979323846
 # endif
 
-# define WINDOW_WIDTH 1800
+# define WINDOW_WIDTH 2000
 # define WINDOW_HEIGHT 1000
 
 # define KEY_ESC 65307
