@@ -29,16 +29,28 @@ PARSING_MANDATORY = \
 # Common parse helpers
 PARSE_COMMON = src/parse/common/common_utils.c
 
-# Explicit bonus parsing sources (extra bonus-only files)
+# Explicit bonus parsing sources (bonus-only files)
 PARSING_BONUS_EXTRA = \
-	src/parse/bonus/bonus_helpers.c \
-	src/parse/bonus/err_bonus.c \
-	src/parse/bonus/parser_bonus.c \
-	src/parse/bonus/parse_map_bonus.c \
-	src/parse/bonus/utils_bonus.c \
-	src/parse/bonus/parser_flow_bonus.c \
-	src/parse/bonus/Door_valid_bonus.c \
-	src/parse/bonus/valid_map_bonus.c
+    src/parse/bonus/bonus_helpers.c \
+    src/parse/bonus/err_bonus.c \
+    src/parse/bonus/parser_bonus.c \
+    src/parse/bonus/parse_map_bonus.c \
+    src/parse/bonus/Door_valid_bonus.c \
+    src/parse/bonus/valid_map_bonus.c
+
+# Bonus build sources: reuse only the shared mandatory parsing (non-duplicated)
+PARSING_BONUS_BASE = \
+    src/parse/mandatory/Error.c \
+    src/parse/mandatory/parse_texture.c \
+	src/parse/mandatory/parser.c \
+	src/parse/mandatory/utils.c \
+    src/parse/mandatory/parser_colors.c \
+    src/parse/mandatory/parse_lines.c \
+    src/parse/mandatory/read_file.c \
+    src/parse/mandatory/free.c \
+    src/parse/mandatory/util_2.c \
+    src/parse/mandatory/playerhandel.c \
+    $(PARSE_COMMON)
 
 # Raycasting and rendering sources
 RAYCASTING = \
@@ -74,8 +86,13 @@ MAIN_BONUS = main_bonus.c
 # Mandatory build sources (explicit)
 SRC = $(PARSING_MANDATORY) $(PARSE_COMMON) $(RAYCASTING) $(TEXTURES) $(MAIN)
 
-# Bonus build sources: include mandatory Error/parse_texture helpers plus bonus parsing extras
-SRC_BONUS = src/parse/mandatory/Error.c src/parse/mandatory/parse_texture.c $(PARSE_COMMON) $(PARSING_BONUS_EXTRA) $(RAYCASTING_BONUS) $(TEXTURES) $(MAIN_BONUS)
+# Bonus build sources: reuse only the shared mandatory parsing (non-duplicated)
+SRC_BONUS = \
+    $(PARSING_BONUS_BASE) \
+    $(PARSING_BONUS_EXTRA) \
+    $(RAYCASTING_BONUS) \
+    $(TEXTURES) \
+    $(MAIN_BONUS)
 
 OBJ = $(SRC:.c=.o)
 OBJ_BONUS = $(SRC_BONUS:.c=.o)

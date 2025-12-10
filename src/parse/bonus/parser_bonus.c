@@ -1,9 +1,19 @@
-#include <fcntl.h>
-#include <unistd.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_bonus.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykhoussi <ykhoussi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 15:08:40 by ykhoussi          #+#    #+#             */
+/*   Updated: 2025/12/10 15:17:16 by ykhoussi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser_internal.h"
 #include "parser_bonus.h"
 
-int     validate_bonus_chars(t_parser_bonus *parser)
+int	validate_bonus_chars(t_parser_bonus *parser)
 {
 	int	i;
 	int	j;
@@ -26,52 +36,20 @@ int     validate_bonus_chars(t_parser_bonus *parser)
 	return (OK);
 }
 
-int detect_doors(t_parser_bonus *parser)
-{
-    int i;
-    int j;
-
-    parser->base.game->door_count = 0;
-    i = 0;
-    while (i < parser->base.map.height)
-    {
-        j = 0;
-		while (j < parser->base.map.width)
-        {
-            if (is_door_char(parser->base.map.grid[i][j]))
-                parser->base.game->door_count++;
-            j++;
-        }
-        i++;
-    }
-    return (OK);
-}
-int     build_bonus_door(t_parser_bonus *parser)
+int	detect_doors(t_parser_bonus *parser)
 {
 	int	i;
-    int	j;
-    int	door_idx;
+	int	j;
 
-	if (parser->base.game->door_count > 0)
-	{
-		parser->base.game->doors = malloc(sizeof(t_door) * parser->base.game->door_count);
-		if (!parser->base.game->doors)
-        	return (ERR_MALLOC);
-	}
+	parser->base.game->door_count = 0;
 	i = 0;
-	door_idx = 0;
 	while (i < parser->base.map.height)
 	{
 		j = 0;
 		while (j < parser->base.map.width)
 		{
 			if (is_door_char(parser->base.map.grid[i][j]))
-			{
-				parser->base.game->doors[door_idx].map_x = j;
-				parser->base.game->doors[door_idx].map_y = i;
-				parser->base.game->doors[door_idx].is_open = 0;
-    			door_idx++;
-			}
+				parser->base.game->door_count++;
 			j++;
 		}
 		i++;
@@ -79,7 +57,34 @@ int     build_bonus_door(t_parser_bonus *parser)
 	return (OK);
 }
 
-int parse_file_bonus(const char *path, t_parser_bonus *parser)
+int	build_bonus_door(t_parser_bonus *parser)
+{
+	int (i), (j), (d_idx);
+	if (parser->base.game->door_count <= 0)
+		return (OK);
+	parser->base.game->doors = malloc(sizeof(t_door)
+			* parser->base.game->door_count);
+	if (!parser->base.game->doors)
+		return (ERR_MALLOC);
+	i = -1;
+	d_idx = 0;
+	while (++i < parser->base.map.height)
+	{
+		j = -1;
+		while (++j < parser->base.map.width)
+		{
+			if (is_door_char(parser->base.map.grid[i][j]))
+			{
+				parser->base.game->doors[d_idx].map_x = j;
+				parser->base.game->doors[d_idx].map_y = i;
+				parser->base.game->doors[d_idx++].is_open = 0;
+			}
+		}
+	}
+	return (OK);
+}
+
+int	parse_file_bonus(const char *path, t_parser_bonus *parser)
 {
 	int	err;
 

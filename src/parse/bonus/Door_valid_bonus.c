@@ -6,11 +6,6 @@ int	is_door_char(char c)
     return (c == 'D');
 }
 
-static int	is_player_char(char c)
-{
-    return (c == 'N' || c == 'S' || c == 'E' || c == 'W');
-}
-
 static int	is_walkable(char c)
 {
     return (c == '0' || is_player_char(c));

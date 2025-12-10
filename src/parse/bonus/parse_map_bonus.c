@@ -1,13 +1,6 @@
 #include "parser_internal.h"
 #include "bonus.h"
 
-static int	is_map_char(char c)
-{
-	return (c == '0' || c == '1' || c == ' ' ||
-			c == 'N' || c == 'S' || c == 'E' || c == 'W');
-}
-
-
 static int	find_map_width(char **lines, int end)
 {
 	int	i;
@@ -32,70 +25,6 @@ static int	find_map_width(char **lines, int end)
 	return (max_with);
 }
 
-static int	is_player_char(char c)
-{
-	return (c == 'E' || c == 'W' || c == 'S' || c == 'N');
-}
-
-static	void set_player_direction(t_player *player, char dir)
-{
-	if (dir == 'N')
-	{
-		player->dir_x = 0.0f;
-		player->dir_y = -1.0f;
-	}
-	else if (dir == 'S')
-	{
-		player->dir_x = 0.0f;
-		player->dir_y = 1.0f;
-	}
-	else if (dir == 'E')
-	{
-		player->dir_x = 1.0f;
-		player->dir_y = 0.0f;
-	}
-	else if (dir == 'W')
-	{
-		player->dir_x = -1.0f;
-		player->dir_y = 0.0f;
-	}
-	float plane_length = tanf((FOV_PLANE * M_PI / 180.0f) / 2.0f);
-	player->plane_x = -player->dir_y * plane_length;
-	player->plane_y = player->dir_x * plane_length;
-}
-
-int	find_player(t_parser *parser)
-{
-	t_map		*map;
-	t_player	*player;
-	int	(i), (j), (count);
-	map = &parser->map;
-	player = &parser->game->cfg.player;
-	count = 0;
-	i = 0;
-	while (i < map->height)
-	{
-		j = 0;
-		while (j < map->width)
-		{
-			if (is_player_char(map->grid[i][j]))
-			{
-				player->pos_x = (float)j + 0.5f;
-				player->pos_y = (float)i + 0.5f;
-				player->direction = map->grid[i][j];
-				set_player_direction(player, map->grid[i][j]);
-				count++;
-			}
-			j++;
-		}
-		i++;
-	}
-	if (count < 1)
-		return (ERR_NO_PLAYER);
-	if (count > 1)
-		return (ERR_MULTI_PLAYER);
-	return (OK);
-}
 
 int	validate_map_chars(t_map *map)
 {
@@ -118,6 +47,7 @@ int	validate_map_chars(t_map *map)
 	}
 	return (OK);
 }
+
 int	find_map_start(char **lines, int count)
 {
     int i;
@@ -165,20 +95,6 @@ static char	**create_map_grid(int height, int width)
 	return (grid);
 }
 
-static	void	copy_map_line(char *grid, char *line, int width)
-{
-	int i;
-
-	i = 0;
-	while (line[i] && line[i] != '\n' && i < width)
-	{
-		grid[i] = line[i];
-		i++;
-	}
-	while (i < width)
-		grid[i++] = ' ';
-	grid[width] = '\0';
-}
 
 int	build_map(t_parser *parser, int start)
 {
