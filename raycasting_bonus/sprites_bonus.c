@@ -20,11 +20,11 @@ void update_animations(t_game *game)
     if (game->shoot)
     {
         frame_counter++;
-        if (frame_counter >= 10)
+        if (frame_counter >= 2)
         {
             frame_counter = 0;
             current_frame++;
-            if (current_frame >= 4)
+            if (current_frame >= 5)
             {
                 current_frame = 0;
                 game->shoot = 0;
@@ -34,24 +34,48 @@ void update_animations(t_game *game)
 	game->current_frame = current_frame;
 }
 
+static void draw_scaled_pixel(t_game *game, t_texture tex, int x, int y)
+{
+    int i;
+    int j;
+    int scale;
+    int color;
+
+    scale = 3; 
+    i = 0;
+    color = get_texture_color(tex.img, y, x);
+    if (color != 0x000000)
+    {
+        while (i < scale)
+        {
+            j = 0;
+            while (j < scale)
+            {
+                my_mlx_pixel_put(&game->frame, 
+                    (WINDOW_WIDTH - tex.width * scale) / 2 + x * scale + j, 
+                    (WINDOW_HEIGHT - tex.height * scale) + y * scale + i, 
+                    color);
+                j++;
+            }
+            i++;
+        }
+    } 
+}
+
 void draw_hand(t_game *game, t_texture tex)
 {
     int x;
-	int y;
-	int color;
-
-	y = 0;
-    while ( y < tex.height)
+    int y;
+    
+    y = 0;
+    while (y < tex.height)
     {
-		x = 0;
+        x = 0;
         while (x < tex.width)
         {
-			color = get_texture_color(tex.img, y, x);
-            if (color != 0x000000)
-                my_mlx_pixel_put(&game->frame, (WINDOW_WIDTH - tex.width ) / 2 + x, 
-                                 WINDOW_HEIGHT - tex.height + y, color);
-			x++;
-		}
-		y++;
+            draw_scaled_pixel(game, tex, x, y);
+            x++;
+        }
+        y++;
     }
 }

@@ -164,7 +164,7 @@ typedef struct s_game
 	t_img       minimap;
 	t_config    cfg;
 	t_door      *doors;
-	t_texture	hand_texture[4];
+	t_texture	hand_texture[5];
 	int         door_count;
 	int			shoot;
 	int			current_frame;

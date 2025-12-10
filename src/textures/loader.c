@@ -59,14 +59,15 @@ int	load_hand_texture(t_game *game)
 {
 	t_texture	tex;
 	int			i;
-	char		*texture_path[4];
+	char		*texture_path[5];
 
-	texture_path[3] = "textures/hand/1.xpm";
-	texture_path[2] = "textures/hand/2.xpm";
-	texture_path[1] = "textures/hand/3.xpm";
-	texture_path[0] = "textures/hand/4.xpm";
+	texture_path[0] = "textures/hand/1.xpm";
+	texture_path[1] = "textures/hand/2.xpm";
+	texture_path[2] = "textures/hand/3.xpm";
+	texture_path[3] = "textures/hand/4.xpm";
+	texture_path[4] = "textures/hand/5.xpm";
 	i = 0;
-	while (i < 4)
+	while (i < 5)
 	{
 		tex.path = texture_path[i];
 		if (load_texture(game->mlx, &tex) != 0)

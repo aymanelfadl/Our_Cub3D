@@ -69,13 +69,8 @@ int shoot(int button, int x, int y, void *param)
 	(void)x;
 	(void)y;
 	
-	printf("key %d\n", button);
-    
 	if (button == 1)
-	{
 		g->shoot = 1;
-		printf("we shoot\n");
-	}
 
 	return 0;
 }
