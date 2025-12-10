@@ -6,7 +6,7 @@
 /*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 22:00:11 by aelfadl           #+#    #+#             */
-/*   Updated: 2025/12/07 22:00:11 by aelfadl          ###   ########.fr       */
+/*   Updated: 2025/12/10 16:31:29 by aelfadl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,10 @@ static void	rotate_player(t_game *game, double angle)
 
 	old_dir_x = game->cfg.player.dir_x;
 	old_plane_x = game->cfg.player.plane_x;
-	game->cfg.player.dir_x = old_dir_x * cos(angle) - game->cfg.player.dir_y * sin(angle);
-	game->cfg.player.dir_y = old_dir_x * sin(angle) + game->cfg.player.dir_y * cos(angle);
+	game->cfg.player.dir_x = old_dir_x * cos(angle) - game->cfg.player.dir_y
+		* sin(angle);
+	game->cfg.player.dir_y = old_dir_x * sin(angle) + game->cfg.player.dir_y
+		* cos(angle);
 	game->cfg.player.plane_x = game->cfg.player.plane_x * cos(angle)
 		- game->cfg.player.plane_y * sin(angle);
 	game->cfg.player.plane_y = old_plane_x * sin(angle)
@@ -29,19 +31,19 @@ static void	rotate_player(t_game *game, double angle)
 
 int	mouse_move(int x, int y, void *game)
 {
-	t_game		*g;
-	int 		delta_x;
-	int 		center_x;
+	t_game	*g;
+	int		delta_x;
+	int		center_x;
 
 	(void)y;
 	g = (t_game *)game;
 	center_x = WINDOW_WIDTH / 2;
 	delta_x = x - center_x;
-	 if (delta_x > 0)
-        rotate_player(g, ROT_SPEED);
-    else if (delta_x < 0)
+	if (delta_x > 0)
+		rotate_player(g, ROT_SPEED);
+	else if (delta_x < 0)
 	{
-        rotate_player(g, -ROT_SPEED);
+		rotate_player(g, -ROT_SPEED);
 	}
 	mlx_mouse_move(g->mlx, g->win, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 	return (0);
@@ -61,18 +63,16 @@ int	close_game(t_game *game)
 	exit(EXIT_SUCCESS);
 }
 
-int shoot(int button, int x, int y, void *param)
+int	shoot(int button, int x, int y, void *param)
 {
-	t_game *g;
+	t_game	*g;
 
-	g = (t_game*)param;
+	g = (t_game *)param;
 	(void)x;
 	(void)y;
-	
 	if (button == 1)
 		g->shoot = 1;
-
-	return 0;
+	return (0);
 }
 
 int	handle_key(int key, t_game *game)

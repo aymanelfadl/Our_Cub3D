@@ -6,7 +6,7 @@
 /*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 21:57:28 by aelfadl           #+#    #+#             */
-/*   Updated: 2025/12/07 21:57:28 by aelfadl          ###   ########.fr       */
+/*   Updated: 2025/12/10 16:31:19 by aelfadl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ static void	init_img(t_game *game, t_img *img, int width, int height)
 static void	compute_ray_direction(t_game *game, int column)
 {
 	game->cfg.player.ray.camera_x = 2.0f * column / (float)WINDOW_WIDTH - 1.0f;
-
-	game->cfg.player.ray.ray_x = game->cfg.player.dir_x + game->cfg.player.ray.camera_x * game->cfg.player.plane_x;
-	game->cfg.player.ray.ray_y = game->cfg.player.dir_y + game->cfg.player.ray.camera_x * game->cfg.player.plane_y;
-	
+	game->cfg.player.ray.ray_x = game->cfg.player.dir_x
+		+ game->cfg.player.ray.camera_x * game->cfg.player.plane_x;
+	game->cfg.player.ray.ray_y = game->cfg.player.dir_y
+		+ game->cfg.player.ray.camera_x * game->cfg.player.plane_y;
 	if (game->cfg.player.ray.ray_x != 0)
 		game->cfg.player.ray.next_cell_x = fabsf(1.0f
 				/ game->cfg.player.ray.ray_x);

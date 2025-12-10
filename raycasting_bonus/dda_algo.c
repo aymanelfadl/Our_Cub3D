@@ -6,7 +6,7 @@
 /*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 22:00:11 by aelfadl           #+#    #+#             */
-/*   Updated: 2025/12/07 22:00:11 by aelfadl          ###   ########.fr       */
+/*   Updated: 2025/12/10 16:31:29 by aelfadl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ static int	check_hit(t_game *game, int map_x, int map_y)
 		return (2);
 	return (0);
 }
+
 static void	advance_ray(t_game *game, int *map_x, int *map_y)
 {
 	if (game->cfg.player.ray.distance_x < game->cfg.player.ray.distance_y)

@@ -6,7 +6,7 @@
 /*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 21:57:28 by aelfadl           #+#    #+#             */
-/*   Updated: 2025/12/07 21:57:28 by aelfadl          ###   ########.fr       */
+/*   Updated: 2025/12/10 16:31:19 by aelfadl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,14 @@ static void	rotate_player(t_game *game, double angle)
 
 	old_dir_x = game->cfg.player.dir_x;
 	old_plane_x = game->cfg.player.plane_x;
-	
-	game->cfg.player.dir_x = old_dir_x * cos(angle) - game->cfg.player.dir_y * sin(angle);
-	game->cfg.player.dir_y = old_dir_x * sin(angle) + game->cfg.player.dir_y * cos(angle);
-	game->cfg.player.plane_x = game->cfg.player.plane_x * cos(angle) - game->cfg.player.plane_y * sin(angle);
-	game->cfg.player.plane_y = old_plane_x * sin(angle) + game->cfg.player.plane_y * cos(angle);
+	game->cfg.player.dir_x = old_dir_x * cos(angle) - game->cfg.player.dir_y
+		* sin(angle);
+	game->cfg.player.dir_y = old_dir_x * sin(angle) + game->cfg.player.dir_y
+		* cos(angle);
+	game->cfg.player.plane_x = game->cfg.player.plane_x * cos(angle)
+		- game->cfg.player.plane_y * sin(angle);
+	game->cfg.player.plane_y = old_plane_x * sin(angle)
+		+ game->cfg.player.plane_y * cos(angle);
 }
 
 int	close_game(t_game *game)

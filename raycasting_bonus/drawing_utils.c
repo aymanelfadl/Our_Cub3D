@@ -6,7 +6,7 @@
 /*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 22:00:11 by aelfadl           #+#    #+#             */
-/*   Updated: 2025/12/07 22:00:11 by aelfadl          ###   ########.fr       */
+/*   Updated: 2025/12/10 16:31:29 by aelfadl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ t_img	get_texture(t_game *game)
 {
 	if (game->cfg.player.ray.hit.is_hit == 1)
 	{
-		if (!game->cfg.player.ray.hit.side)  // Vertical wall (X-axis) 
+		if (!game->cfg.player.ray.hit.side)
 		{
 			if (game->cfg.player.ray.ray_x > 0)
 				return (get_proper_texture(game->cfg.textures, EA));

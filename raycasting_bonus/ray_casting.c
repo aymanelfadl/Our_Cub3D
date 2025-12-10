@@ -6,7 +6,7 @@
 /*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 22:00:11 by aelfadl           #+#    #+#             */
-/*   Updated: 2025/12/07 22:00:11 by aelfadl          ###   ########.fr       */
+/*   Updated: 2025/12/10 16:31:29 by aelfadl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,36 +40,37 @@ static void	compute_ray_direction(t_game *game, int column)
 		game->cfg.player.ray.next_cell_y = 1e30f;
 }
 
-static void render(t_game *game)
+static void	render(t_game *game)
 {
-    int x;
-    int line_height;
-    
-    draw_background(game, color_to_int(game->cfg.ceiling),
-        color_to_int(game->cfg.floor));
-    x = 0;
-    while (x < WINDOW_WIDTH)
-    {
-        compute_ray_direction(game, x);
-        line_height = start_dda(game);
-        draw_vertical_line(game, x, get_texture(game), line_height);
-        x++;
-    }
+	int	x;
+	int	line_height;
+
+	draw_background(game, color_to_int(game->cfg.ceiling),
+		color_to_int(game->cfg.floor));
+	x = 0;
+	while (x < WINDOW_WIDTH)
+	{
+		compute_ray_direction(game, x);
+		line_height = start_dda(game);
+		draw_vertical_line(game, x, get_texture(game), line_height);
+		x++;
+	}
 	draw_hand(game, game->hand_texture[game->current_frame]);
-    draw_minimap(game);
-    mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
-    mlx_put_image_to_window(game->mlx, game->win, game->minimap.mlx_img, 10, 10);
+	draw_minimap(game);
+	mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
+	mlx_put_image_to_window(game->mlx, game->win, game->minimap.mlx_img, 10,
+		10);
 }
 
-int game_loop(void *param)
+int	game_loop(void *param)
 {
-    t_game *game;
-    
-    game = (t_game *)param;
-    init_img(game, &game->frame, WINDOW_WIDTH, WINDOW_HEIGHT);
-    update_animations(game);
-    render(game);
-    return (0);
+	t_game	*game;
+
+	game = (t_game *)param;
+	init_img(game, &game->frame, WINDOW_WIDTH, WINDOW_HEIGHT);
+	update_animations(game);
+	render(game);
+	return (0);
 }
 
 int	start_game(t_game *game)
@@ -84,11 +85,9 @@ int	start_game(t_game *game)
 			1);
 	if (!load_hand_texture(game))
 		return (fprintf(stderr, "Warning: Failed to load hand frames\n"), 1);
-
 	game->win = mlx_new_window(game->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3D");
 	if (!game->win)
 		return (fprintf(stderr, "mlx_new_window failed\n"), 1);
-	
 	init_img(game, &game->minimap, 100, 100);
 	mlx_loop_hook(game->mlx, game_loop, game);
 	mlx_hook(game->win, 2, 1L << 0, handle_key, game);

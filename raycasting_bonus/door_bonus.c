@@ -6,7 +6,7 @@
 /*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 22:00:11 by aelfadl           #+#    #+#             */
-/*   Updated: 2025/12/07 22:00:11 by aelfadl          ###   ########.fr       */
+/*   Updated: 2025/12/10 16:31:29 by aelfadl          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ int	check_door(t_game *game, float x, float y)
 
 void	toggle_door(t_game *game)
 {
-	int check_x;
-	int check_y;
-	t_door *door;
+	int		check_x;
+	int		check_y;
+	t_door	*door;
 
 	check_x = (int)(game->cfg.player.pos_x + game->cfg.player.dir_x * 1.5f);
 	check_y = (int)(game->cfg.player.pos_y + game->cfg.player.dir_y * 1.5f);
