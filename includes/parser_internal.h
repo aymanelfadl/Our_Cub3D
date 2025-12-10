@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_internal.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aelfadl <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: ykhoussi <ykhoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 16:31:10 by aelfadl           #+#    #+#             */
-/*   Updated: 2025/12/10 16:31:10 by aelfadl          ###   ########.fr       */
+/*   Updated: 2025/12/10 18:59:32 by ykhoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,5 @@ char		*common_skip_spaces(char *str);
 int			common_is_valid_extension(const char *path);
 void		common_parser_release_config(t_config *cfg);
 int			common_ft_isspace(char c);
+int			err_msg(char *msg, char *detail);
 #endif
