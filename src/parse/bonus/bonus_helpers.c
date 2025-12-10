@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   bonus_helpers.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: copilot <copilot@ai>                        +#+  +:+       +#+        */
+/*   By: ykhoussi <ykhoussi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/30 22:00:00 by copilot           #+#    #+#             */
-/*   Updated: 2025/11/30 22:00:00 by copilot          ###   ########.fr       */
+/*   Created: 2025/12/10 15:38:07 by ykhoussi          #+#    #+#             */
+/*   Updated: 2025/12/10 15:38:29 by ykhoussi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser_bonus.h"
 
-/* Common bonus char helper */
-int is_bonus_char(char c)
+int	is_bonus_char(char c)
 {
-    return (c == 'D');
+	return (c == 'D');
 }
