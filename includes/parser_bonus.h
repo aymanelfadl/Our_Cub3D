@@ -44,8 +44,6 @@ int     validate_sprite_placement(t_map *map, int x, int y);
 /* Bonus parsing functions */
 int parse_file_bonus(const char *path, t_parser_bonus *parser);
 int detect_doors(t_parser_bonus *parser);
-int detect_sprites(t_parser_bonus *parser);
-int build_bonus_entities(t_parser_bonus *parser);
 int validate_bonus_chars(t_parser_bonus *parser);
 char    *get_bonus_error_msg(int code);
 

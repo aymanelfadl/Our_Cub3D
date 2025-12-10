@@ -38,41 +38,41 @@ int load_hand_texture(t_game *game)
     return 1;
 }
 
-int load_sprite_textures(t_game *game)
-{
-    char *texture_path[4];
-    int i;
+// int load_sprite_textures(t_game *game)
+// {
+//     char *texture_path[4];
+//     int i;
 
-    if (game->sprite_count > 0)
-    {
-        texture_path[0] = "textures/enemy/1.xpm";
-        texture_path[1] = "textures/enemy/2.xpm";
-        texture_path[2] = "textures/enemy/3.xpm";
-        texture_path[3] = "textures/enemy/4.xpm";
+//     if (game->sprite_count > 0)
+//     {
+//         texture_path[0] = "textures/enemy/1.xpm";
+//         texture_path[1] = "textures/enemy/2.xpm";
+//         texture_path[2] = "textures/enemy/3.xpm";
+//         texture_path[3] = "textures/enemy/4.xpm";
 
-        i = 0;
-        while (i < game->sprite_count)
-        {
-            int j = 0;
-            while (j < 4)
-            {
-                game->sprites[i].sprite_textures[j].path = texture_path[j];
-                if (load_texture(game->mlx, &game->sprites[i].sprite_textures[j]) != 0)
-                {
-                    // shoudl clean it if we fail
-                    // while (--i > -1)
-                    //     while (--j > -1)
-                    //         mlx_destroy_image(game->mlx, game->sprites[i].sprite_textures[j].img.mlx_img);
-                    return (1);
-                }
-                j++;
-            }
-            i++;
-        }
-    }
+//         i = 0;
+//         while (i < game->sprite_count)
+//         {
+//             int j = 0;
+//             while (j < 4)
+//             {
+//                 game->sprites[i].sprite_textures[j].path = texture_path[j];
+//                 if (load_texture(game->mlx, &game->sprites[i].sprite_textures[j]) != 0)
+//                 {
+//                     // shoudl clean it if we fail
+//                     // while (--i > -1)
+//                     //     while (--j > -1)
+//                     //         mlx_destroy_image(game->mlx, game->sprites[i].sprite_textures[j].img.mlx_img);
+//                     return (1);
+//                 }
+//                 j++;
+//             }
+//             i++;
+//         }
+//     }
 
-    return (0);
-}
+//     return (0);
+// }
 
 int load_texture(void *mlx, t_texture *tex)
 {

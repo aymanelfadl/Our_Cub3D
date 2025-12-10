@@ -163,20 +163,21 @@ typedef struct s_game
 	t_img       frame;
 	t_img       minimap;
 	t_config    cfg;
-	t_sprite    *sprites;
-	int         sprite_count;
-	float       z_buffer[WINDOW_WIDTH];
+	// t_sprite    *sprites;
+	// int         sprite_count;
+	// float       z_buffer[WINDOW_WIDTH];
 	t_door      *doors;
 	t_texture	hand_texture[4];
+	int			current_frame;
 	int         door_count;
 }   t_game;
 
 int start_game(t_game *game);
 int game_loop(void *param);
 int start_dda(t_game *game);
-void	transform_to_camera_space(t_game *game, t_sprite *sprite);
+// void	transform_to_camera_space(t_game *game, t_sprite *sprite);
 void	update_animations(t_game *game);
-void	update_sprites(t_game *game);
+// void	update_sprites(t_game *game);
 
 int  texture_load_all(void *mlx, t_config *cfg);
 void texture_free_all(void *mlx, t_config *cfg);
@@ -191,7 +192,7 @@ unsigned int get_texture_color(t_img texture, int tex_y, int tex_x);
 
 void draw_background(t_game *game, int ceil_color, int floor_color);
 void draw_minimap(t_game *game);
-void draw_sprites(t_game *game);
+// void draw_sprites(t_game *game);
 void render_sprite(t_game *game, int sprite_index);
 void draw_vertical_line(t_game *game, int x, t_img texture, int line_height);
 void my_mlx_pixel_put(t_img *img, int x, int y, int color);

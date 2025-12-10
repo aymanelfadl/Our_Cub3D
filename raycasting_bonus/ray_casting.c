@@ -52,15 +52,10 @@ static void	render(t_game *game)
 	{
 		compute_ray_direction(game, x);
 		line_height = start_dda(game);
-		if (!game->cfg.player.ray.hit.side)
-			game->z_buffer[x] = game->cfg.player.ray.distance_x;
-		else
-			game->z_buffer[x] = game->cfg.player.ray.distance_y;
 		draw_vertical_line(game, x, get_texture(game), line_height);
 		x++;
 	}
 	draw_hand(game);
-	draw_sprites(game);
 	draw_minimap(game);
 	mlx_put_image_to_window(game->mlx, game->win, game->frame.mlx_img, 0, 0);
 	mlx_put_image_to_window(game->mlx, game->win, game->minimap.mlx_img, 10,
@@ -72,7 +67,7 @@ int	game_loop(void *param)
 	t_game	*game;
 
 	game = (t_game *)param;
-	update_sprites(game);
+	// update_sprites(game);
 	update_animations(game);
 	init_img(game, &game->frame, WINDOW_WIDTH, WINDOW_HEIGHT);	
 	render(game);
@@ -89,8 +84,8 @@ int	start_game(t_game *game)
 	if (!load_door_texture(game))
 		return (fprintf(stderr, "Error:\nFailed to load the door texture\n"),
 			1);
-	if (load_sprite_textures(game) != 0)
-		return (fprintf(stderr, "Warning: Failed to load sprite frames\n"), 1);
+	// if (load_sprite_textures(game) != 0)
+	// 	return (fprintf(stderr, "Warning: Failed to load sprite frames\n"), 1);
 	if (!load_hand_texture(game))
 		return (fprintf(stderr, "Warning: Failed to load hand frames\n"), 1);
 
